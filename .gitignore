@@ -7,7 +7,3 @@ coverage/
 main.js
 main.js.map
 
-# Leftovers from the legacy-codex prototype
-dist/
-target/
-apps/

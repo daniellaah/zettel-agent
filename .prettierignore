@@ -2,6 +2,3 @@ node_modules/
 coverage/
 main.js
 package-lock.json
-dist/
-target/
-apps/
