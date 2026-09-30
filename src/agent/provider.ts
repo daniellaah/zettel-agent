@@ -76,3 +76,23 @@ export class AnthropicProvider implements ModelProvider {
     return stream.finalMessage();
   }
 }
+
+/** A message the user can act on, for errors thrown by `send`. */
+export function describeProviderError(error: unknown): string {
+  if (error instanceof Anthropic.AuthenticationError) {
+    return "Anthropic rejected the API key. Check it in the plugin settings.";
+  }
+  if (error instanceof Anthropic.PermissionDeniedError) {
+    return "This API key cannot use the selected model.";
+  }
+  if (error instanceof Anthropic.RateLimitError) {
+    return "Rate limited by Anthropic. Wait a moment and try again.";
+  }
+  if (error instanceof Anthropic.APIConnectionError) {
+    return "Could not reach Anthropic. Check your network connection.";
+  }
+  if (error instanceof Anthropic.APIError) {
+    return `Anthropic API error${error.status ? ` ${error.status}` : ""}: ${error.message}`;
+  }
+  return error instanceof Error ? error.message : "The request failed.";
+}
