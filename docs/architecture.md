@@ -29,56 +29,57 @@ Agentic Zettelkasten is an Obsidian desktop plugin. It lets you ask questions ab
 
 ## Agent loop
 
-One user message produces one **turn**:
+`agent/loop.ts` runs one user message as one **turn**:
 
-1. Build the request: the system prompt (stable, so it can be cached), a vault profile (folder stages and note counts), the conversation so far, and the active note if it is attached.
-2. Stream the model response. Text deltas go to the UI as _provisional_ content.
-3. If the response contains `tool_use` blocks, validate each input, execute the tool, and send back a `tool_result`. Every result that returns content carries **evidence refs** of the form `{path, chunkId, contentHash}`.
-4. Repeat until one of these happens:
-   - the model calls `finish`;
-   - the model replies with plain text;
-   - a budget runs out. The final request is reserved for answering with tools disabled.
-5. Commit the turn to the transcript. An answer may only cite refs that were delivered during the turn. The UI checks each citation against the current `contentHash` and marks it stale if the note has changed since.
+1. Build the request. The system prompt and tool list are constants, so the prompt cache holds them across turns and sessions. Per-turn context (note counts per stage, the note the user has open) is placed in the user message.
+2. Stream the response. Text and thinking deltas go to the UI as they arrive.
+3. For each `tool_use` block, validate the input with zod, run the tool, and return a `tool_result`. Each section a tool returns gets an evidence id (`E1`, `E2`, …) for the conversation, pinned to that note's content hash.
+4. Repeat until the model answers in plain text, or until a budget runs out. Budgets per turn are model requests (10), tool calls (30) and tool output characters (120k). The last request sets `tool_choice: none`, so a turn always ends with an answer drawn from the evidence gathered.
+5. The answer cites evidence inline as `[E3]` or `[E3, E7]`. Citations are checked against the evidence ledger, and ids that were never delivered are flagged to the user.
 
-Budgets are set per turn: maximum model requests (default 8), tool calls, evidence tokens and wall-clock time. If several consecutive searches return only evidence already seen, the loop injects a stop reminder.
+After two consecutive rounds that surface no new evidence, the loop adds a reminder to answer or change approach. When a turn ends with tool calls that will not run (a refusal, `max_tokens`, or the budget running out), the loop answers them with error results, so the transcript always remains a valid request. A turn that fails before any response is dropped.
 
-Interrupting a turn aborts the HTTP stream and keeps only content that was already completed. Partial deltas are never committed.
+Interrupting a turn aborts the HTTP stream. Partial responses are never committed. The transcript is append-only, which keeps prompt caching and thinking-block replay valid.
+
+`agent/provider.ts` keeps each model request behind a `ModelProvider` interface. For Opus 5.5 and Sonnet 5.5, the Anthropic implementation adds adaptive thinking (summarized), explicit effort, top-level prompt caching and server-side refusal fallbacks.
 
 ## Tools (all read-only)
 
-| Tool     | Purpose                                                                                                                          |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `search` | BM25 over chunks, with optional filters for stage, folder, tag and path prefix. Returns ranked excerpts, match reasons and refs. |
-| `match`  | Exact or regex occurrences in the current note text, for questions like "which notes mention X".                                 |
-| `read`   | Opens a ref (section expansion by default) or a note by path. Size-capped.                                                       |
-| `links`  | Outlinks, backlinks, and unlinked mentions for a note. `depth` ≤ 2 for multi-hop.                                                |
-| `list`   | Lists notes by stage, folder or tag, with titles and modification times.                                                         |
-| `finish` | Ends the turn with `{answer, status: answered                                                                                    | partial | insufficient_evidence, refs}`. |
+| Tool     | Purpose                                                                                                                                               |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search` | BM25 over sections, filtered by stage, folder or tag. Returns the best section of each note as an excerpt, with an evidence id and the matched terms. |
+| `match`  | Exact or regex line matches, for questions like "which notes mention X".                                                                              |
+| `read`   | Expands an evidence id to its section and sub-sections, or reads one section by heading, or a whole note. Size-capped.                                |
+| `links`  | Outgoing links, backlinks and unresolved links, with `depth: 2` for notes two hops away.                                                              |
+| `list`   | Notes by stage, folder, tag or orphan status, with link counts.                                                                                       |
 
-Tool results are wrapped as untrusted note content, and the system prompt tells the model never to follow instructions found inside notes.
+Note text is wrapped in `<note>` tags that the text itself cannot close. The system prompt treats text inside those tags as data and never as instructions.
 
 ## Retrieval
 
-- **Chunks:** one chunk per heading section, including its sub-headings. Oversized sections are split at block boundaries. Chunk IDs are a hash of path, heading path and occurrence index.
-- **Fields and weights:** title 10, aliases 8, headings 6, tags 5, body 1, link targets 0.25. BM25 uses k1 = 1.2 and b = 0.75.
-- **Tokenization:** text is NFKC-normalized and lower-cased. Latin text is split into words. CJK runs are segmented with `Intl.Segmenter('zh', {granularity: 'word'})`, and overlapping bigrams are also indexed for recall. The evaluation set decides the final mix.
-- **Link graph:** built from `metadataCache.resolvedLinks` once the cache reports `resolved`, then updated on `changed`, `rename` and `delete`.
-- **Freshness:** the index updates on vault events and persists as JSON in the plugin data folder. A content hash per note lets unchanged notes be skipped on startup.
-- **Stages:** each note's stage comes from its folder (for example `02-Zettelkasten/Permanent`), configured in settings. The frontmatter `type` overrides it.
+- **Sections:** each note is split at headings, ignoring anything inside fenced code. A section runs to the next heading of any level, and `read` expands a section to include its sub-sections. Oversized sections are packed into pieces of about 2,000 characters at blank lines. Section IDs are a hash of path, heading path and occurrence, so they stay the same when other parts of the note change.
+- **Two-level BM25F** (k1 = 1.2, b = 0.75):
+  - Note-level fields are scored once per note: title 10, aliases 8, tags 5.
+  - Section-level fields are scored per section: headings 6, body 1, link targets 0.25.
+  - A section's score is its own score plus its note's score. Results are collapsed to one section per note.
+- **Tokenization:** text is NFKC-normalized and lower-cased. Latin text is split into words. CJK text is split into `Intl.Segmenter` words, plus overlapping bigrams for domain terms the segmenter breaks apart (双塔 → 双 | 塔). Words and bigrams are both used because that combination scored best on the evaluation set.
+- **Link graph:** links are resolved with Obsidian's `metadataCache.getFirstLinkpathDest`, and include links in frontmatter properties. The graph is rebuilt lazily after any change. In Node, basename matching stands in for Obsidian's resolver.
+- **Freshness:** the index is built in memory when the layout is ready, and whenever the Zettelkasten folder setting changes. After that it is updated from vault events; changes made during a rebuild are replayed once the rebuild finishes. (Planned: persist the index so unchanged notes are skipped at startup.)
+- **Stages:** each note's stage comes from its folder. A frontmatter `type` that names a stage overrides the folder.
 
 ## UI
 
-- The chat view lives in the right sidebar. Each message is its own component, so a streamed token re-renders only the last message.
-- Assistant Markdown is rendered with Obsidian's `MarkdownRenderer`, so `[[links]]` are clickable.
-- Tool calls appear as collapsible rows with a one-line summary, for example `search "卡片盒 原子性" → 7 hits`.
-- Citations are chips that open the note at the cited heading.
-- Candidate links have **Copy `[[link]]`** and **Insert at cursor** buttons.
-- The composer supports `@` to attach a note, `/` for commands (`/ask`, `/link`, `/critique`, `/gaps`, `/outline`), Enter to send and Shift+Enter for a new line.
-- A session list supports new, resume and delete. A header line shows which provider and model each request is sent to.
+- The chat view lives in the right sidebar. The conversation belongs to the plugin, so closing the view keeps it.
+- Each message is its own memoized component, so a streamed delta re-renders only the last message. While streaming, Markdown is re-rendered with Obsidian's `MarkdownRenderer` at most every 120 ms.
+- The assistant's text, tool calls and thinking are interleaved in the order they happen. Tool calls and thinking appear as single quiet lines that expand to show details.
+- `[E3]` citations render as chips. Hovering one shows the note and heading; clicking opens that section. `[[links]]` open their notes.
+- **Copy** and **Insert at cursor** turn citations into `[[Title#Heading]]` links. Insert writes at the cursor of the note you last edited, as your own action, and can be undone with the editor's undo.
+- Each turn shows its token and cache usage, and why it stopped when it did not simply answer.
+- Planned: `@` to attach a note, `/` commands (`/link`, `/critique`, `/gaps`, `/outline`), and saved sessions you can resume.
 
 ## Evaluation
 
-`eval/` runs under Vitest against a fixture vault with bilingual notes on several topics.
+`npm run eval` runs everything under `eval/`, separately from the unit tests, against the fixture vault in `fixtures/vault`. That vault holds 55 bilingual notes; its deliberate edge cases are listed in `fixtures/vault-design.md`. The judged queries are in `eval/judgments.draft.json`.
 
-- **Retrieval:** Recall@5/10, MRR and nDCG@10 on 30–50 judged queries. Ablations compare bigram-only, segmenter-only, both, and both plus link-graph expansion. Latency is measured on a synthetic 5k-note vault.
-- **Agent:** run against recorded API fixtures, it checks citation validity (every cited ref was delivered and supports the claim), honest `insufficient_evidence` on out-of-vault questions, and refusal to ghostwrite ("write this note for me" should produce questions, not a finished note).
+- **Retrieval (implemented):** Recall@5/10, MRR and nDCG@10 at note level, broken down by language, for each tokenizer mode.
+- **Planned:** judged queries from the real vault; link-graph expansion as an ablation; a latency test on a synthetic 5k-note vault; agent-level checks run against recorded API fixtures. Those checks are citation validity, honest "not in your notes" answers to no-answer queries, resistance to prompt injection, and not ghostwriting ("write this note for me" should produce questions, not a finished note).
