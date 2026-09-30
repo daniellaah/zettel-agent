@@ -23,6 +23,10 @@ export function describeSdkError(error: unknown, providerLabel: string): string 
     case 429:
       return `Rate limited by ${providerLabel}, or the account is out of credit. Try again shortly.`;
   }
-  if (typeof status === "number") return `${providerLabel} API error ${status}: ${error.message}`;
+  if (typeof status === "number") {
+    // SDK messages already start with the status ("400 The supported …").
+    const detail = error.message.replace(new RegExp(`^${status}\\s*`), "");
+    return `${providerLabel} API error ${status}: ${detail}`;
+  }
   return error.message;
 }

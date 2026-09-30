@@ -382,6 +382,7 @@ function failure(content: string, summary: string): ToolOutcome {
 function noteBlock(corpus: Corpus, note: ParsedNote, header: string, parts: string[]): string {
   const attributes = [
     `path="${note.path}"`,
+    `link="[[${note.title}]]"`,
     `stage="${corpus.stage(note.path) ?? "none"}"`,
     note.tags.length > 0 ? `tags="${note.tags.join(", ")}"` : "",
     note.aliases.length > 0 ? `aliases="${note.aliases.join(", ")}"` : "",

@@ -12,8 +12,18 @@ describe("describeSdkError", () => {
     [404, "does not recognise the selected model"],
     [429, "Rate limited by DeepSeek"],
     [500, "DeepSeek API error 500: boom"],
+    [400, "DeepSeek API error 400: boom"],
   ])("explains status %i", (status, text) => {
     expect(describeSdkError(withStatus(status), "DeepSeek")).toContain(text);
+  });
+
+  it("does not repeat the status the SDK already put in the message", () => {
+    const error = Object.assign(new Error("400 The supported API model names are x"), {
+      status: 400,
+    });
+    expect(describeSdkError(error, "DeepSeek")).toBe(
+      "DeepSeek API error 400: The supported API model names are x",
+    );
   });
 
   it("explains connection failures and plain errors", () => {

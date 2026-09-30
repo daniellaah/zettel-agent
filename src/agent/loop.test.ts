@@ -109,6 +109,16 @@ describe("runTurn", () => {
     expect(contentOf(lastUser)).toContain("research budget for this turn is used up");
   });
 
+  it("runs at most eight tool calls from one response", async () => {
+    const calls = Array.from({ length: 10 }, (_, i) => call("search", { query: `q${i}` }));
+    const { result, toolSummaries } = await run([calls, [text("done")]]);
+    expect(toolSummaries.filter((s) => s.endsWith("skipped"))).toHaveLength(2);
+    const results = result.messages[2]!;
+    const skippedNote = results.role === "user" ? results.parts.at(-1) : undefined;
+    expect(skippedNote).toMatchObject({ type: "tool_result", isError: true });
+    expectValidTranscript(result.messages);
+  });
+
   it("nudges the model after repeated rounds without new evidence", async () => {
     const { provider } = await run([
       [call("search", { query: "间隔重复" })],
@@ -128,6 +138,30 @@ describe("runTurn", () => {
     ]);
     expect(result.stop).toBe("max_tokens");
     expectValidTranscript(result.messages);
+  });
+
+  it("never commits a response that arrives after the turn was stopped", async () => {
+    // Some SDKs end an aborted stream quietly and return what they have.
+    const controller = new AbortController();
+    controller.abort();
+    const result = await runTurn({
+      provider: new ScriptedProvider([[text("partial")]]),
+      context: makeContext(),
+      history: [],
+      userContent: "q",
+      signal: controller.signal,
+    });
+    expect(result.stop).toBe("aborted");
+    expect(result.messages.map((m) => m.role)).toEqual(["user"]);
+  });
+
+  it("replaces an empty response with a placeholder so the transcript stays valid", async () => {
+    const { result } = await run([[]]);
+    expect(result.stop).toBe("answered");
+    expect(result.messages[1]).toEqual({
+      role: "assistant",
+      parts: [{ type: "text", text: "(no response)" }],
+    });
   });
 
   it("reports provider errors without committing a partial response", async () => {

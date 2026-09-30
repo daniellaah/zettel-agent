@@ -34,6 +34,9 @@ export const DEFAULT_BUDGET: Budget = { maxRequests: 10, maxToolCalls: 30, maxTo
 /** Consecutive tool rounds that returned no new evidence before the model is nudged. */
 const STALE_ROUNDS_BEFORE_REMINDER = 2;
 
+/** Tool calls run from one model response; the rest are answered "skipped" to force triage. */
+export const MAX_CALLS_PER_RESPONSE = 8;
+
 export interface TurnEvents {
   onRequest?(index: number): void;
   onText?(delta: string): void;
@@ -134,7 +137,13 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
       return finish(signal?.aborted ? "aborted" : "error", error);
     }
 
-    const message = response.message;
+    // Some SDKs end an aborted stream quietly instead of throwing; never commit that response.
+    if (signal?.aborted) return finish("aborted");
+    // An empty assistant message is rejected by some APIs when replayed; keep a placeholder.
+    const message: AssistantMessage =
+      response.message.parts.length > 0
+        ? response.message
+        : { role: "assistant", parts: [{ type: "text", text: "(no response)" }] };
     last = message;
     addUsage(usage, response);
     turn.push(message);
@@ -164,13 +173,18 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
     const results: (ToolResultPart | TextPart)[] = [];
     let freshEvidence = 0;
     let gathered = false;
-    for (const call of toolUses) {
+    for (const [index, call] of toolUses.entries()) {
       usage.toolCalls++;
       events.onToolCall?.({ id: call.id, name: call.name, input: call.input });
       const outcome =
         usage.toolCalls > budget.maxToolCalls
           ? skipped("Tool budget for this turn is used up.", call.name)
-          : executeTool(call.name, call.input, context);
+          : index >= MAX_CALLS_PER_RESPONSE
+            ? skipped(
+                `Not run: at most ${MAX_CALLS_PER_RESPONSE} tool calls per step. Pick the most relevant notes from what you have seen before reading more.`,
+                call.name,
+              )
+            : executeTool(call.name, call.input, context);
       events.onToolResult?.({ id: call.id, name: call.name, ...outcome });
       toolChars += outcome.content.length;
       freshEvidence += outcome.newEvidence;

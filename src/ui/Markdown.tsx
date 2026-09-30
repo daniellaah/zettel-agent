@@ -26,6 +26,7 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     void MarkdownRenderer.render(host.app, text, staging, "", child).then(() => {
       if (cancelled) return;
       decorateCitations(staging, host);
+      markUnresolvedLinks(staging, host);
       container.replaceChildren(...Array.from(staging.childNodes));
     });
     return () => {
@@ -52,6 +53,17 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
 
   return <div ref={ref} className="za-markdown markdown-rendered" onClick={onClick} />;
 });
+
+/** Links to notes that do not exist get Obsidian's faded "unresolved" style. */
+function markUnresolvedLinks(root: HTMLElement, host: ChatHost): void {
+  for (const link of Array.from(root.querySelectorAll<HTMLAnchorElement>("a.internal-link"))) {
+    const target = link.dataset.href ?? link.getAttribute("href") ?? "";
+    if (!host.resolveLink(target)) {
+      link.classList.add("is-unresolved");
+      link.title = "This note does not exist in your vault";
+    }
+  }
+}
 
 function decorateCitations(root: HTMLElement, host: ChatHost): void {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {

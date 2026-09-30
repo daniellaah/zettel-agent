@@ -54,6 +54,8 @@ export class ChatView extends ItemView {
   private createHost(): ChatHost {
     const { app, plugin } = this;
     const session = plugin.session;
+    const resolveLink = (linkText: string) =>
+      app.metadataCache.getFirstLinkpathDest(linkText.split(/[#|]/)[0]!.trim(), "")?.path ?? null;
     return {
       app,
       component: this,
@@ -73,7 +75,15 @@ export class ChatView extends ItemView {
           newLeaf,
         );
       },
-      openLink: (linkText, newLeaf) => void app.workspace.openLinkText(linkText, "", newLeaf),
+      resolveLink,
+      openLink: (linkText, newLeaf) => {
+        // Obsidian's openLinkText creates a note for an unresolved link; the agent must not.
+        if (!resolveLink(linkText)) {
+          new Notice(`"${linkText.split("#")[0]}" does not exist in your vault.`);
+          return;
+        }
+        void app.workspace.openLinkText(linkText, "", newLeaf);
+      },
       insertAtCursor: (text) => {
         const view = app.workspace.getMostRecentLeaf()?.view;
         if (!(view instanceof MarkdownView)) return false;

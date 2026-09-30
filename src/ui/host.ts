@@ -11,6 +11,9 @@ export interface ChatHost {
   /** "Title › Heading" for an evidence id, or null if unknown. */
   describeEvidence(id: string): string | null;
   openEvidence(id: string, newLeaf: boolean): void;
+  /** Vault path a link resolves to, or null when the note does not exist. */
+  resolveLink(linkText: string): string | null;
+  /** Opens an existing note; never creates one. */
   openLink(linkText: string, newLeaf: boolean): void;
   /** Inserts at the cursor of the most recent note editor; false if there is none. */
   insertAtCursor(text: string): boolean;

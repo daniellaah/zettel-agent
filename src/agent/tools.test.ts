@@ -54,6 +54,7 @@ describe("search", () => {
     expect(result.content).toContain("[E1] matched: 原子");
     expect(result.content).toContain('path="Z/Permanent/一张卡片只承载一个想法.md"');
     expect(result.content).toContain('stage="permanent"');
+    expect(result.content).toContain('link="[[一张卡片只承载一个想法]]"');
     expect(result.evidenceIds).toEqual(["E1"]);
     expect(result.newEvidence).toBe(1);
   });
