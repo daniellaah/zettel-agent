@@ -6,6 +6,14 @@ A read-only research agent searches, reads and follows links across your Fleetin
 
 > Status: early development (v0.1). Desktop only. Bring your own API key for Anthropic (Claude), OpenAI or DeepSeek.
 
+## Using it
+
+- Open the chat from the ribbon or the command palette (_Open chat_), and ask in Chinese or English.
+- Type `@` to attach a note. The note you have open, and any text you have selected, are offered as chips you can attach with one click.
+- Click a citation chip to open the cited section. **Copy** and **Insert at cursor** turn citations into `[[links]]`.
+- **Ask again** re-runs the last question. **Esc** stops a running answer.
+- Chats are saved automatically. Use **History** to reopen one and continue it.
+
 ## How it works
 
 - **A self-written agent loop** runs over a provider-neutral transcript, with thin adapters for the Claude Messages API, the OpenAI Responses API and DeepSeek's Chat Completions: streaming, tool use, reasoning replay and prompt caching, without an agent framework.

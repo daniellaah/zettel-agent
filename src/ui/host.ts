@@ -1,7 +1,9 @@
 import type { App, Component } from "obsidian";
 import { createContext, useContext } from "react";
 
+import type { ConversationSummary } from "../session/conversation-index";
 import type { RecordingMode } from "../settings";
+import type { NoteOption } from "./mentions";
 
 /** What the React tree needs from Obsidian, provided by the ChatView. */
 export interface ChatHost {
@@ -23,6 +25,21 @@ export interface ChatHost {
   /** Inserts at the cursor of the most recent note editor; false if there is none. */
   insertAtCursor(text: string): boolean;
   notify(message: string): void;
+
+  /** The Zettelkasten note open in the most recent editor, if any. */
+  activeNote(): { path: string; title: string } | null;
+  /** Text selected in the most recent editor, if any. */
+  selection(): { path: string; title: string; text: string } | null;
+  /** Calls back when the open note changes; returns an unsubscribe function. */
+  onActiveNoteChange(callback: () => void): () => void;
+  /** Calls back when text is selected in a note; returns an unsubscribe function. */
+  onSelectionChange(callback: () => void): () => void;
+  /** Notes the agent can see, for @-mentions. */
+  noteOptions(): NoteOption[];
+
+  listConversations(): Promise<ConversationSummary[]>;
+  openConversation(id: string): Promise<void>;
+  deleteConversation(id: string): Promise<void>;
 }
 
 export const HostContext = createContext<ChatHost | null>(null);

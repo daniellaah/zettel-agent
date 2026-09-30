@@ -1,17 +1,17 @@
-import { setIcon } from "obsidian";
-import {
-  memo,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type KeyboardEvent,
-} from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import type { StopReason, TurnUsage } from "../agent/loop";
-import type { AssistantItem, AssistantPart, ChatItem, ChatSession } from "../session/chat-session";
+import type {
+  AssistantItem,
+  AssistantPart,
+  ChatItem,
+  ChatSession,
+  UserItem,
+} from "../session/chat-session";
+import { AttachmentChip, Composer } from "./Composer";
+import { HistoryPanel } from "./HistoryPanel";
 import { useHost } from "./host";
+import { Icon, IconButton } from "./icons";
 import { Markdown } from "./Markdown";
 
 const STARTERS = [
@@ -22,8 +22,12 @@ const STARTERS = [
 
 export function ChatApp({ session }: { session: ChatSession }) {
   const host = useHost();
-  const { items, running } = useSyncExternalStore(session.subscribe, session.getSnapshot);
+  const { items, running, conversationId } = useSyncExternalStore(
+    session.subscribe,
+    session.getSnapshot,
+  );
   const scrollRef = useStickToBottom(items);
+  const [showHistory, setShowHistory] = useState(false);
 
   return (
     <div className="za-chat">
@@ -47,20 +51,44 @@ export function ChatApp({ session }: { session: ChatSession }) {
             {host.recordingMode() === "replay" ? "Replay" : "Recording"}
           </span>
         )}
-        <IconButton icon="square-pen" label="New chat" onClick={() => session.reset()} />
+        <IconButton
+          icon="history"
+          label="Chat history"
+          onClick={() => setShowHistory(!showHistory)}
+          disabled={running}
+        />
+        <IconButton
+          icon="square-pen"
+          label="New chat"
+          onClick={() => {
+            session.reset();
+            setShowHistory(false);
+          }}
+        />
       </header>
+
+      {showHistory && (
+        <HistoryPanel currentId={conversationId} onClose={() => setShowHistory(false)} />
+      )}
 
       <div ref={scrollRef} className="za-transcript" role="log" aria-live="polite">
         {items.length === 0 ? (
           <EmptyState onAsk={(question) => void session.send(question)} />
         ) : (
-          items.map((item) => <Message key={item.id} item={item} session={session} />)
+          items.map((item, index) => (
+            <Message
+              key={item.id}
+              item={item}
+              session={session}
+              isLast={index === items.length - 1}
+            />
+          ))
         )}
       </div>
 
       <Composer
         running={running}
-        onSend={(text) => void session.send(text)}
+        onSend={(text, attachments) => void session.send(text, attachments)}
         onStop={() => session.stop()}
       />
     </div>
@@ -106,14 +134,32 @@ function EmptyState({ onAsk }: { onAsk: (question: string) => void }) {
   );
 }
 
-const Message = memo(function Message(props: { item: ChatItem; session: ChatSession }) {
-  if (props.item.kind === "user") {
-    return <div className="za-message za-message-user">{props.item.text}</div>;
-  }
-  return <AssistantMessage item={props.item} session={props.session} />;
+const Message = memo(function Message(props: {
+  item: ChatItem;
+  session: ChatSession;
+  isLast: boolean;
+}) {
+  if (props.item.kind === "user") return <UserMessage item={props.item} />;
+  return <AssistantMessage item={props.item} session={props.session} isLast={props.isLast} />;
 });
 
-function AssistantMessage({ item, session }: { item: AssistantItem; session: ChatSession }) {
+function UserMessage({ item }: { item: UserItem }) {
+  return (
+    <div className="za-message za-message-user">
+      {item.attachments.length > 0 && (
+        <div className="za-attachments">
+          {item.attachments.map((attachment) => (
+            <AttachmentChip key={`${attachment.kind}:${attachment.path}`} attachment={attachment} />
+          ))}
+        </div>
+      )}
+      {item.text}
+    </div>
+  );
+}
+
+function AssistantMessage(props: { item: AssistantItem; session: ChatSession; isLast: boolean }) {
+  const { item, session } = props;
   const host = useHost();
   const running = item.status === "running";
   const answer = running ? "" : session.answerMarkdown(item);
@@ -160,6 +206,13 @@ function AssistantMessage({ item, session }: { item: AssistantItem; session: Cha
                   }}
                 />
               </>
+            )}
+            {props.isLast && (
+              <IconButton
+                icon="rotate-ccw"
+                label="Ask again (discards this answer)"
+                onClick={() => void session.retry()}
+              />
             )}
             {item.usage && <UsageLine usage={item.usage} />}
           </div>
@@ -232,48 +285,6 @@ function UsageLine({ usage }: { usage: TurnUsage }) {
   );
 }
 
-function Composer(props: { running: boolean; onSend: (text: string) => void; onStop: () => void }) {
-  const [draft, setDraft] = useState("");
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const submit = () => {
-    const text = draft.trim();
-    if (text === "" || props.running) return;
-    props.onSend(text);
-    setDraft("");
-  };
-
-  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    // Enter confirms an IME candidate while composing Chinese; it must not send.
-    if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) return;
-    event.preventDefault();
-    submit();
-  };
-
-  useEffect(() => {
-    if (!props.running) inputRef.current?.focus();
-  }, [props.running]);
-
-  return (
-    <div className="za-composer">
-      <textarea
-        ref={inputRef}
-        className="za-composer-input"
-        value={draft}
-        placeholder="Ask your Zettelkasten…  (Enter to send, Shift+Enter for a new line)"
-        rows={3}
-        onChange={(event) => setDraft(event.target.value)}
-        onKeyDown={onKeyDown}
-      />
-      {props.running ? (
-        <IconButton icon="square" label="Stop" onClick={props.onStop} />
-      ) : (
-        <IconButton icon="arrow-up" label="Send" onClick={submit} disabled={draft.trim() === ""} />
-      )}
-    </div>
-  );
-}
-
 /** Keeps the transcript scrolled to the bottom unless the user has scrolled up. */
 function useStickToBottom(dependency: unknown) {
   const ref = useRef<HTMLDivElement>(null);
@@ -292,34 +303,4 @@ function useStickToBottom(dependency: unknown) {
     if (element && pinned.current) element.scrollTop = element.scrollHeight;
   }, [dependency]);
   return ref;
-}
-
-function Icon({ icon, className }: { icon: string; className?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (ref.current) setIcon(ref.current, icon);
-  }, [icon]);
-  return <span ref={ref} className={className} aria-hidden="true" />;
-}
-
-function IconButton(props: {
-  icon: string;
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    if (ref.current) setIcon(ref.current, props.icon);
-  }, [props.icon]);
-  return (
-    <button
-      ref={ref}
-      type="button"
-      className="clickable-icon za-icon-button"
-      aria-label={props.label}
-      onClick={props.onClick}
-      disabled={props.disabled ?? false}
-    />
-  );
 }
