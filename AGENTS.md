@@ -1,4 +1,4 @@
-# Agentic Zettelkasten — working notes for coding agents
+# Zettel Agent — working notes for coding agents
 
 Obsidian desktop plugin: a read-only research agent over a Zettelkasten folder. Read [docs/architecture.md](docs/architecture.md) and [ADR-0008](docs/adr/0008-read-only-agent-own-loop.md) before changing structure.
 

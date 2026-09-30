@@ -1,4 +1,4 @@
-# Agentic Zettelkasten
+# Zettel Agent
 
 Ask your Zettelkasten anything, inside Obsidian.
 
@@ -23,10 +23,10 @@ npm run check    # typecheck, lint, format check, tests
 npm run build    # production main.js
 ```
 
-To try the plugin in a test vault, point the build at the vault's plugin folder, then enable **Agentic Zettelkasten** under _Settings → Community plugins_:
+To try the plugin in a test vault, point the build at the vault's plugin folder, then enable **Zettel Agent** under _Settings → Community plugins_:
 
 ```bash
-OBSIDIAN_PLUGIN_DIR="/path/to/test-vault/.obsidian/plugins/agentic-zettelkasten" npm run dev
+OBSIDIAN_PLUGIN_DIR="/path/to/test-vault/.obsidian/plugins/zettel-agent" npm run dev
 ```
 
 ## Privacy

@@ -26,20 +26,20 @@ export function ChatApp({ session }: { session: ChatSession }) {
   const scrollRef = useStickToBottom(items);
 
   return (
-    <div className="azk-chat">
-      <header className="azk-header">
-        <span className="azk-header-title">Zettelkasten</span>
-        <span className="azk-header-model" title="Questions and note excerpts go to Anthropic">
+    <div className="za-chat">
+      <header className="za-header">
+        <span className="za-header-title">Zettelkasten</span>
+        <span className="za-header-model" title="Questions and note excerpts go to Anthropic">
           {host.model()}
         </span>
         <IconButton icon="square-pen" label="New chat" onClick={() => session.reset()} />
       </header>
 
-      <div ref={scrollRef} className="azk-transcript" role="log" aria-live="polite">
+      <div ref={scrollRef} className="za-transcript" role="log" aria-live="polite">
         {items.length === 0 ? (
-          <div className="azk-empty">
+          <div className="za-empty">
             <p>Ask anything about your notes. Answers cite the notes they come from.</p>
-            <div className="azk-starters">
+            <div className="za-starters">
               {STARTERS.map((starter) => (
                 <button key={starter} type="button" onClick={() => void session.send(starter)}>
                   {starter}
@@ -63,7 +63,7 @@ export function ChatApp({ session }: { session: ChatSession }) {
 
 const Message = memo(function Message(props: { item: ChatItem; session: ChatSession }) {
   if (props.item.kind === "user") {
-    return <div className="azk-message azk-message-user">{props.item.text}</div>;
+    return <div className="za-message za-message-user">{props.item.text}</div>;
   }
   return <AssistantMessage item={props.item} session={props.session} />;
 });
@@ -74,7 +74,7 @@ function AssistantMessage({ item, session }: { item: AssistantItem; session: Cha
   const answer = running ? "" : session.answerMarkdown(item);
 
   return (
-    <div className="azk-message azk-message-assistant">
+    <div className="za-message za-message-assistant">
       {item.parts.map((part, index) => (
         <Part
           key={part.kind === "tool" ? part.id : `${part.kind}-${index}`}
@@ -83,7 +83,7 @@ function AssistantMessage({ item, session }: { item: AssistantItem; session: Cha
         />
       ))}
       {running && item.parts.at(-1)?.kind !== "text" && (
-        <div className="azk-working" aria-label="Working">
+        <div className="za-working" aria-label="Working">
           <span />
           <span />
           <span />
@@ -93,11 +93,11 @@ function AssistantMessage({ item, session }: { item: AssistantItem; session: Cha
         <>
           <StopNote stop={item.stop} error={item.error} />
           {item.citations && item.citations.unknown.length > 0 && (
-            <div className="azk-note azk-note-warning">
+            <div className="za-note za-note-warning">
               Cited evidence that was never retrieved: {item.citations.unknown.join(", ")}
             </div>
           )}
-          <div className="azk-message-footer">
+          <div className="za-message-footer">
             {answer !== "" && (
               <>
                 <IconButton
@@ -130,21 +130,21 @@ function Part({ part, streaming }: { part: AssistantPart; streaming: boolean }) 
       return <Markdown text={part.text} streaming={streaming} />;
     case "thinking":
       return (
-        <details className="azk-thinking">
+        <details className="za-thinking">
           <summary>{streaming ? "Thinking…" : "Thought process"}</summary>
-          <div className="azk-thinking-text">{part.text}</div>
+          <div className="za-thinking-text">{part.text}</div>
         </details>
       );
     case "tool":
       return (
         <details
-          className={`azk-tool${part.summary === null ? " is-running" : ""}${part.isError ? " is-error" : ""}`}
+          className={`za-tool${part.summary === null ? " is-running" : ""}${part.isError ? " is-error" : ""}`}
         >
           <summary>
             <ToolIcon name={part.name} />
-            <span className="azk-tool-summary">{part.summary ?? `${part.name}…`}</span>
+            <span className="za-tool-summary">{part.summary ?? `${part.name}…`}</span>
           </summary>
-          <pre className="azk-tool-input">{JSON.stringify(part.input, null, 2)}</pre>
+          <pre className="za-tool-input">{JSON.stringify(part.input, null, 2)}</pre>
         </details>
       );
   }
@@ -159,7 +159,7 @@ const TOOL_ICONS: Record<string, string> = {
 };
 
 function ToolIcon({ name }: { name: string }) {
-  return <Icon icon={TOOL_ICONS[name] ?? "wrench"} className="azk-tool-icon" />;
+  return <Icon icon={TOOL_ICONS[name] ?? "wrench"} className="za-tool-icon" />;
 }
 
 const STOP_NOTES: Partial<Record<StopReason, string>> = {
@@ -170,9 +170,9 @@ const STOP_NOTES: Partial<Record<StopReason, string>> = {
 };
 
 function StopNote({ stop, error }: { stop: StopReason | null; error: string | null }) {
-  if (stop === "error") return <div className="azk-note azk-note-error">{error}</div>;
+  if (stop === "error") return <div className="za-note za-note-error">{error}</div>;
   const note = stop ? STOP_NOTES[stop] : undefined;
-  return note ? <div className="azk-note">{note}</div> : null;
+  return note ? <div className="za-note">{note}</div> : null;
 }
 
 function UsageLine({ usage }: { usage: TurnUsage }) {
@@ -180,7 +180,7 @@ function UsageLine({ usage }: { usage: TurnUsage }) {
   const cached = input > 0 ? Math.round((usage.cacheReadTokens / input) * 100) : 0;
   const k = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
   return (
-    <span className="azk-usage">
+    <span className="za-usage">
       {usage.toolCalls} tool{usage.toolCalls === 1 ? "" : "s"} · {k(input)} in ({cached}% cached) ·{" "}
       {k(usage.outputTokens)} out
     </span>
@@ -210,10 +210,10 @@ function Composer(props: { running: boolean; onSend: (text: string) => void; onS
   }, [props.running]);
 
   return (
-    <div className="azk-composer">
+    <div className="za-composer">
       <textarea
         ref={inputRef}
-        className="azk-composer-input"
+        className="za-composer-input"
         value={draft}
         placeholder="Ask your Zettelkasten…  (Enter to send, Shift+Enter for a new line)"
         rows={3}
@@ -271,7 +271,7 @@ function IconButton(props: {
     <button
       ref={ref}
       type="button"
-      className="clickable-icon azk-icon-button"
+      className="clickable-icon za-icon-button"
       aria-label={props.label}
       onClick={props.onClick}
       disabled={props.disabled ?? false}

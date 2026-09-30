@@ -37,7 +37,7 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
   const onClick = (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     const newLeaf = Keymap.isModEvent(event.nativeEvent) !== false;
-    const cite = target.closest<HTMLElement>(".azk-cite");
+    const cite = target.closest<HTMLElement>(".za-cite");
     if (cite?.dataset.id) {
       event.preventDefault();
       host.openEvidence(cite.dataset.id, newLeaf);
@@ -50,7 +50,7 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     }
   };
 
-  return <div ref={ref} className="azk-markdown markdown-rendered" onClick={onClick} />;
+  return <div ref={ref} className="za-markdown markdown-rendered" onClick={onClick} />;
 });
 
 function decorateCitations(root: HTMLElement, host: ChatHost): void {
@@ -73,12 +73,12 @@ function decorateCitations(root: HTMLElement, host: ChatHost): void {
       fragment.append(node.data.slice(last, match.index));
       for (const id of match[1]!.split(/\s*[,，、]\s*/)) {
         const chip = document.createElement("button");
-        chip.className = "azk-cite";
+        chip.className = "za-cite";
         chip.dataset.id = id.toUpperCase();
         chip.textContent = id.slice(1);
         const description = host.describeEvidence(id);
         chip.title = description ?? `${id}: not among the evidence retrieved`;
-        if (!description) chip.classList.add("azk-cite-unknown");
+        if (!description) chip.classList.add("za-cite-unknown");
         fragment.append(chip);
       }
       last = match.index + match[0].length;

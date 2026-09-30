@@ -1,17 +1,17 @@
-/* Agentic Zettelkasten — all colors come from Obsidian theme variables so light, dark
-   and community themes work without overrides. Class prefix: azk- */
+/* Zettel Agent — all colors come from Obsidian theme variables so light, dark
+   and community themes work without overrides. Class prefix: za- */
 
-.azk-view {
+.za-view {
   padding: 0;
 }
 
-.azk-chat {
+.za-chat {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.azk-header {
+.za-header {
   display: flex;
   align-items: center;
   gap: var(--size-4-2);
@@ -19,18 +19,18 @@
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
-.azk-header-title {
+.za-header-title {
   font-weight: var(--font-semibold);
 }
 
-.azk-header-model {
+.za-header-model {
   flex: 1;
   color: var(--text-faint);
   font-size: var(--font-ui-smaller);
   font-family: var(--font-monospace);
 }
 
-.azk-transcript {
+.za-transcript {
   flex: 1;
   overflow-y: auto;
   padding: var(--size-4-3);
@@ -40,21 +40,21 @@
   user-select: text;
 }
 
-.azk-empty {
+.za-empty {
   margin: auto;
   max-width: 28em;
   text-align: center;
   color: var(--text-muted);
 }
 
-.azk-starters {
+.za-starters {
   display: flex;
   flex-direction: column;
   gap: var(--size-4-2);
   margin-top: var(--size-4-3);
 }
 
-.azk-starters button {
+.za-starters button {
   height: auto;
   padding: var(--size-4-2) var(--size-4-3);
   white-space: normal;
@@ -62,13 +62,13 @@
   font-size: var(--font-ui-small);
 }
 
-.azk-message {
+.za-message {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   line-height: var(--line-height-normal);
 }
 
-.azk-message-user {
+.za-message-user {
   align-self: flex-end;
   max-width: 85%;
   padding: var(--size-4-2) var(--size-4-3);
@@ -76,23 +76,23 @@
   background: var(--background-secondary-alt);
 }
 
-.azk-message-assistant {
+.za-message-assistant {
   display: flex;
   flex-direction: column;
   gap: var(--size-4-2);
   white-space: normal;
 }
 
-.azk-markdown > :first-child {
+.za-markdown > :first-child {
   margin-top: 0;
 }
 
-.azk-markdown > :last-child {
+.za-markdown > :last-child {
   margin-bottom: 0;
 }
 
 /* Citation chips: [E3] rendered as a small numbered button that opens the note. */
-.azk-cite {
+.za-cite {
   display: inline-flex;
   align-items: center;
   height: 1.35em;
@@ -109,25 +109,25 @@
   cursor: pointer;
 }
 
-.azk-cite:hover {
+.za-cite:hover {
   background: var(--interactive-accent);
   color: var(--text-on-accent);
 }
 
-.azk-cite-unknown {
+.za-cite-unknown {
   color: var(--text-error);
   text-decoration: line-through;
 }
 
 /* Tool calls and thinking: one quiet line each, expandable. */
-.azk-tool,
-.azk-thinking {
+.za-tool,
+.za-thinking {
   font-size: var(--font-ui-small);
   color: var(--text-muted);
 }
 
-.azk-tool > summary,
-.azk-thinking > summary {
+.za-tool > summary,
+.za-thinking > summary {
   display: flex;
   align-items: center;
   gap: var(--size-4-2);
@@ -135,26 +135,26 @@
   list-style: none;
 }
 
-.azk-tool > summary::-webkit-details-marker,
-.azk-thinking > summary::-webkit-details-marker {
+.za-tool > summary::-webkit-details-marker,
+.za-thinking > summary::-webkit-details-marker {
   display: none;
 }
 
-.azk-tool-icon {
+.za-tool-icon {
   display: inline-flex;
   --icon-size: var(--icon-xs);
 }
 
-.azk-tool.is-running .azk-tool-summary {
-  animation: azk-pulse 1.2s ease-in-out infinite;
+.za-tool.is-running .za-tool-summary {
+  animation: za-pulse 1.2s ease-in-out infinite;
 }
 
-.azk-tool.is-error .azk-tool-summary {
+.za-tool.is-error .za-tool-summary {
   color: var(--text-error);
 }
 
-.azk-tool-input,
-.azk-thinking-text {
+.za-tool-input,
+.za-thinking-text {
   margin: var(--size-4-1) 0 0 calc(var(--icon-xs) + var(--size-4-2));
   padding: var(--size-4-2);
   border-radius: var(--radius-s);
@@ -164,55 +164,55 @@
   overflow-wrap: anywhere;
 }
 
-.azk-working {
+.za-working {
   display: flex;
   gap: 4px;
   padding: var(--size-4-1) 0;
 }
 
-.azk-working span {
+.za-working span {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: var(--text-faint);
-  animation: azk-pulse 1s ease-in-out infinite;
+  animation: za-pulse 1s ease-in-out infinite;
 }
 
-.azk-working span:nth-child(2) {
+.za-working span:nth-child(2) {
   animation-delay: 0.15s;
 }
 
-.azk-working span:nth-child(3) {
+.za-working span:nth-child(3) {
   animation-delay: 0.3s;
 }
 
-@keyframes azk-pulse {
+@keyframes za-pulse {
   50% {
     opacity: 0.35;
   }
 }
 
-.azk-note {
+.za-note {
   font-size: var(--font-ui-small);
   color: var(--text-muted);
 }
 
-.azk-note-warning {
+.za-note-warning {
   color: var(--text-warning);
 }
 
-.azk-note-error {
+.za-note-error {
   color: var(--text-error);
 }
 
-.azk-message-footer {
+.za-message-footer {
   display: flex;
   align-items: center;
   gap: var(--size-4-1);
   min-height: var(--icon-size);
 }
 
-.azk-usage {
+.za-usage {
   margin-left: auto;
   color: var(--text-faint);
   font-size: var(--font-ui-smaller);
@@ -220,13 +220,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .azk-tool.is-running .azk-tool-summary,
-  .azk-working span {
+  .za-tool.is-running .za-tool-summary,
+  .za-working span {
     animation: none;
   }
 }
 
-.azk-composer {
+.za-composer {
   display: flex;
   align-items: flex-end;
   gap: var(--size-4-2);
@@ -234,14 +234,14 @@
   border-top: 1px solid var(--background-modifier-border);
 }
 
-.azk-composer-input {
+.za-composer-input {
   flex: 1;
   resize: none;
   max-height: 40vh;
   font-size: var(--font-ui-medium);
 }
 
-.azk-icon-button:disabled {
+.za-icon-button:disabled {
   opacity: 0.4;
   cursor: default;
 }

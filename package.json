@@ -1,5 +1,5 @@
 {
-  "name": "agentic-zettelkasten",
+  "name": "zettel-agent",
   "version": "0.1.0",
   "private": true,
   "description": "Ask your Zettelkasten anything: a read-only, citation-first research agent inside Obsidian.",

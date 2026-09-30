@@ -7,7 +7,7 @@ import * as esbuild from "esbuild";
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
 
-// Set OBSIDIAN_PLUGIN_DIR to <test vault>/.obsidian/plugins/agentic-zettelkasten
+// Set OBSIDIAN_PLUGIN_DIR to <test vault>/.obsidian/plugins/zettel-agent
 // to copy each build into a vault for manual testing.
 const pluginDir = process.env.OBSIDIAN_PLUGIN_DIR;
 const releaseAssets = ["main.js", "manifest.json", "styles.css"];

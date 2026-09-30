@@ -1,12 +1,12 @@
 import { PluginSettingTab, SecretComponent, Setting, type App } from "obsidian";
 
-import type AgenticZettelkastenPlugin from "../main";
+import type ZettelAgentPlugin from "../main";
 import { MODELS, STAGES, normalizeFolder } from "../settings";
 
 export class SettingsTab extends PluginSettingTab {
   constructor(
     app: App,
-    private readonly plugin: AgenticZettelkastenPlugin,
+    private readonly plugin: ZettelAgentPlugin,
   ) {
     super(app, plugin);
   }

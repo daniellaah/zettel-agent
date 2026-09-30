@@ -7,7 +7,7 @@ import { ChatView, VIEW_TYPE_CHAT } from "./ui/ChatView";
 import { SettingsTab } from "./ui/SettingsTab";
 import { VaultCorpus } from "./vault/vault-corpus";
 
-export default class AgenticZettelkastenPlugin extends Plugin {
+export default class ZettelAgentPlugin extends Plugin {
   declare settings: PluginSettings;
   vaultCorpus!: VaultCorpus;
   session!: ChatSession;
@@ -55,7 +55,7 @@ export default class AgenticZettelkastenPlugin extends Plugin {
   private createProvider(): AnthropicProvider | string {
     const secretId = this.settings.apiKeySecretId;
     const apiKey = secretId ? this.app.secretStorage.getSecret(secretId) : null;
-    if (!apiKey) return "Add your Anthropic API key in Settings → Agentic Zettelkasten.";
+    if (!apiKey) return "Add your Anthropic API key in Settings → Zettel Agent.";
     return new AnthropicProvider(apiKey, this.settings.model);
   }
 

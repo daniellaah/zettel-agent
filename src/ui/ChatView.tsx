@@ -3,18 +3,18 @@ import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 
 import { linkTarget } from "../agent/evidence";
-import type AgenticZettelkastenPlugin from "../main";
+import type ZettelAgentPlugin from "../main";
 import { ChatApp } from "./ChatApp";
 import { HostContext, type ChatHost } from "./host";
 
-export const VIEW_TYPE_CHAT = "agentic-zettelkasten-chat";
+export const VIEW_TYPE_CHAT = "zettel-agent-chat";
 
 export class ChatView extends ItemView {
   private root: Root | null = null;
 
   constructor(
     leaf: WorkspaceLeaf,
-    private readonly plugin: AgenticZettelkastenPlugin,
+    private readonly plugin: ZettelAgentPlugin,
   ) {
     super(leaf);
   }
@@ -32,7 +32,7 @@ export class ChatView extends ItemView {
   }
 
   override onOpen(): Promise<void> {
-    this.contentEl.addClass("azk-view");
+    this.contentEl.addClass("za-view");
     this.root = createRoot(this.contentEl);
     this.root.render(
       <StrictMode>

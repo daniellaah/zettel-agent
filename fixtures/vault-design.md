@@ -1,6 +1,6 @@
 # Fixture vault design
 
-Synthetic Obsidian vault for developing and evaluating the Agentic Zettelkasten plugin (read-only research agent: bilingual Chinese + English BM25, wikilink graph expansion, answers with citations). All content is original; literature notes name real sources but summarize them in the author's own words.
+Synthetic Obsidian vault for developing and evaluating the Zettel Agent plugin (read-only research agent: bilingual Chinese + English BM25, wikilink graph expansion, answers with citations). All content is original; literature notes name real sources but summarize them in the author's own words.
 
 Paths below are relative to `fixtures/vault/`. Abbreviations: `Z/` = `02-Zettelkasten/`, `P/` = `02-Zettelkasten/Permanent/`, `L/` = `02-Zettelkasten/Literature/`, `F/` = `02-Zettelkasten/Fleeting/`, `W/` = `02-Zettelkasten/Writing/`.
 

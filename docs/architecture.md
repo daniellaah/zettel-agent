@@ -1,6 +1,6 @@
 # Architecture
 
-Agentic Zettelkasten is an Obsidian desktop plugin. It lets you ask questions about a Zettelkasten folder (Fleeting / Literature / Permanent / Writing) in a chat sidebar, and it answers with citations to your notes. It helps you think: it searches, reads, compares, questions and suggests links. It never writes to your notes. See [ADR-0008](adr/0008-read-only-agent-own-loop.md).
+Zettel Agent is an Obsidian desktop plugin. It lets you ask questions about a Zettelkasten folder (Fleeting / Literature / Permanent / Writing) in a chat sidebar, and it answers with citations to your notes. It helps you think: it searches, reads, compares, questions and suggests links. It never writes to your notes. See [ADR-0008](adr/0008-read-only-agent-own-loop.md).
 
 ## Components
 
