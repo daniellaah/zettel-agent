@@ -102,6 +102,59 @@ describe.each(providers)("agent on %s", (provider) => {
     }
   }
 
+  it("attaches context with @, the open note and a selection", async () => {
+    const result = await page.run<Record<string, unknown> & { options: string[] }>(
+      "attach-context",
+      {
+        openNote: "Retrieval practice beats rereading",
+        question: "这几段材料之间有什么联系？",
+      },
+    );
+    expect(result.options.length).toBeGreaterThan(0);
+    expect(result.options.every((title) => /swing/i.test(title))).toBe(true);
+    expect(result.afterMention).toEqual({ draft: "", chips: [result.options[0]] });
+    expect(result.offered).toEqual([
+      "Retrieval practice beats rereading",
+      expect.stringMatching(/^Selection \(\d+ chars\) · Retrieval practice beats rereading$/),
+    ]);
+    expect(result.attached).toHaveLength(3);
+    expect(result.bubbleChips).toEqual(result.attached);
+    expect(result).toMatchObject({ stop: "answered", error: null, composerCleared: true });
+    expect(result.citedPaths).toContain(
+      "02-Zettelkasten/Permanent/Retrieval practice beats rereading.md",
+    );
+  });
+
+  it("asks the last question again with the retry button", async () => {
+    const result = await page.run<Record<string, unknown> | null>("retry");
+    expect(result).toMatchObject({
+      retryButtons: 1,
+      sameCount: true,
+      sameQuestion: true,
+      newAnswerId: true,
+      stop: "answered",
+      error: null,
+    });
+  });
+
+  it("saves chats and reopens them from history after a reload", async () => {
+    const result = await page.run<Record<string, unknown>>("history-restore", {
+      question: "RRF 融合为什么只看排名？",
+      followUp: "k 一般取多少？",
+    });
+    expect(result).toMatchObject({
+      emptyAfterReload: true,
+      sameId: true,
+      listedFirst: "RRF 融合为什么只看排名？",
+      sameText: true,
+      followUpStop: "answered",
+      followUpError: null,
+    });
+    expect(result.restoredItems).toBe(result.beforeItems);
+    expect(result.itemsAfterFollowUp).toBe(Number(result.beforeItems) + 2);
+    expect(result.chipsAfterRestore).toBeGreaterThan(0);
+  });
+
   it("continues the conversation after a turn is stopped", async () => {
     for (const stopAfterMs of [1500, 4000]) {
       const result = await page.run<Record<string, unknown>>("stop-continue", {

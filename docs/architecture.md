@@ -80,12 +80,15 @@ Note text is wrapped in `<note>` tags that the text itself cannot close. The sys
 ## UI
 
 - The chat view lives in the right sidebar. The conversation belongs to the plugin, so closing the view keeps it.
+- **Saved chats.** After every turn, the conversation is saved to the plugin folder: its items, its model transcript and its evidence ledger. The history panel lists saved chats newest first. Reopening one restores the answers with working citations, and a follow-up question continues the original transcript.
+- **Context.** Type `@` to attach any Zettelkasten note. The note you have open, and any text selected in the editor, are offered as one-click chips. Attached notes are read with the `read` tool before the question is sent, so they get evidence ids and can be cited. Selections are quoted as note data.
+- **Retry.** _Ask again_ on the last answer cuts the transcript back to where that turn started and re-asks the same question with the same attachments. Only the tail of the transcript is dropped; earlier turns are never edited. Esc stops a running turn.
 - Each message is its own memoized component, so a streamed delta re-renders only the last message. While streaming, Markdown is re-rendered with Obsidian's `MarkdownRenderer` at most every 120 ms.
 - The assistant's text, tool calls and thinking are interleaved in the order they happen. Tool calls and thinking appear as single quiet lines that expand to show details.
 - `[E3]` citations render as chips. Hovering one shows the note and heading; clicking opens that section. `[[links]]` open their notes.
 - **Copy** and **Insert at cursor** turn citations into `[[Title#Heading]]` links. Insert writes at the cursor of the note you last edited, as your own action, and can be undone with the editor's undo.
 - Each turn shows its token and cache usage, and why it stopped when it did not simply answer.
-- Planned: `@` to attach a note, `/` commands (`/link`, `/critique`, `/gaps`, `/outline`), and saved sessions you can resume.
+- Planned: `/` commands (`/link`, `/critique`, `/gaps`, `/outline`).
 
 ## Evaluation
 

@@ -31,16 +31,21 @@ export default async function setup(): Promise<() => Promise<void>> {
     console.log("e2e: restarting Obsidian with a local debugging port on the fixture vault");
     await launchWithDebugPort();
   }
-  const page = await connectToFixtureVault();
-  await page.run("reload");
-  page.close();
-
-  return async () => {
+  const restore = async () => {
     if (launched && process.env.E2E_KEEP_OBSIDIAN !== "1") {
       console.log("e2e: restarting Obsidian normally");
       await relaunchNormally();
     }
   };
+  try {
+    const page = await connectToFixtureVault();
+    await page.run("reload");
+    page.close();
+  } catch (error) {
+    await restore(); // never leave the debugging port open after a failed setup
+    throw error;
+  }
+  return restore;
 }
 
 /** The fixture vault's .obsidian folder is git-ignored; make sure the plugin is enabled. */

@@ -36,5 +36,5 @@ return {
   usageText: root.querySelector(".za-usage")?.textContent ?? null,
   headerModel: root.querySelector(".za-header-model")?.textContent ?? null,
   starters: count(".za-starters button"),
-  composerButton: root.querySelector(".za-composer button")?.getAttribute("aria-label") ?? null,
+  composerButton: root.querySelector(".za-composer-row > button")?.getAttribute("aria-label") ?? null,
 };

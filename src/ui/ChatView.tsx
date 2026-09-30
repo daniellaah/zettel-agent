@@ -32,8 +32,13 @@ export class ChatView extends ItemView {
     return "messages-square";
   }
 
+  /** The last text selected in a note's reading view (clicking the chat clears the DOM's). */
+  private lastSelection: { path: string; title: string; text: string } | null = null;
+  private readonly selectionListeners = new Set<() => void>();
+
   override onOpen(): Promise<void> {
     this.contentEl.addClass("za-view");
+    this.registerDomEvent(document, "selectionchange", () => this.rememberSelection());
     this.root = createRoot(this.contentEl);
     this.root.render(
       <StrictMode>
@@ -51,9 +56,28 @@ export class ChatView extends ItemView {
     return Promise.resolve();
   }
 
+  private rememberSelection(): void {
+    const selection = window.getSelection();
+    const text = selection?.toString() ?? "";
+    if (!selection || text.trim() === "" || !selection.anchorNode) return;
+    const view = this.app.workspace.getMostRecentLeaf()?.view;
+    if (
+      view instanceof MarkdownView &&
+      view.file &&
+      view.contentEl.contains(selection.anchorNode)
+    ) {
+      this.lastSelection = { path: view.file.path, title: view.file.basename, text };
+      for (const listener of this.selectionListeners) listener();
+    }
+  }
+
   private createHost(): ChatHost {
     const { app, plugin } = this;
     const session = plugin.session;
+    const recentEditor = () => {
+      const view = app.workspace.getMostRecentLeaf()?.view;
+      return view instanceof MarkdownView ? view : null;
+    };
     const resolveLink = (linkText: string) =>
       app.metadataCache.getFirstLinkpathDest(linkText.split(/[#|]/)[0]!.trim(), "")?.path ?? null;
     return {
@@ -98,6 +122,49 @@ export class ChatView extends ItemView {
         return true;
       },
       notify: (message) => new Notice(message),
+
+      activeNote: () => {
+        const file = recentEditor()?.file;
+        const corpus = plugin.vaultCorpus.current;
+        return file && corpus.get(file.path) ? { path: file.path, title: file.basename } : null;
+      },
+      selection: () => {
+        const view = recentEditor();
+        if (!view?.file) return null;
+        const editorText = view.getMode() === "source" ? view.editor.getSelection() : "";
+        if (editorText.trim() !== "") {
+          return { path: view.file.path, title: view.file.basename, text: editorText };
+        }
+        // Reading view: the selection made there, remembered before focus moved to the chat.
+        return this.lastSelection?.path === view.file.path ? this.lastSelection : null;
+      },
+      onSelectionChange: (callback) => {
+        this.selectionListeners.add(callback);
+        return () => this.selectionListeners.delete(callback);
+      },
+      onActiveNoteChange: (callback) => {
+        const ref = app.workspace.on("file-open", callback);
+        return () => app.workspace.offref(ref);
+      },
+      noteOptions: () => {
+        const corpus = plugin.vaultCorpus.current;
+        return corpus.paths().map((path) => ({
+          path,
+          title: corpus.get(path)!.title,
+          stage: corpus.stage(path),
+        }));
+      },
+
+      listConversations: () => plugin.conversations.list(),
+      openConversation: async (id) => {
+        const record = await plugin.conversations.load(id);
+        if (record) session.load(record);
+        else new Notice("That chat could not be found.");
+      },
+      deleteConversation: async (id) => {
+        await plugin.conversations.delete(id);
+        if (session.getSnapshot().conversationId === id) session.reset();
+      },
     };
   }
 }

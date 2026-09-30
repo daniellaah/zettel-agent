@@ -1,7 +1,7 @@
 import { Component, Keymap, MarkdownRenderer } from "obsidian";
 import { memo, useEffect, useRef, useState, type MouseEvent } from "react";
 
-import { CITATION, idsInCitation } from "../agent/evidence";
+import { citationIdOf, citationsToHtml } from "./citation-markup";
 import { useHost, type ChatHost } from "./host";
 
 /** While streaming, re-render Markdown at most this often. */
@@ -9,7 +9,9 @@ const STREAM_RENDER_MS = 120;
 
 /**
  * Renders assistant Markdown with Obsidian's renderer, so [[links]], callouts and code
- * look like the rest of the vault. [E3] citations become clickable chips.
+ * look like the rest of the vault. [E3] citations are turned into chip elements in the
+ * Markdown source (citationsToHtml), so they render as chips however Obsidian renders;
+ * the DOM pass afterwards only adds hover titles and marks links to missing notes.
  */
 export const Markdown = memo(function Markdown(props: { text: string; streaming: boolean }) {
   const host = useHost();
@@ -23,15 +25,15 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     host.component.addChild(child);
     const staging = document.createElement("div");
     let cancelled = false;
-    // Obsidian can keep filling in rendered Markdown after render() resolves, so newly
-    // added nodes are decorated as they arrive, not only once.
+    // Obsidian can keep filling in rendered Markdown after render() resolves, so nodes are
+    // decorated as they arrive, not only once. Decoration is cosmetic (titles, styles).
     const observer = new MutationObserver(() => {
-      decorateCitations(container, host);
+      describeCitations(container, host);
       markUnresolvedLinks(container, host);
     });
-    void MarkdownRenderer.render(host.app, text, staging, "", child).then(() => {
+    void MarkdownRenderer.render(host.app, citationsToHtml(text), staging, "", child).then(() => {
       if (cancelled) return;
-      decorateCitations(staging, host);
+      describeCitations(staging, host);
       markUnresolvedLinks(staging, host);
       container.replaceChildren(...Array.from(staging.childNodes));
       observer.observe(container, { childList: true, subtree: true, characterData: true });
@@ -47,9 +49,10 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     const target = event.target as HTMLElement;
     const newLeaf = Keymap.isModEvent(event.nativeEvent) !== false;
     const cite = target.closest<HTMLElement>(".za-cite");
-    if (cite?.dataset.id) {
+    const id = cite ? citationIdOf(cite) : null;
+    if (id) {
       event.preventDefault();
-      host.openEvidence(cite.dataset.id, newLeaf);
+      host.openEvidence(id, newLeaf);
       return;
     }
     const link = target.closest<HTMLAnchorElement>("a.internal-link");
@@ -73,38 +76,15 @@ function markUnresolvedLinks(root: HTMLElement, host: ChatHost): void {
   }
 }
 
-function decorateCitations(root: HTMLElement, host: ChatHost): void {
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) =>
-      node.parentElement?.closest("code, pre")
-        ? NodeFilter.FILTER_REJECT
-        : NodeFilter.FILTER_ACCEPT,
-  });
-  const nodes: Text[] = [];
-  while (walker.nextNode()) {
-    const node = walker.currentNode as Text;
-    CITATION.lastIndex = 0;
-    if (CITATION.test(node.data)) nodes.push(node);
-  }
-  for (const node of nodes) {
-    const fragment = document.createDocumentFragment();
-    let last = 0;
-    for (const match of node.data.matchAll(CITATION)) {
-      fragment.append(node.data.slice(last, match.index));
-      for (const id of idsInCitation(match[1]!)) {
-        const chip = document.createElement("button");
-        chip.className = "za-cite";
-        chip.dataset.id = id.toUpperCase();
-        chip.textContent = id.slice(1);
-        const description = host.describeEvidence(id);
-        chip.title = description ?? `${id}: not among the evidence retrieved`;
-        if (!description) chip.classList.add("za-cite-unknown");
-        fragment.append(chip);
-      }
-      last = match.index + match[0].length;
-    }
-    fragment.append(node.data.slice(last));
-    node.replaceWith(fragment);
+/** Hover titles for citation chips; ids never retrieved are marked. */
+function describeCitations(root: HTMLElement, host: ChatHost): void {
+  for (const chip of Array.from(root.querySelectorAll<HTMLElement>(".za-cite:not([title])"))) {
+    const id = citationIdOf(chip);
+    if (!id) continue;
+    const description = host.describeEvidence(id);
+    chip.title = description ?? `${id}: not among the evidence retrieved`;
+    chip.setAttribute("role", "link");
+    if (!description) chip.classList.add("za-cite-unknown");
   }
 }
 

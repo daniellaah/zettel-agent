@@ -239,11 +239,173 @@
 }
 
 .za-composer {
+  position: relative;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
   gap: var(--size-4-2);
   padding: var(--size-4-2) var(--size-4-3) var(--size-4-3);
   border-top: 1px solid var(--background-modifier-border);
+}
+
+.za-composer-row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--size-4-2);
+}
+
+/* Attachment chips: attached context, and one-click suggestions (open note, selection). */
+.za-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--size-4-1);
+}
+
+.za-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  max-width: 100%;
+  height: auto;
+  padding: 1px var(--size-4-2);
+  border-radius: var(--radius-s);
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: none;
+}
+
+.za-chip-suggestion {
+  background: transparent;
+  border: 1px dashed var(--background-modifier-border);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.za-chip-suggestion:hover {
+  color: var(--text-normal);
+  border-color: var(--interactive-accent);
+}
+
+.za-chip-icon {
+  display: inline-flex;
+  --icon-size: var(--icon-xs);
+}
+
+.za-chip-remove {
+  height: auto;
+  padding: 0 2px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-faint);
+  cursor: pointer;
+}
+
+.za-message-user .za-attachments {
+  margin-bottom: var(--size-4-1);
+}
+
+/* @-mention popover, above the composer. */
+.za-mentions {
+  position: absolute;
+  bottom: 100%;
+  left: var(--size-4-3);
+  right: var(--size-4-3);
+  z-index: 10;
+  margin: 0 0 var(--size-4-1);
+  padding: var(--size-4-1);
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+}
+
+.za-mentions li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--size-4-2);
+  padding: var(--size-4-1) var(--size-4-2);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+
+.za-mentions li.is-selected {
+  background: var(--background-modifier-hover);
+}
+
+.za-mention-stage {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+}
+
+/* History panel, over the transcript. */
+.za-history {
+  display: flex;
+  flex-direction: column;
+  max-height: 60%;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+}
+
+.za-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-4-1) var(--size-4-3);
+  font-weight: var(--font-semibold);
+}
+
+.za-history-empty {
+  padding: 0 var(--size-4-3);
+  color: var(--text-muted);
+}
+
+.za-history-list {
+  margin: 0;
+  padding: 0 var(--size-4-2) var(--size-4-2);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.za-history-list li {
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-s);
+}
+
+.za-history-list li.is-current {
+  background: var(--background-modifier-hover);
+}
+
+.za-history-open {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  padding: var(--size-4-1) var(--size-4-2);
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.za-history-title {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.za-history-meta {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
 }
 
 .za-composer-input {

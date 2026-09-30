@@ -8,6 +8,7 @@ import { ChatSession } from "./session/chat-session";
 import { resolveSettings, type PluginSettings } from "./settings";
 import { ChatView, VIEW_TYPE_CHAT } from "./ui/ChatView";
 import { SettingsTab } from "./ui/SettingsTab";
+import { FileConversationStore } from "./vault/conversations";
 import { RecordingStore } from "./vault/recordings";
 import { VaultCorpus } from "./vault/vault-corpus";
 
@@ -16,6 +17,7 @@ export default class ZettelAgentPlugin extends Plugin {
   vaultCorpus!: VaultCorpus;
   session!: ChatSession;
   recordings!: RecordingStore;
+  conversations!: FileConversationStore;
 
   /** Rebuild the index after the Zettelkasten folder setting stops changing. */
   readonly scheduleRebuild = debounce(() => void this.vaultCorpus.rebuild(), 800, true);
@@ -26,6 +28,7 @@ export default class ZettelAgentPlugin extends Plugin {
     const pluginDir =
       this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
     this.recordings = new RecordingStore(this.app, `${pluginDir}/recordings`);
+    this.conversations = new FileConversationStore(this.app, `${pluginDir}/conversations`);
     this.session = new ChatSession({
       corpus: async () => {
         await this.vaultCorpus.whenReady();
@@ -33,6 +36,7 @@ export default class ZettelAgentPlugin extends Plugin {
       },
       provider: (question) => this.createProvider(question),
       activeNotePath: () => this.activeNotePath(),
+      store: this.conversations,
     });
 
     this.registerView(VIEW_TYPE_CHAT, (leaf) => new ChatView(leaf, this));
