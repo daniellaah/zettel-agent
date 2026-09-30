@@ -40,7 +40,17 @@ async function quitObsidian(): Promise<void> {
 /** Restarts Obsidian with the debugging port, on the fixture vault. */
 export async function launchWithDebugPort(): Promise<void> {
   await quitObsidian();
-  execFileSync("open", ["-a", "Obsidian", "--args", `--remote-debugging-port=${DEBUG_PORT}`]);
+  execFileSync("open", [
+    "-a",
+    "Obsidian",
+    "--args",
+    `--remote-debugging-port=${DEBUG_PORT}`,
+    // The window usually sits behind others during a run. Without these, Chromium throttles
+    // timers in hidden windows (down to once a minute) and pauses rendering.
+    "--disable-background-timer-throttling",
+    "--disable-renderer-backgrounding",
+    "--disable-backgrounding-occluded-windows",
+  ]);
   for (let i = 0; i < 60 && !(await debugPortOpen()); i++) await sleep(500);
   if (!(await debugPortOpen())) throw new Error("Obsidian did not open the debugging port.");
   execFileSync("open", [`obsidian://open?path=${encodeURIComponent(FIXTURE_VAULT)}`]);

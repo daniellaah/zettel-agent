@@ -15,7 +15,7 @@ E2E_KEEP_OBSIDIAN=1 npm run e2e              # leave Obsidian on the debugging p
 3. **Connect.** The runner attaches only to the window whose vault is `fixtures/vault`. It never runs code in the window of any other vault.
 4. **Test.** The plugin is reloaded and the two test files run:
    - `plugin.e2e.ts` makes no model calls. It checks indexing by stage, the settings tab, the empty chat view, and the error shown when an API key is missing.
-   - `agent.e2e.ts` runs once for each selected provider. It asks the questions listed in `scenarios.ts`, then checks the rendered chat, citation and link clicks, insert-at-cursor, stopping and continuing, unresolved links, and a wrong model name.
+   - `agent.e2e.ts` runs once for each selected provider. It asks the questions listed in `scenarios.ts`, then checks the rendered chat, citation and link clicks, and insert-at-cursor. It attaches context through the composer (`@`, the open-note chip and a selection), clicks retry, and reopens a chat from history after reloading the plugin. It also checks stopping and continuing, unresolved links, offline record and replay, and a wrong model name.
 5. **Restore.** Obsidian is restarted normally, which closes the debugging port. This happens only if the run opened the port in step 2, and not when `E2E_KEEP_OBSIDIAN=1` is set.
 
 ## Assertions and reports
