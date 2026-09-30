@@ -14,6 +14,8 @@ Obsidian desktop plugin: a read-only research agent over a Zettelkasten folder. 
 
 Run `npm run check` (typecheck, ESLint, Prettier, Vitest) after every change. Add a unit test for every pure function.
 
+For changes to the loop, providers, prompt or UI, also run `npm run e2e` (see `e2e/README.md`). It restarts Obsidian on the fixture vault and calls live model APIs, so it costs money; say so before running it.
+
 ## History
 
 The Codex App Server prototype (M0–M3) is archived on the `legacy-codex` branch. Retrieve reference code with `git show legacy-codex:<path>`.

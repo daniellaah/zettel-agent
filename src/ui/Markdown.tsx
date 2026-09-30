@@ -23,14 +23,22 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     host.component.addChild(child);
     const staging = document.createElement("div");
     let cancelled = false;
+    // Obsidian can keep filling in rendered Markdown after render() resolves, so newly
+    // added nodes are decorated as they arrive, not only once.
+    const observer = new MutationObserver(() => {
+      decorateCitations(container, host);
+      markUnresolvedLinks(container, host);
+    });
     void MarkdownRenderer.render(host.app, text, staging, "", child).then(() => {
       if (cancelled) return;
       decorateCitations(staging, host);
       markUnresolvedLinks(staging, host);
       container.replaceChildren(...Array.from(staging.childNodes));
+      observer.observe(container, { childList: true, subtree: true, characterData: true });
     });
     return () => {
       cancelled = true;
+      observer.disconnect();
       host.component.removeChild(child);
     };
   }, [host, text]);

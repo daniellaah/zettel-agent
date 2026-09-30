@@ -3,3 +3,5 @@ coverage/
 main.js
 package-lock.json
 fixtures/
+e2e/page/
+e2e/reports/

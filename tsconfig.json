@@ -17,5 +17,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "eval/**/*.ts", "vitest*.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "eval/**/*.ts", "e2e/**/*.ts", "vitest*.config.ts"]
 }

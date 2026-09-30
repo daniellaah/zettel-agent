@@ -19,9 +19,13 @@ See [docs/architecture.md](docs/architecture.md), [ADR-0008](docs/adr/0008-read-
 
 ```bash
 npm install
-npm run check    # typecheck, lint, format check, tests
+npm run check    # typecheck, lint, format check, unit tests
+npm run eval     # retrieval quality on the fixture vault (no API calls)
+npm run e2e      # the real plugin in Obsidian against live model APIs (macOS)
 npm run build    # production main.js
 ```
+
+See [e2e/README.md](e2e/README.md) for how the end-to-end tests drive Obsidian and what they cost.
 
 To try the plugin in a test vault, point the build at the vault's plugin folder, then enable **Zettel Agent** under _Settings → Community plugins_:
 

@@ -7,3 +7,6 @@ coverage/
 main.js
 main.js.map
 
+
+# End-to-end run reports
+e2e/reports/
