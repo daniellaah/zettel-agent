@@ -59,3 +59,24 @@ export function citedIds(text: string): string[] {
   }
   return [...ids];
 }
+
+/**
+ * Rewrites [E3] / [E3, E5] citations as Obsidian links, [[Title#Heading]], so copied or
+ * inserted text points at the notes themselves. Unknown ids are left as they are.
+ */
+export function citationsToLinks(text: string, ledger: EvidenceLedger): string {
+  return text.replace(CITATION, (whole, ids: string) => {
+    const links = ids.split(/\s*[,，、]\s*/).map((id) => {
+      const evidence = ledger.get(id);
+      return evidence ? `[[${linkTarget(evidence)}]]` : null;
+    });
+    return links.every((link) => link !== null) ? links.join(" ") : whole;
+  });
+}
+
+export function linkTarget(evidence: Evidence): string {
+  const title = (evidence.path.split("/").pop() ?? evidence.path).replace(/\.md$/i, "");
+  // A lone top heading is usually the note's title; link to the note itself.
+  const heading = evidence.headingPath.length > 1 ? evidence.headingPath.at(-1) : undefined;
+  return heading ? `${title}#${heading}` : title;
+}

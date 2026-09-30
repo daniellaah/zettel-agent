@@ -1,6 +1,6 @@
 import type { BetaMessageParam } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 
-import { EvidenceLedger, type Evidence } from "../agent/evidence";
+import { EvidenceLedger, citationsToLinks, type Evidence } from "../agent/evidence";
 import { runTurn, type StopReason, type TurnUsage } from "../agent/loop";
 import { turnContext } from "../agent/prompt";
 import { describeProviderError, type ModelProvider } from "../agent/provider";
@@ -76,6 +76,16 @@ export class ChatSession {
 
   evidence(id: string): Evidence | undefined {
     return this.ledger.get(id);
+  }
+
+  /** The final answer of an assistant message, with citations rewritten as note links. */
+  answerMarkdown(item: AssistantItem): string {
+    const lastTool = item.parts.findLastIndex((part) => part.kind === "tool");
+    const answer = item.parts
+      .slice(lastTool + 1)
+      .flatMap((part) => (part.kind === "text" ? [part.text] : []))
+      .join("");
+    return citationsToLinks(answer.trim(), this.ledger);
   }
 
   async send(text: string): Promise<void> {
