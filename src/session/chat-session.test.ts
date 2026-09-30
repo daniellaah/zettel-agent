@@ -9,7 +9,7 @@ function makeSession(steps: (Step | Error)[] | string) {
   corpus.upsert("Z/Permanent/间隔重复.md", "# 间隔重复\n\n间隔重复比集中练习记得更久。");
   const provider = typeof steps === "string" ? steps : new ScriptedProvider(steps);
   const session = new ChatSession({
-    corpus: () => corpus,
+    corpus: () => Promise.resolve(corpus),
     provider: () => provider,
     activeNotePath: () => "Z/Permanent/间隔重复.md",
   });

@@ -51,7 +51,8 @@ export interface ChatSnapshot {
 }
 
 export interface ChatSessionDeps {
-  corpus: () => Corpus;
+  /** The corpus once indexing has finished. */
+  corpus: () => Promise<Corpus>;
   /** Creates a provider for this turn, or explains why it cannot (e.g. no API key). */
   provider: () => ModelProvider | string;
   activeNotePath: () => string | null;
@@ -110,7 +111,7 @@ export class ChatSession {
       return;
     }
 
-    const corpus = this.deps.corpus();
+    const corpus = await this.deps.corpus();
     this.controller = new AbortController();
     const result = await runTurn({
       provider,

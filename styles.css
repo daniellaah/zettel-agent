@@ -42,7 +42,24 @@
 
 .azk-empty {
   margin: auto;
+  max-width: 28em;
+  text-align: center;
   color: var(--text-muted);
+}
+
+.azk-starters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  margin-top: var(--size-4-3);
+}
+
+.azk-starters button {
+  height: auto;
+  padding: var(--size-4-2) var(--size-4-3);
+  white-space: normal;
+  text-align: left;
+  font-size: var(--font-ui-small);
 }
 
 .azk-message {
@@ -59,9 +76,154 @@
   background: var(--background-secondary-alt);
 }
 
-.azk-message-notice {
-  color: var(--text-muted);
+.azk-message-assistant {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  white-space: normal;
+}
+
+.azk-markdown > :first-child {
+  margin-top: 0;
+}
+
+.azk-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+/* Citation chips: [E3] rendered as a small numbered button that opens the note. */
+.azk-cite {
+  display: inline-flex;
+  align-items: center;
+  height: 1.35em;
+  min-width: 1.35em;
+  margin: 0 0.1em;
+  padding: 0 0.35em;
+  border-radius: var(--radius-s);
+  background: var(--background-modifier-hover);
+  color: var(--text-accent);
+  font-size: 0.75em;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.15em;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.azk-cite:hover {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.azk-cite-unknown {
+  color: var(--text-error);
+  text-decoration: line-through;
+}
+
+/* Tool calls and thinking: one quiet line each, expandable. */
+.azk-tool,
+.azk-thinking {
   font-size: var(--font-ui-small);
+  color: var(--text-muted);
+}
+
+.azk-tool > summary,
+.azk-thinking > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.azk-tool > summary::-webkit-details-marker,
+.azk-thinking > summary::-webkit-details-marker {
+  display: none;
+}
+
+.azk-tool-icon {
+  display: inline-flex;
+  --icon-size: var(--icon-xs);
+}
+
+.azk-tool.is-running .azk-tool-summary {
+  animation: azk-pulse 1.2s ease-in-out infinite;
+}
+
+.azk-tool.is-error .azk-tool-summary {
+  color: var(--text-error);
+}
+
+.azk-tool-input,
+.azk-thinking-text {
+  margin: var(--size-4-1) 0 0 calc(var(--icon-xs) + var(--size-4-2));
+  padding: var(--size-4-2);
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  font-size: var(--font-ui-smaller);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.azk-working {
+  display: flex;
+  gap: 4px;
+  padding: var(--size-4-1) 0;
+}
+
+.azk-working span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  animation: azk-pulse 1s ease-in-out infinite;
+}
+
+.azk-working span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.azk-working span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes azk-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.azk-note {
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+}
+
+.azk-note-warning {
+  color: var(--text-warning);
+}
+
+.azk-note-error {
+  color: var(--text-error);
+}
+
+.azk-message-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-1);
+  min-height: var(--icon-size);
+}
+
+.azk-usage {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .azk-tool.is-running .azk-tool-summary,
+  .azk-working span {
+    animation: none;
+  }
 }
 
 .azk-composer {

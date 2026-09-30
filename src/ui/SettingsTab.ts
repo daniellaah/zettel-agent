@@ -48,6 +48,7 @@ export class SettingsTab extends PluginSettingTab {
           .onChange((value) => {
             settings.zettelkastenRoot = normalizeFolder(value);
             void this.plugin.saveSettings();
+            this.plugin.scheduleRebuild();
           }),
       );
 

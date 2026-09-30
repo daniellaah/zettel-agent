@@ -1,14 +1,31 @@
-import { Plugin } from "obsidian";
+import { MarkdownView, Plugin, debounce } from "obsidian";
 
+import { AnthropicProvider } from "./agent/provider";
+import { ChatSession } from "./session/chat-session";
 import { resolveSettings, type PluginSettings } from "./settings";
 import { ChatView, VIEW_TYPE_CHAT } from "./ui/ChatView";
 import { SettingsTab } from "./ui/SettingsTab";
+import { VaultCorpus } from "./vault/vault-corpus";
 
 export default class AgenticZettelkastenPlugin extends Plugin {
   declare settings: PluginSettings;
+  vaultCorpus!: VaultCorpus;
+  session!: ChatSession;
+
+  /** Rebuild the index after the Zettelkasten folder setting stops changing. */
+  readonly scheduleRebuild = debounce(() => void this.vaultCorpus.rebuild(), 800, true);
 
   override async onload(): Promise<void> {
     this.settings = resolveSettings(await this.loadData());
+    this.vaultCorpus = new VaultCorpus(this.app, () => this.settings);
+    this.session = new ChatSession({
+      corpus: async () => {
+        await this.vaultCorpus.whenReady();
+        return this.vaultCorpus.current;
+      },
+      provider: () => this.createProvider(),
+      activeNotePath: () => this.activeNotePath(),
+    });
 
     this.registerView(VIEW_TYPE_CHAT, (leaf) => new ChatView(leaf, this));
     this.addRibbonIcon("messages-square", "Open Zettelkasten chat", () => {
@@ -20,10 +37,31 @@ export default class AgenticZettelkastenPlugin extends Plugin {
       callback: () => void this.activateChatView(),
     });
     this.addSettingTab(new SettingsTab(this.app, this));
+
+    this.app.workspace.onLayoutReady(() => {
+      this.vaultCorpus.registerEvents(this);
+      void this.vaultCorpus.rebuild();
+    });
+  }
+
+  override onunload(): void {
+    this.session.stop();
   }
 
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
+  }
+
+  private createProvider(): AnthropicProvider | string {
+    const secretId = this.settings.apiKeySecretId;
+    const apiKey = secretId ? this.app.secretStorage.getSecret(secretId) : null;
+    if (!apiKey) return "Add your Anthropic API key in Settings → Agentic Zettelkasten.";
+    return new AnthropicProvider(apiKey, this.settings.model);
+  }
+
+  private activeNotePath(): string | null {
+    const view = this.app.workspace.getMostRecentLeaf()?.view;
+    return view instanceof MarkdownView ? (view.file?.path ?? null) : null;
   }
 
   private async activateChatView(): Promise<void> {
