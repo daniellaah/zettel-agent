@@ -11,8 +11,8 @@ Zettel Agent is an Obsidian desktop plugin. It lets you ask questions about a Ze
 │  ChatView ──── turn ────▶ AgentLoop ── tool calls ─────▶ Tools ──▶ LexicalIndex (BM25)  │
 │   ▲  stream events         │  ▲                           │         LinkGraph           │
 │   └────────────────────────┘  │ ModelProvider             │         NoteReader          │
-│                               ▼ (Anthropic)               ▼                             │
-│  session/                   Claude Messages API        vault/ adapter                   │
+│                               ▼ adapters                  ▼                             │
+│  session/          Claude · OpenAI · DeepSeek APIs     vault/ adapter                   │
 │  TranscriptStore ◀── persisted turns                   (Vault, MetadataCache, events)   │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -41,7 +41,13 @@ After two consecutive rounds that surface no new evidence, the loop adds a remin
 
 Interrupting a turn aborts the HTTP stream. Partial responses are never committed. The transcript is append-only, which keeps prompt caching and thinking-block replay valid.
 
-`agent/provider.ts` keeps each model request behind a `ModelProvider` interface. For Opus 5.5 and Sonnet 5.5, the Anthropic implementation adds adaptive thinking (summarized), explicit effort, top-level prompt caching and server-side refusal fallbacks.
+The loop speaks a provider-neutral transcript (`agent/messages.ts`) and calls models through `ModelProvider` (`agent/provider.ts`). There are three adapters, described in [ADR-0009](adr/0009-multi-provider-adapters.md):
+
+- **Claude:** the Messages API, with prompt caching, adaptive thinking, explicit effort and refusal fallbacks.
+- **OpenAI:** the Responses API with `store: false`. Encrypted reasoning is sent back on every request.
+- **DeepSeek:** Chat Completions. `reasoning_content` is sent back, and thinking is switched off on the final forced-answer request.
+
+Each assistant message keeps the provider's raw content, and that content is replayed verbatim only to the same provider and model.
 
 ## Tools (all read-only)
 

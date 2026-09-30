@@ -4,16 +4,16 @@ Ask your Zettelkasten anything, inside Obsidian.
 
 A read-only research agent searches, reads and follows links across your Fleeting, Literature, Permanent and Writing notes. It answers with citations you can click, suggests links along with the relationship behind each one, and questions your drafts. It never writes your notes for you: text reaches a note only when you copy or insert it yourself.
 
-> Status: early development (v0.1). Desktop only. Requires an Anthropic API key.
+> Status: early development (v0.1). Desktop only. Bring your own API key for Anthropic (Claude), OpenAI or DeepSeek.
 
 ## How it works
 
-- **A self-written agent loop** calls the Claude Messages API directly, with streaming, tool use and prompt caching. It does not use an agent framework.
+- **A self-written agent loop** runs over a provider-neutral transcript, with thin adapters for the Claude Messages API, the OpenAI Responses API and DeepSeek's Chat Completions: streaming, tool use, reasoning replay and prompt caching, without an agent framework.
 - **In-process retrieval**: bilingual (Chinese + English) BM25 over heading-level chunks, plus Obsidian's own link graph for backlinks and multi-hop neighbours.
 - **Evidence-bound answers**: every citation points to a chunk the agent actually read, pinned to that chunk's content hash.
 - **Evaluation first**: retrieval and agent behaviour are measured against a judged, bilingual query set.
 
-See [docs/architecture.md](docs/architecture.md) and [ADR-0008](docs/adr/0008-read-only-agent-own-loop.md).
+See [docs/architecture.md](docs/architecture.md), [ADR-0008](docs/adr/0008-read-only-agent-own-loop.md) and [ADR-0009](docs/adr/0009-multi-provider-adapters.md).
 
 ## Development
 
@@ -31,7 +31,7 @@ OBSIDIAN_PLUGIN_DIR="/path/to/test-vault/.obsidian/plugins/zettel-agent" npm run
 
 ## Privacy
 
-Your questions, and the note excerpts the agent reads while answering, are sent to Anthropic. The search index stays on your machine. The API key is kept in Obsidian's secret storage.
+Your questions, and the note excerpts the agent reads while answering, are sent to the model provider you choose (Anthropic, OpenAI or DeepSeek). The search index stays on your machine. API keys are kept in Obsidian's secret storage. OpenAI requests use `store: false`.
 
 ## License
 
