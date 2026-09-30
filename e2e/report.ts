@@ -36,7 +36,7 @@ export function writeReport(provider: string, model: string, records: ScenarioRe
       result.stop ?? "-",
       formatRate(expectedHitRate(record)),
       String(result.tools.length),
-      String(result.unknownCitations.length),
+      `${result.unknownCitations.length}/${result.malformedCitations.length}`,
       usage ? `${usage.inputTokens + usage.cacheReadTokens}/${usage.outputTokens}` : "-",
       `${Math.round(result.seconds)}s`,
     ];
@@ -48,7 +48,7 @@ export function writeReport(provider: string, model: string, records: ScenarioRe
     "stop",
     "expected cited",
     "tools",
-    "bad cites",
+    "invented/malformed cites",
     "tokens in/out",
     "time",
   ];

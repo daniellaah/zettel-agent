@@ -1,12 +1,21 @@
 // Structure of the rendered chat, for assertions without screenshots.
 const root = document.querySelector(".za-chat");
 if (!root) return null;
-// Markdown renders asynchronously (and is throttled while streaming). Citations must end
-// up as chips: wait up to 3 s for raw [E#] text to disappear from rendered answers.
-const rawCitations = () =>
-  [...root.querySelectorAll(".za-markdown")]
-    .map((el) => el.innerText.match(/\[E\d+[^\]]*\]/g) ?? [])
-    .flat().length;
+// Markdown renders asynchronously (and is throttled while streaming). Every citation
+// outside code must end up as a chip: wait up to 3 s for the rest to be decorated.
+// Same pattern as CITATION in src/agent/evidence.ts.
+const CITATION = /\[(E\d+(?:[^[\]\nE]{1,6}E\d+)*)\]/;
+const rawCitations = () => {
+  let count = 0;
+  for (const block of root.querySelectorAll(".za-markdown")) {
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      const node = walker.currentNode;
+      if (!node.parentElement.closest("code, pre") && CITATION.test(node.data)) count++;
+    }
+  }
+  return count;
+};
 for (let waited = 0; waited < 3000 && rawCitations() > 0; waited += 100) {
   await new Promise((r) => setTimeout(r, 100));
 }

@@ -10,6 +10,10 @@ export function describeSdkError(error: unknown, providerLabel: string): string 
     return `Could not reach ${providerLabel}. Check your network connection.`;
   }
   if (!(error instanceof Error)) return "The request failed.";
+  // A connection that drops mid-stream surfaces as a plain fetch/stream error.
+  if (/network error|failed to fetch|terminated|ECONNRESET|socket hang up/i.test(error.message)) {
+    return `The connection to ${providerLabel} dropped. Check your network and try again.`;
+  }
   const status = (error as { status?: unknown }).status;
   switch (status) {
     case 401:

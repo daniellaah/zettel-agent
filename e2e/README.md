@@ -38,6 +38,6 @@ Full records are written to `e2e/reports/` (git-ignored). Compare these reports 
 - **Platform:** macOS. The runner uses `osascript` and `open`.
 - **API keys:** set the key for each provider you test in the fixture vault's plugin settings. A provider without a key is skipped. The tests check only that a key exists; they never read it.
 - **Cost:** each provider run makes roughly 15 model calls. DeepSeek Flash costs a few cents; Claude Opus costs more.
-- **Vault changes:** the only note the tests create is a temporary one at the vault root for the insert test, and it is moved to the system trash straight away. Settings changes, such as switching provider or setting a wrong model name, stay in memory and are restored after each test.
+- **Vault changes:** the only note the tests create is a temporary one at the vault root for the insert test, and it is moved to the fixture vault's git-ignored `.trash/` folder straight away. Settings changes, such as switching provider or setting a wrong model name, stay in memory and are restored after each test.
 
 `e2e/page/*.js` holds the code that runs inside Obsidian. Each file is the body of an async function with `args` in scope. Because these files are fragments, ESLint and Prettier skip them.

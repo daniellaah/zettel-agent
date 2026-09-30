@@ -49,13 +49,23 @@ export class EvidenceLedger {
   }
 }
 
-const CITATION = /\[((?:E\d+)(?:\s*[,，、]\s*E\d+)*)\]/g;
+/**
+ * A citation: brackets holding only evidence ids and short separators. Besides the
+ * requested [E3] and [E3, E7], models sometimes write [E3、E7], [E1–E4] or [E29 vs E26];
+ * each id in them is honoured. Shared by validation, link rewriting and the chat UI.
+ */
+export const CITATION = /\[(E\d+(?:[^[\]\nE]{1,6}E\d+)*)\]/g;
+
+/** The evidence ids inside one citation's brackets. */
+export function idsInCitation(inner: string): string[] {
+  return inner.match(/E\d+/g) ?? [];
+}
 
 /** Evidence ids cited as [E3] or [E3, E7] in answer text, in order of first appearance. */
 export function citedIds(text: string): string[] {
   const ids = new Set<string>();
   for (const match of text.matchAll(CITATION)) {
-    for (const id of match[1]!.split(/\s*[,，、]\s*/)) ids.add(id.toUpperCase());
+    for (const id of idsInCitation(match[1]!)) ids.add(id);
   }
   return [...ids];
 }
@@ -66,7 +76,7 @@ export function citedIds(text: string): string[] {
  */
 export function citationsToLinks(text: string, ledger: EvidenceLedger): string {
   return text.replace(CITATION, (whole, ids: string) => {
-    const links = ids.split(/\s*[,，、]\s*/).map((id) => {
+    const links = idsInCitation(ids).map((id) => {
       const evidence = ledger.get(id);
       return evidence ? `[[${linkTarget(evidence)}]]` : null;
     });

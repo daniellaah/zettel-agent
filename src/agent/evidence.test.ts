@@ -41,6 +41,18 @@ describe("EvidenceLedger", () => {
 });
 
 describe("citedIds", () => {
+  it("honours each id in tolerated variants such as ranges and 'vs'", () => {
+    expect(citedIds("[E29 vs E26] [E1–E3] [E5 和 E6]")).toEqual([
+      "E29",
+      "E26",
+      "E1",
+      "E3",
+      "E5",
+      "E6",
+    ]);
+    expect(citedIds("[Example E3] [E3 [[x]]] [see E4]")).toEqual([]);
+  });
+
   it("parses single and grouped citations with Chinese separators", () => {
     expect(citedIds("见 [E2]，以及 [E1, E3]、[E4、E2]。[E] [x]")).toEqual(["E2", "E1", "E3", "E4"]);
   });

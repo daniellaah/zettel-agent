@@ -1,11 +1,11 @@
 import { Component, Keymap, MarkdownRenderer } from "obsidian";
 import { memo, useEffect, useRef, useState, type MouseEvent } from "react";
 
+import { CITATION, idsInCitation } from "../agent/evidence";
 import { useHost, type ChatHost } from "./host";
 
 /** While streaming, re-render Markdown at most this often. */
 const STREAM_RENDER_MS = 120;
-const CITATION = /\[((?:E\d+)(?:\s*[,，、]\s*E\d+)*)\]/g;
 
 /**
  * Renders assistant Markdown with Obsidian's renderer, so [[links]], callouts and code
@@ -91,7 +91,7 @@ function decorateCitations(root: HTMLElement, host: ChatHost): void {
     let last = 0;
     for (const match of node.data.matchAll(CITATION)) {
       fragment.append(node.data.slice(last, match.index));
-      for (const id of match[1]!.split(/\s*[,，、]\s*/)) {
+      for (const id of idsInCitation(match[1]!)) {
         const chip = document.createElement("button");
         chip.className = "za-cite";
         chip.dataset.id = id.toUpperCase();

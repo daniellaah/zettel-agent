@@ -20,6 +20,7 @@ export interface AskResult {
   thinkingChars: number;
   citedPaths: string[];
   unknownCitations: string[];
+  malformedCitations: string[];
   usage: {
     requests: number;
     toolCalls: number;

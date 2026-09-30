@@ -32,6 +32,9 @@ describe("describeSdkError", () => {
       "Could not reach OpenAI. Check your network connection.",
     );
     expect(describeSdkError(new Error("plain"), "OpenAI")).toBe("plain");
+    expect(describeSdkError(new TypeError("network error"), "DeepSeek")).toBe(
+      "The connection to DeepSeek dropped. Check your network and try again.",
+    );
     expect(describeSdkError("weird", "OpenAI")).toBe("The request failed.");
   });
 });
