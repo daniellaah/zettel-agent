@@ -1,6 +1,8 @@
 import type { App, Component } from "obsidian";
 import { createContext, useContext } from "react";
 
+import type { RecordingMode } from "../settings";
+
 /** What the React tree needs from Obsidian, provided by the ChatView. */
 export interface ChatHost {
   app: App;
@@ -8,6 +10,9 @@ export interface ChatHost {
   component: Component;
   model(): string;
   providerLabel(): string;
+  recordingMode(): RecordingMode;
+  /** Questions that can be replayed offline for the current provider and model. */
+  recordedQuestions(): Promise<string[]>;
   /** "Title › Heading" for an evidence id, or null if unknown. */
   describeEvidence(id: string): string | null;
   openEvidence(id: string, newLeaf: boolean): void;

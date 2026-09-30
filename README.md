@@ -33,6 +33,16 @@ To try the plugin in a test vault, point the build at the vault's plugin folder,
 OBSIDIAN_PLUGIN_DIR="/path/to/test-vault/.obsidian/plugins/zettel-agent" npm run dev
 ```
 
+## Offline mode
+
+_Settings → Offline mode_ has three options:
+
+- **Record** saves the model's responses to each question in the plugin folder.
+- **Replay** answers recorded questions again with no network and no cost. The chat shows them as starter questions.
+- **Off** is normal live use.
+
+Replay goes through the real SDKs, the agent loop and the tools, so the interface behaves exactly as it does when live. See [ADR-0010](docs/adr/0010-offline-record-replay.md).
+
 ## Privacy
 
 Your questions, and the note excerpts the agent reads while answering, are sent to the model provider you choose (Anthropic, OpenAI or DeepSeek). The search index stays on your machine. API keys are kept in Obsidian's secret storage. OpenAI requests use `store: false`.

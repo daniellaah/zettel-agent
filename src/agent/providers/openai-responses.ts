@@ -13,6 +13,7 @@ import type {
   ModelResponse,
   StreamHandlers,
 } from "../provider";
+import type { FetchLike } from "../recording";
 import { describeSdkError } from "./errors";
 
 /**
@@ -25,12 +26,19 @@ export class OpenAIResponsesProvider implements ModelProvider {
   readonly provider = "openai";
   private readonly client: OpenAI;
 
+  private readonly effort: "low" | "medium" | "high";
+
   constructor(
     apiKey: string,
     readonly model: string,
-    private readonly effort: "low" | "medium" | "high" = "medium",
+    options: { effort?: "low" | "medium" | "high"; fetch?: FetchLike } = {},
   ) {
-    this.client = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+    this.effort = options.effort ?? "medium";
+    this.client = new OpenAI({
+      apiKey,
+      dangerouslyAllowBrowser: true,
+      ...(options.fetch && { fetch: options.fetch }),
+    });
   }
 
   async send(

@@ -3,8 +3,13 @@ import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "./agent/providers/cata
 export const STAGES = ["fleeting", "literature", "permanent", "writing"] as const;
 export type Stage = (typeof STAGES)[number];
 
+export const RECORDING_MODES = ["off", "record", "replay"] as const;
+export type RecordingMode = (typeof RECORDING_MODES)[number];
+
 export interface PluginSettings {
   provider: ProviderId;
+  /** Offline record/replay of model responses; see agent/recording.ts. */
+  recordingMode: RecordingMode;
   /** Model per provider, so switching providers back and forth keeps each choice. */
   models: Record<ProviderId, string>;
   /** IDs of API keys in Obsidian's secret storage; the keys themselves are never in data.json. */
@@ -17,6 +22,7 @@ export interface PluginSettings {
 
 export const DEFAULT_SETTINGS: PluginSettings = {
   provider: "anthropic",
+  recordingMode: "off",
   models: {
     anthropic: PROVIDERS.anthropic.defaultModel,
     openai: PROVIDERS.openai.defaultModel,
@@ -59,8 +65,13 @@ export function resolveSettings(stored: unknown): PluginSettings {
     ? (data.provider as ProviderId)
     : DEFAULT_SETTINGS.provider;
 
+  const recordingMode = (RECORDING_MODES as readonly unknown[]).includes(data.recordingMode)
+    ? (data.recordingMode as RecordingMode)
+    : DEFAULT_SETTINGS.recordingMode;
+
   return {
     provider,
+    recordingMode,
     models,
     apiKeySecretIds,
     zettelkastenRoot: normalizeFolder(

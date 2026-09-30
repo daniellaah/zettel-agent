@@ -2,7 +2,7 @@ import { PluginSettingTab, SecretComponent, Setting, type App } from "obsidian";
 
 import type ZettelAgentPlugin from "../main";
 import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "../agent/providers/catalog";
-import { STAGES, normalizeFolder } from "../settings";
+import { STAGES, normalizeFolder, type RecordingMode } from "../settings";
 
 const CUSTOM_MODEL = "__custom__";
 
@@ -73,6 +73,23 @@ export class SettingsTab extends PluginSettingTab {
           }),
         );
     }
+
+    new Setting(containerEl)
+      .setName("Offline mode")
+      .setDesc(
+        "Record saves each question's model responses in the plugin folder (questions and note excerpts, never API keys). Replay answers recorded questions from those files with no network and no cost, for trying the interface.",
+      )
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("off", "Off")
+          .addOption("record", "Record")
+          .addOption("replay", "Replay")
+          .setValue(settings.recordingMode)
+          .onChange((mode) => {
+            settings.recordingMode = mode as RecordingMode;
+            void this.plugin.saveSettings();
+          }),
+      );
 
     new Setting(containerEl).setName("Zettelkasten").setHeading();
 

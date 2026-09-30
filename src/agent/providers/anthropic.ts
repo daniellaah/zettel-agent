@@ -13,6 +13,7 @@ import type {
   ModelResponse,
   StreamHandlers,
 } from "../provider";
+import type { FetchLike } from "../recording";
 import { describeSdkError } from "./errors";
 
 export type Effort = "low" | "medium" | "high";
@@ -23,14 +24,20 @@ const CURRENT_GENERATION = new Set(["claude-opus-5-5", "claude-sonnet-5-5"]);
 export class AnthropicProvider implements ModelProvider {
   readonly provider = "anthropic";
   private readonly client: Anthropic;
+  private readonly effort: Effort;
 
   constructor(
     apiKey: string,
     readonly model: string,
-    private readonly effort: Effort = "medium",
+    options: { effort?: Effort; fetch?: FetchLike } = {},
   ) {
+    this.effort = options.effort ?? "medium";
     // Obsidian runs plugins in Electron's renderer; the key only goes to api.anthropic.com.
-    this.client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+    this.client = new Anthropic({
+      apiKey,
+      dangerouslyAllowBrowser: true,
+      ...(options.fetch && { fetch: options.fetch }),
+    });
   }
 
   async send(

@@ -30,6 +30,18 @@
   font-family: var(--font-monospace);
 }
 
+.za-mode-badge {
+  padding: 0 var(--size-4-2);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-smaller);
+  color: var(--text-on-accent);
+  background: var(--interactive-accent);
+}
+
+.za-mode-record {
+  background: var(--color-red);
+}
+
 .za-transcript {
   flex: 1;
   overflow-y: auto;

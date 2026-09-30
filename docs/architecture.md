@@ -49,6 +49,10 @@ The loop speaks a provider-neutral transcript (`agent/messages.ts`) and calls mo
 
 Each assistant message keeps the provider's raw content, and that content is replayed verbatim only to the same provider and model.
 
+### Offline record and replay
+
+Adapters take an optional `fetch`. In Record mode, `recordingFetch` saves each request body and raw response to a cassette file; headers, and so API keys, are never saved. In Replay mode, `replayFetch` serves those responses back as a stream, with no network. Replay still runs the SDK parsers, the adapter, the loop and the tools, and the committed fixture cassettes are replayed as regression tests. See [ADR-0010](adr/0010-offline-record-replay.md).
+
 ## Tools (all read-only)
 
 | Tool     | Purpose                                                                                                                                               |

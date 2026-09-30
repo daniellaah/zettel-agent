@@ -13,6 +13,7 @@ import type {
   ModelResponse,
   StreamHandlers,
 } from "../provider";
+import type { FetchLike } from "../recording";
 import { describeSdkError } from "./errors";
 
 /**
@@ -29,8 +30,8 @@ export interface ChatCompletionsOptions {
   baseURL: string;
   /** Send DeepSeek's `thinking` parameter and replay `reasoning_content`. */
   deepseekThinking: boolean;
-  /** Custom fetch, for tests. */
-  fetch?: typeof fetch;
+  /** Custom fetch: tests and offline record/replay. */
+  fetch?: FetchLike;
 }
 
 /** The assistant message as the API returned it, plus DeepSeek's reasoning field. */

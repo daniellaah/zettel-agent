@@ -27,7 +27,7 @@ describe("plugin in Obsidian", () => {
     const settings = await page.run<{ names: string[]; providers: string[] }>("settings-tab");
     expect(settings.providers).toEqual(["anthropic", "openai", "deepseek"]);
     expect(settings.names).toEqual(
-      expect.arrayContaining(["Model provider", "Model", "Zettelkasten folder"]),
+      expect.arrayContaining(["Model provider", "Model", "Offline mode", "Zettelkasten folder"]),
     );
     expect(settings.names.some((name) => name.endsWith("API key"))).toBe(true);
   });

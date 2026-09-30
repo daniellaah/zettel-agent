@@ -60,6 +60,11 @@ describe("resolveSettings", () => {
     expect(resolved.apiKeySecretIds).toEqual({ anthropic: "", openai: "", deepseek: "ds" });
   });
 
+  it("keeps a valid recording mode and ignores unknown ones", () => {
+    expect(resolveSettings({ recordingMode: "replay" }).recordingMode).toBe("replay");
+    expect(resolveSettings({ recordingMode: "tape" }).recordingMode).toBe("off");
+  });
+
   it("accepts non-object input", () => {
     expect(resolveSettings(null)).toEqual(DEFAULT_SETTINGS);
   });

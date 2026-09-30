@@ -43,10 +43,19 @@ describe.each(providers)("agent on %s", (provider) => {
 
   for (const scenario of SCENARIOS) {
     it(`answers: ${scenario.id} (${scenario.what})`, async () => {
-      const result = await page.run<AskResult>("ask", {
-        question: scenario.question,
-        reset: !scenario.followUp,
-      });
+      // E2E_RECORD=1 saves each standalone scenario's responses for offline replay tests
+      // (`npm run e2e:save-recordings`); follow-ups depend on context, so they are not saved.
+      const record = process.env.E2E_RECORD === "1" && !scenario.followUp;
+      const previousMode = record ? await page.run<string>("set-mode", { mode: "record" }) : null;
+      let result: AskResult;
+      try {
+        result = await page.run<AskResult>("ask", {
+          question: scenario.question,
+          reset: !scenario.followUp,
+        });
+      } finally {
+        if (previousMode !== null) await page.run("set-mode", { mode: previousMode });
+      }
       records.push({ scenario, result });
       expect(result.error).toBeNull();
       expect(["answered", "budget_exhausted"]).toContain(result.stop);
@@ -133,6 +142,26 @@ describe.each(providers)("agent on %s", (provider) => {
     } finally {
       await page.run("set-provider", { provider, model: original });
     }
+  });
+
+  it("records a question and replays it offline with no network calls", async () => {
+    const result = await page.run<Record<string, unknown>>("record-replay", {
+      question: "RRF 融合为什么只看排名？",
+    });
+    expect(result).toMatchObject({
+      recordedStop: "answered",
+      cassetteHasKey: false,
+      replayedStop: "answered",
+      replayedError: null,
+      sameAnswer: true,
+      sameTools: true,
+      networkCalls: 0,
+      listed: true,
+    });
+    expect(result.exchanges).toBeGreaterThan(0);
+    // About 1.5 s per replayed response, however many stream events it has.
+    expect(result.replaySeconds).toBeLessThan(2 * Number(result.exchanges) + 3);
+    expect(result.missingError).toMatch(/No recording/);
   });
 
   it("starts a new chat", async () => {

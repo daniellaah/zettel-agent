@@ -33,6 +33,16 @@ Answer quality varies by model and by run, so it is recorded rather than asserte
 
 Full records are written to `e2e/reports/` (git-ignored). Compare these reports across providers and prompt changes.
 
+## Recording real traffic for offline tests
+
+```bash
+E2E_RECORD=1 npm run e2e        # record every scenario's model responses
+npm run e2e:save-recordings     # copy them into fixtures/recordings/
+npm test                        # replay them offline (src/agent/replay-fixtures.test.ts)
+```
+
+A run always checks recording and replay inside Obsidian as well. It records one question, then replays it with the network watched. The replay must give the same answer and the same tool calls, and make no network calls. The cassette must not contain the API key.
+
 ## Requirements and safety
 
 - **Platform:** macOS. The runner uses `osascript` and `open`.

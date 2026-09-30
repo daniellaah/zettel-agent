@@ -10,7 +10,7 @@ function makeSession(steps: (Step | Error)[] | string) {
   const provider = typeof steps === "string" ? steps : new ScriptedProvider(steps);
   const session = new ChatSession({
     corpus: () => Promise.resolve(corpus),
-    provider: () => provider,
+    provider: () => Promise.resolve(provider),
     activeNotePath: () => "Z/Permanent/间隔重复.md",
   });
   let notifications = 0;

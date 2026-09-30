@@ -61,6 +61,12 @@ export class ChatView extends ItemView {
       component: this,
       model: () => plugin.settings.models[plugin.settings.provider],
       providerLabel: () => PROVIDERS[plugin.settings.provider].label,
+      recordingMode: () => plugin.settings.recordingMode,
+      recordedQuestions: () =>
+        plugin.recordings.questions(
+          plugin.settings.provider,
+          plugin.settings.models[plugin.settings.provider],
+        ),
       describeEvidence: (id) => {
         const evidence = session.evidence(id);
         return evidence ? linkTarget(evidence).replace("#", " › ") : null;

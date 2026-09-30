@@ -35,21 +35,24 @@ export function ChatApp({ session }: { session: ChatSession }) {
         >
           {host.model()}
         </span>
+        {host.recordingMode() !== "off" && (
+          <span
+            className={`za-mode-badge za-mode-${host.recordingMode()}`}
+            title={
+              host.recordingMode() === "replay"
+                ? "Offline: answers are replayed from recordings, at no cost"
+                : "Recording: each answer is saved for offline replay"
+            }
+          >
+            {host.recordingMode() === "replay" ? "Replay" : "Recording"}
+          </span>
+        )}
         <IconButton icon="square-pen" label="New chat" onClick={() => session.reset()} />
       </header>
 
       <div ref={scrollRef} className="za-transcript" role="log" aria-live="polite">
         {items.length === 0 ? (
-          <div className="za-empty">
-            <p>Ask anything about your notes. Answers cite the notes they come from.</p>
-            <div className="za-starters">
-              {STARTERS.map((starter) => (
-                <button key={starter} type="button" onClick={() => void session.send(starter)}>
-                  {starter}
-                </button>
-              ))}
-            </div>
-          </div>
+          <EmptyState onAsk={(question) => void session.send(question)} />
         ) : (
           items.map((item) => <Message key={item.id} item={item} session={session} />)
         )}
@@ -60,6 +63,45 @@ export function ChatApp({ session }: { session: ChatSession }) {
         onSend={(text) => void session.send(text)}
         onStop={() => session.stop()}
       />
+    </div>
+  );
+}
+
+function EmptyState({ onAsk }: { onAsk: (question: string) => void }) {
+  const host = useHost();
+  const replay = host.recordingMode() === "replay";
+  const [recorded, setRecorded] = useState<string[] | null>(null);
+  useEffect(() => {
+    if (!replay) return;
+    let current = true;
+    void host.recordedQuestions().then((questions) => {
+      if (current) setRecorded(questions);
+    });
+    return () => {
+      current = false;
+    };
+  }, [host, replay]);
+
+  const starters = replay ? (recorded ?? []).slice(0, 8) : STARTERS;
+  return (
+    <div className="za-empty">
+      <p>
+        {replay
+          ? "Replay mode: pick a recorded question to see its answer again, offline and free."
+          : "Ask anything about your notes. Answers cite the notes they come from."}
+      </p>
+      {replay && recorded?.length === 0 && (
+        <p>
+          No recordings for this model yet. Switch Offline mode to Record and ask a few questions.
+        </p>
+      )}
+      <div className="za-starters">
+        {starters.map((starter) => (
+          <button key={starter} type="button" onClick={() => onAsk(starter)}>
+            {starter}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

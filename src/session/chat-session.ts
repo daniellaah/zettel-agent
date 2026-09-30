@@ -52,8 +52,11 @@ export interface ChatSnapshot {
 export interface ChatSessionDeps {
   /** The corpus once indexing has finished. */
   corpus: () => Promise<Corpus>;
-  /** Creates a provider for this turn, or explains why it cannot (e.g. no API key). */
-  provider: () => ModelProvider | string;
+  /**
+   * Creates a provider for this turn's question, or explains why it cannot (no API key, no
+   * recording to replay).
+   */
+  provider: (question: string) => Promise<ModelProvider | string>;
   activeNotePath: () => string | null;
 }
 
@@ -103,7 +106,7 @@ export class ChatSession {
     };
     this.set({ items: [...this.snapshot.items, userItem, assistant], running: true });
 
-    const provider = this.deps.provider();
+    const provider = await this.deps.provider(text);
     if (typeof provider === "string") {
       this.updateAssistant((item) => ({ ...item, status: "done", stop: "error", error: provider }));
       this.set({ ...this.snapshot, running: false });
