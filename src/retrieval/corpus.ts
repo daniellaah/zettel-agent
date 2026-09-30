@@ -26,6 +26,7 @@ export class Corpus {
   private readonly notes = new Map<string, ParsedNote>();
   private readonly index: LexicalIndex;
   private cachedGraph: LinkGraph | null = null;
+  private cachedResolver: LinkResolver | null = null;
 
   constructor(private readonly options: CorpusOptions) {
     this.index = new LexicalIndex(options.mode ?? "both");
@@ -49,19 +50,25 @@ export class Corpus {
     if (existing?.contentHash === note.contentHash) return existing;
     this.notes.set(path, note);
     this.index.upsert(note);
-    this.cachedGraph = null;
+    this.invalidate();
     return note;
   }
 
   remove(path: string): void {
     if (!this.notes.delete(path)) return;
     this.index.remove(path);
-    this.cachedGraph = null;
+    this.invalidate();
   }
 
   rename(oldPath: string, newPath: string, content: string): void {
     this.remove(oldPath);
     this.upsert(newPath, content);
+  }
+
+  private invalidate(): void {
+    this.cachedGraph = null;
+    // A custom resolver (Obsidian's) tracks vault changes itself; the fallback must be rebuilt.
+    if (!this.options.resolver) this.cachedResolver = null;
   }
 
   stage(path: string): Stage | null {
@@ -72,11 +79,28 @@ export class Corpus {
 
   graph(): LinkGraph {
     if (!this.cachedGraph) {
-      const resolver = this.options.resolver ?? basenameResolver(this.notes.keys());
       const rawLinks = new Map([...this.notes].map(([path, note]) => [path, note.links]));
-      this.cachedGraph = LinkGraph.build(rawLinks, resolver);
+      this.cachedGraph = LinkGraph.build(rawLinks, (target, source) =>
+        this.resolve(target, source),
+      );
     }
     return this.cachedGraph;
+  }
+
+  /**
+   * Resolves a vault path, a note title or a `[[link]]` to a note in this corpus.
+   * Links that resolve to notes outside the corpus count as unresolved.
+   */
+  resolve(target: string, sourcePath = ""): string | null {
+    const cleaned = target
+      .trim()
+      .replace(/^!?\[\[|\]\]$/g, "")
+      .replace(/[#|^].*$/, "");
+    if (this.notes.has(cleaned)) return cleaned;
+    if (this.notes.has(`${cleaned}.md`)) return `${cleaned}.md`;
+    this.cachedResolver ??= this.options.resolver ?? basenameResolver(this.notes.keys());
+    const resolved = this.cachedResolver(cleaned, sourcePath);
+    return resolved !== null && this.notes.has(resolved) ? resolved : null;
   }
 
   search(query: string, options: CorpusSearchOptions = {}): SearchHit[] {
