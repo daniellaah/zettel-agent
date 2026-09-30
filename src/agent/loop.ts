@@ -1,14 +1,15 @@
-import type {
-  BetaContentBlockParam,
-  BetaMessage,
-  BetaMessageParam,
-  BetaToolResultBlockParam,
-  BetaToolUseBlock,
-} from "@anthropic-ai/sdk/resources/beta/messages/messages";
-
 import { citedIds } from "./evidence";
+import {
+  textOf,
+  toolCallsOf,
+  userText,
+  type AssistantMessage,
+  type ChatMessage,
+  type TextPart,
+  type ToolResultPart,
+} from "./messages";
 import { SYSTEM_PROMPT } from "./prompt";
-import type { ModelProvider } from "./provider";
+import type { ModelProvider, ModelResponse } from "./provider";
 import { executeTool, toolDefinitions, type ToolContext, type ToolOutcome } from "./tools";
 
 /**
@@ -55,7 +56,7 @@ export interface TurnUsage {
 
 export interface TurnResult {
   /** Messages to append to the conversation: the user message, then the turn's exchange. */
-  messages: BetaMessageParam[];
+  messages: ChatMessage[];
   stop: StopReason;
   /** Text of the final assistant message. */
   answer: string;
@@ -67,8 +68,8 @@ export interface TurnResult {
 export interface TurnOptions {
   provider: ModelProvider;
   context: ToolContext;
-  history: BetaMessageParam[];
-  userContent: string | BetaContentBlockParam[];
+  history: ChatMessage[];
+  userContent: string;
   budget?: Budget;
   events?: TurnEvents;
   signal?: AbortSignal;
@@ -78,7 +79,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
   const { provider, context, events = {}, signal } = options;
   const budget = options.budget ?? DEFAULT_BUDGET;
   const tools = toolDefinitions();
-  const turn: BetaMessageParam[] = [{ role: "user", content: options.userContent }];
+  const turn: ChatMessage[] = [userText(options.userContent)];
   const usage: TurnUsage = {
     requests: 0,
     toolCalls: 0,
@@ -90,7 +91,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
   let toolChars = 0;
   let staleRounds = 0;
   let exhausted = false;
-  let last: BetaMessage | null = null;
+  let last: AssistantMessage | null = null;
 
   const finish = (stop: StopReason, error?: unknown): TurnResult => {
     const answer = last ? textOf(last) : "";
@@ -113,9 +114,9 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
     usage.requests++;
     events.onRequest?.(usage.requests);
 
-    let message: BetaMessage;
+    let response: ModelResponse;
     try {
-      message = await provider.send(
+      response = await provider.send(
         {
           system: SYSTEM_PROMPT,
           messages: [...options.history, ...turn],
@@ -133,36 +134,36 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
       return finish(signal?.aborted ? "aborted" : "error", error);
     }
 
+    const message = response.message;
     last = message;
-    addUsage(usage, message);
-    turn.push({ role: "assistant", content: message.content });
-    const toolUses = message.content.filter(
-      (block): block is BetaToolUseBlock => block.type === "tool_use",
-    );
+    addUsage(usage, response);
+    turn.push(message);
+    const toolUses = toolCallsOf(message);
 
     // Tool calls that will not run still need results, or the next request is invalid.
     const endWithout = (stop: StopReason, reason: string): TurnResult => {
       if (toolUses.length > 0) {
         turn.push({
           role: "user",
-          content: toolUses.map((call) => toolResult(call.id, skipped(reason, call.name))),
+          parts: toolUses.map((call) => toolResult(call.id, skipped(reason, call.name))),
         });
       }
       return finish(stop);
     };
 
-    if (message.stop_reason === "refusal") return endWithout("refusal", "Not run: refusal.");
-    if (message.stop_reason === "max_tokens") {
+    if (response.finish === "refusal") return endWithout("refusal", "Not run: refusal.");
+    if (response.finish === "max_tokens") {
       // A tool input cut off at max_tokens may still parse; never run it.
       return endWithout("max_tokens", "Not run: the request hit max_tokens.");
     }
-    if (message.stop_reason === "pause_turn") continue;
+    if (response.finish === "pause") continue;
     if (toolUses.length === 0 || isFinalRequest) {
       return endWithout(exhausted ? "budget_exhausted" : "answered", "Not run: budget used up.");
     }
 
-    const results: BetaContentBlockParam[] = [];
+    const results: (ToolResultPart | TextPart)[] = [];
     let freshEvidence = 0;
+    let gathered = false;
     for (const call of toolUses) {
       usage.toolCalls++;
       events.onToolCall?.({ id: call.id, name: call.name, input: call.input });
@@ -173,10 +174,10 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
       events.onToolResult?.({ id: call.id, name: call.name, ...outcome });
       toolChars += outcome.content.length;
       freshEvidence += outcome.newEvidence;
+      gathered ||= !outcome.isError && outcome.evidenceIds.length > 0;
       results.push(toolResult(call.id, outcome));
     }
 
-    const gathered = results.some((r) => r.type === "tool_result" && !r.is_error && hasEvidence(r));
     staleRounds = gathered && freshEvidence === 0 ? staleRounds + 1 : 0;
     exhausted = usage.toolCalls >= budget.maxToolCalls || toolChars >= budget.maxToolChars;
 
@@ -192,18 +193,13 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
       });
       staleRounds = 0;
     }
-    turn.push({ role: "user", content: results });
+    turn.push({ role: "user", parts: results });
     if (signal?.aborted) return finish("aborted");
   }
 }
 
-function toolResult(id: string, outcome: ToolOutcome): BetaToolResultBlockParam {
-  return {
-    type: "tool_result",
-    tool_use_id: id,
-    content: outcome.content,
-    ...(outcome.isError && { is_error: true }),
-  };
+function toolResult(id: string, outcome: ToolOutcome): ToolResultPart {
+  return { type: "tool_result", callId: id, content: outcome.content, isError: outcome.isError };
 }
 
 function skipped(content: string, name: string): ToolOutcome {
@@ -216,20 +212,9 @@ function skipped(content: string, name: string): ToolOutcome {
   };
 }
 
-function hasEvidence(result: BetaToolResultBlockParam): boolean {
-  return typeof result.content === "string" && /\[E\d+\]/.test(result.content);
-}
-
-function textOf(message: BetaMessage): string {
-  return message.content
-    .filter((block) => block.type === "text")
-    .map((block) => block.text)
-    .join("");
-}
-
-function addUsage(usage: TurnUsage, message: BetaMessage): void {
-  usage.inputTokens += message.usage.input_tokens;
-  usage.outputTokens += message.usage.output_tokens;
-  usage.cacheReadTokens += message.usage.cache_read_input_tokens ?? 0;
-  usage.cacheWriteTokens += message.usage.cache_creation_input_tokens ?? 0;
+function addUsage(usage: TurnUsage, response: ModelResponse): void {
+  usage.inputTokens += response.usage.inputTokens;
+  usage.outputTokens += response.usage.outputTokens;
+  usage.cacheReadTokens += response.usage.cacheReadTokens;
+  usage.cacheWriteTokens += response.usage.cacheWriteTokens;
 }

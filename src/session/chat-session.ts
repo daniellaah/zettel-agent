@@ -1,9 +1,8 @@
-import type { BetaMessageParam } from "@anthropic-ai/sdk/resources/beta/messages/messages";
-
 import { EvidenceLedger, citationsToLinks, type Evidence } from "../agent/evidence";
 import { runTurn, type StopReason, type TurnUsage } from "../agent/loop";
 import { turnContext } from "../agent/prompt";
-import { describeProviderError, type ModelProvider } from "../agent/provider";
+import type { ChatMessage } from "../agent/messages";
+import type { ModelProvider } from "../agent/provider";
 import type { Corpus } from "../retrieval/corpus";
 
 /**
@@ -61,7 +60,7 @@ export interface ChatSessionDeps {
 export class ChatSession {
   private snapshot: ChatSnapshot = { items: [], running: false };
   private readonly listeners = new Set<() => void>();
-  private history: BetaMessageParam[] = [];
+  private history: ChatMessage[] = [];
   private ledger = new EvidenceLedger();
   private controller: AbortController | null = null;
   private nextId = 0;
@@ -148,7 +147,7 @@ export class ChatSession {
       ...item,
       status: "done",
       stop: result.stop,
-      error: result.stop === "error" ? describeProviderError(result.error) : null,
+      error: result.stop === "error" ? provider.describeError(result.error) : null,
       citations: result.citations,
       usage: result.usage,
     }));

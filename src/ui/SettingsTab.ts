@@ -1,7 +1,10 @@
 import { PluginSettingTab, SecretComponent, Setting, type App } from "obsidian";
 
 import type ZettelAgentPlugin from "../main";
-import { MODELS, STAGES, normalizeFolder } from "../settings";
+import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "../agent/providers/catalog";
+import { STAGES, normalizeFolder } from "../settings";
+
+const CUSTOM_MODEL = "__custom__";
 
 export class SettingsTab extends PluginSettingTab {
   constructor(
@@ -17,24 +20,59 @@ export class SettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("Anthropic API key")
+      .setName("Model provider")
+      .setDesc("Where questions and the note excerpts the agent reads are sent.")
+      .addDropdown((dropdown) => {
+        for (const id of PROVIDER_IDS) dropdown.addOption(id, PROVIDERS[id].label);
+        dropdown.setValue(settings.provider).onChange((provider) => {
+          settings.provider = provider as ProviderId;
+          void this.plugin.saveSettings();
+          this.display();
+        });
+      });
+
+    const provider = settings.provider;
+    const info = PROVIDERS[provider];
+
+    new Setting(containerEl)
+      .setName(`${info.label} API key`)
       .setDesc(
-        "Stored in Obsidian's secret storage, not in the plugin's data file. Your questions and the note excerpts the agent reads are sent to Anthropic.",
+        createFragment((fragment) => {
+          fragment.appendText("Kept in Obsidian's secret storage, not in the plugin's data file. ");
+          fragment.createEl("a", { text: "Create a key", href: info.keyUrl });
+        }),
       )
       .addComponent((el) =>
-        new SecretComponent(this.app, el).setValue(settings.apiKeySecretId).onChange((id) => {
-          settings.apiKeySecretId = id;
-          void this.plugin.saveSettings();
-        }),
+        new SecretComponent(this.app, el)
+          .setValue(settings.apiKeySecretIds[provider])
+          .onChange((id) => {
+            settings.apiKeySecretIds[provider] = id;
+            void this.plugin.saveSettings();
+          }),
       );
 
+    const isKnown = info.models.some((model) => model.id === settings.models[provider]);
     new Setting(containerEl).setName("Model").addDropdown((dropdown) => {
-      for (const model of MODELS) dropdown.addOption(model.id, model.label);
-      dropdown.setValue(settings.model).onChange((model) => {
-        settings.model = model;
+      for (const model of info.models) dropdown.addOption(model.id, model.label);
+      dropdown.addOption(CUSTOM_MODEL, "Other model ID…");
+      dropdown.setValue(isKnown ? settings.models[provider] : CUSTOM_MODEL).onChange((model) => {
+        settings.models[provider] = model === CUSTOM_MODEL ? "" : model;
         void this.plugin.saveSettings();
+        this.display();
       });
     });
+
+    if (!isKnown) {
+      new Setting(containerEl)
+        .setName("Model ID")
+        .setDesc("Exact model name as the provider's API expects it.")
+        .addText((text) =>
+          text.setValue(settings.models[provider]).onChange((value) => {
+            settings.models[provider] = value.trim();
+            void this.plugin.saveSettings();
+          }),
+        );
+    }
 
     new Setting(containerEl).setName("Zettelkasten").setHeading();
 

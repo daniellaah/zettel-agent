@@ -42,7 +42,9 @@ describe("ChatSession", () => {
     const { session, provider } = makeSession([[text("ok")]]);
     await session.send("hi");
     const request = (provider as ScriptedProvider).requests[0]!;
-    const content = request.messages[0]!.content as string;
+    const first = request.messages[0]!;
+    const content =
+      first.role === "user" && first.parts[0]?.type === "text" ? first.parts[0].text : "";
     expect(content).toContain("Vault: 1 notes");
     expect(content).toContain('"间隔重复" (Z/Permanent/间隔重复.md) open');
     expect(content.endsWith("hi")).toBe(true);

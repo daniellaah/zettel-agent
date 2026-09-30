@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 
 import { linkTarget } from "../agent/evidence";
+import { PROVIDERS } from "../agent/providers/catalog";
 import type ZettelAgentPlugin from "../main";
 import { ChatApp } from "./ChatApp";
 import { HostContext, type ChatHost } from "./host";
@@ -56,7 +57,8 @@ export class ChatView extends ItemView {
     return {
       app,
       component: this,
-      model: () => plugin.settings.model,
+      model: () => plugin.settings.models[plugin.settings.provider],
+      providerLabel: () => PROVIDERS[plugin.settings.provider].label,
       describeEvidence: (id) => {
         const evidence = session.evidence(id);
         return evidence ? linkTarget(evidence).replace("#", " › ") : null;

@@ -159,8 +159,8 @@ describe("toolDefinitions", () => {
       "list",
     ]);
     for (const tool of definitions) {
-      expect(tool.input_schema.type).toBe("object");
-      expect(tool.input_schema).not.toHaveProperty("$schema");
+      expect(tool.inputSchema.type).toBe("object");
+      expect(tool.inputSchema).not.toHaveProperty("$schema");
     }
   });
 });

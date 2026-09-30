@@ -1,16 +1,35 @@
-import Anthropic from "@anthropic-ai/sdk";
-import type {
-  BetaMessage,
-  BetaMessageParam,
-  BetaTool,
-} from "@anthropic-ai/sdk/resources/beta/messages/messages";
+import type { AssistantMessage, ChatMessage } from "./messages";
+
+/** A tool as the model sees it: name, description and a JSON Schema for its input. */
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+}
 
 export interface ModelRequest {
   system: string;
-  messages: BetaMessageParam[];
-  tools: BetaTool[];
+  messages: ChatMessage[];
+  tools: ToolDefinition[];
   /** False on the reserved final request: the model must answer with what it has. */
   allowTools: boolean;
+}
+
+/** Why a model response ended, normalized across providers. */
+export type FinishReason = "end" | "tool_calls" | "max_tokens" | "refusal" | "pause";
+
+export interface ModelUsage {
+  /** Input tokens billed at the full rate. */
+  inputTokens: number;
+  outputTokens: number;
+  cacheReadTokens: number;
+  cacheWriteTokens: number;
+}
+
+export interface ModelResponse {
+  message: AssistantMessage;
+  finish: FinishReason;
+  usage: ModelUsage;
 }
 
 export interface StreamHandlers {
@@ -18,81 +37,16 @@ export interface StreamHandlers {
   onThinking(delta: string): void;
 }
 
-/** One streamed model request. The loop owns everything else. */
+/** One streamed model request, normalized. The agent loop owns everything else. */
 export interface ModelProvider {
+  /** Provider id, e.g. "anthropic"; used to route raw content back to its source. */
+  readonly provider: string;
   readonly model: string;
-  send(request: ModelRequest, handlers: StreamHandlers, signal?: AbortSignal): Promise<BetaMessage>;
-}
-
-export type Effort = "low" | "medium" | "high";
-
-/** Models that take adaptive thinking, effort and server-side refusal fallbacks. */
-const CURRENT_GENERATION = new Set(["claude-opus-5-5", "claude-sonnet-5-5"]);
-
-export class AnthropicProvider implements ModelProvider {
-  private readonly client: Anthropic;
-
-  constructor(
-    apiKey: string,
-    readonly model: string,
-    private readonly effort: Effort = "medium",
-  ) {
-    // Obsidian runs the plugin in Electron's renderer; the key never leaves this machine
-    // except to api.anthropic.com.
-    this.client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
-  }
-
-  async send(
+  send(
     request: ModelRequest,
     handlers: StreamHandlers,
     signal?: AbortSignal,
-  ): Promise<BetaMessage> {
-    const current = CURRENT_GENERATION.has(this.model);
-    const stream = this.client.beta.messages.stream(
-      {
-        model: this.model,
-        max_tokens: 32_000,
-        system: request.system,
-        messages: request.messages,
-        tools: request.tools,
-        tool_choice: { type: request.allowTools ? "auto" : "none" },
-        // Caches the longest stable prefix: tools, system prompt and prior turns.
-        cache_control: { type: "ephemeral" },
-        ...(current && {
-          thinking: { type: "adaptive", display: "summarized" },
-          output_config: { effort: this.effort },
-          // On a safety refusal, the API reruns the request on a suitable fallback model.
-          betas: ["server-side-fallback-2026-07-01"],
-          fallbacks: "default",
-        }),
-      },
-      signal ? { signal } : undefined,
-    );
-    for await (const event of stream) {
-      if (event.type !== "content_block_delta") continue;
-      if (event.delta.type === "text_delta") handlers.onText(event.delta.text);
-      else if (event.delta.type === "thinking_delta") handlers.onThinking(event.delta.thinking);
-    }
-    return stream.finalMessage();
-  }
-}
-
-/** A message the user can act on, for errors thrown by `send`. */
-export function describeProviderError(error: unknown): string {
-  if (error instanceof Anthropic.AuthenticationError) {
-    return "Anthropic rejected the API key. Check it in the plugin settings.";
-  }
-  if (error instanceof Anthropic.PermissionDeniedError) {
-    return "This API key cannot use the selected model.";
-  }
-  if (error instanceof Anthropic.RateLimitError) {
-    return "Rate limited by Anthropic. Wait a moment and try again.";
-  }
-  if (error instanceof Anthropic.APIConnectionError) {
-    return "Could not reach Anthropic. Check your network connection.";
-  }
-  if (error instanceof Anthropic.APIError) {
-    return `Anthropic API error${error.status ? ` ${error.status}` : ""}: ${error.message}`;
-  }
-  return error instanceof Error ? error.message : "The request failed.";
+  ): Promise<ModelResponse>;
+  /** A message the user can act on, for an error thrown by `send`. */
+  describeError(error: unknown): string;
 }

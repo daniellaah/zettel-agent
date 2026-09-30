@@ -1,10 +1,10 @@
-import type { BetaTool } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { z } from "zod";
 
 import { STAGES } from "../settings";
 import type { Corpus } from "../retrieval/corpus";
 import { sectionSubtree, type ParsedNote, type Section } from "../retrieval/markdown";
 import type { EvidenceLedger } from "./evidence";
+import type { ToolDefinition } from "./provider";
 
 /**
  * The agent's tools. All of them are read-only: they search and read the corpus and
@@ -323,15 +323,11 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
 ];
 
 /** Tool definitions for the Messages API, in a fixed order so the prompt cache stays warm. */
-export function toolDefinitions(): BetaTool[] {
+export function toolDefinitions(): ToolDefinition[] {
   return TOOLS.map((tool) => {
     const schema = z.toJSONSchema(tool.schema) as Record<string, unknown>;
     delete schema.$schema;
-    return {
-      name: tool.name,
-      description: tool.description,
-      input_schema: schema as BetaTool["input_schema"],
-    };
+    return { name: tool.name, description: tool.description, inputSchema: schema };
   });
 }
 

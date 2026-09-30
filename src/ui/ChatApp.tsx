@@ -29,7 +29,10 @@ export function ChatApp({ session }: { session: ChatSession }) {
     <div className="za-chat">
       <header className="za-header">
         <span className="za-header-title">Zettelkasten</span>
-        <span className="za-header-model" title="Questions and note excerpts go to Anthropic">
+        <span
+          className="za-header-model"
+          title={`Questions and note excerpts go to ${host.providerLabel()}`}
+        >
           {host.model()}
         </span>
         <IconButton icon="square-pen" label="New chat" onClick={() => session.reset()} />

@@ -28,10 +28,36 @@ describe("stageForPath", () => {
 
 describe("resolveSettings", () => {
   it("falls back to defaults for missing or mistyped fields", () => {
-    const resolved = resolveSettings({ model: 42, stageFolders: { permanent: " /Zettel/ " } });
-    expect(resolved.model).toBe(DEFAULT_SETTINGS.model);
+    const resolved = resolveSettings({
+      provider: "nope",
+      models: { openai: 42 },
+      stageFolders: { permanent: " /Zettel/ " },
+    });
+    expect(resolved.provider).toBe("anthropic");
+    expect(resolved.models.openai).toBe(DEFAULT_SETTINGS.models.openai);
     expect(resolved.stageFolders.permanent).toBe("Zettel");
     expect(resolved.stageFolders.fleeting).toBe("Fleeting");
+  });
+
+  it("migrates the single-provider v0.1 settings", () => {
+    const resolved = resolveSettings({
+      apiKeySecretId: "anthropic-key",
+      model: "claude-sonnet-5-5",
+    });
+    expect(resolved.apiKeySecretIds.anthropic).toBe("anthropic-key");
+    expect(resolved.models.anthropic).toBe("claude-sonnet-5-5");
+    expect(resolved.models.deepseek).toBe("deepseek-flash");
+  });
+
+  it("keeps a model and key per provider", () => {
+    const resolved = resolveSettings({
+      provider: "deepseek",
+      models: { deepseek: "deepseek-v4-pro" },
+      apiKeySecretIds: { deepseek: "ds" },
+    });
+    expect(resolved.provider).toBe("deepseek");
+    expect(resolved.models.deepseek).toBe("deepseek-v4-pro");
+    expect(resolved.apiKeySecretIds).toEqual({ anthropic: "", openai: "", deepseek: "ds" });
   });
 
   it("accepts non-object input", () => {

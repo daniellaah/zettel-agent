@@ -1,16 +1,14 @@
+import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "./agent/providers/catalog";
+
 export const STAGES = ["fleeting", "literature", "permanent", "writing"] as const;
 export type Stage = (typeof STAGES)[number];
 
-export const MODELS = [
-  { id: "claude-opus-5-5", label: "Claude Opus 5.5" },
-  { id: "claude-sonnet-5-5", label: "Claude Sonnet 5.5" },
-  { id: "claude-haiku-4-5", label: "Claude Haiku 4.5" },
-] as const;
-
 export interface PluginSettings {
-  /** ID of the Anthropic API key in Obsidian's secret storage; the key itself is never in data.json. */
-  apiKeySecretId: string;
-  model: string;
+  provider: ProviderId;
+  /** Model per provider, so switching providers back and forth keeps each choice. */
+  models: Record<ProviderId, string>;
+  /** IDs of API keys in Obsidian's secret storage; the keys themselves are never in data.json. */
+  apiKeySecretIds: Record<ProviderId, string>;
   /** Vault-relative Zettelkasten folder. Empty means the whole vault. */
   zettelkastenRoot: string;
   /** Sub-folder of the root that holds each stage, matched case-insensitively. */
@@ -18,8 +16,13 @@ export interface PluginSettings {
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-  apiKeySecretId: "",
-  model: "claude-opus-5-5",
+  provider: "anthropic",
+  models: {
+    anthropic: PROVIDERS.anthropic.defaultModel,
+    openai: PROVIDERS.openai.defaultModel,
+    deepseek: PROVIDERS.deepseek.defaultModel,
+  },
+  apiKeySecretIds: { anthropic: "", openai: "", deepseek: "" },
   zettelkastenRoot: "",
   stageFolders: {
     fleeting: "Fleeting",
@@ -38,9 +41,28 @@ export function resolveSettings(stored: unknown): PluginSettings {
     const folder = stageData[stage];
     if (typeof folder === "string") stageFolders[stage] = normalizeFolder(folder);
   }
+  const storedModels = isRecord(data.models) ? data.models : {};
+  const storedKeys = isRecord(data.apiKeySecretIds) ? data.apiKeySecretIds : {};
+  const models = {} as Record<ProviderId, string>;
+  const apiKeySecretIds = {} as Record<ProviderId, string>;
+  for (const id of PROVIDER_IDS) {
+    models[id] =
+      stringOr(storedModels[id], PROVIDERS[id].defaultModel) || PROVIDERS[id].defaultModel;
+    apiKeySecretIds[id] = stringOr(storedKeys[id], "");
+  }
+  // v0.1 stored a single Anthropic key and model.
+  if (typeof data.apiKeySecretId === "string" && apiKeySecretIds.anthropic === "") {
+    apiKeySecretIds.anthropic = data.apiKeySecretId;
+  }
+  if (typeof data.model === "string" && !isRecord(data.models)) models.anthropic = data.model;
+  const provider = (PROVIDER_IDS as readonly unknown[]).includes(data.provider)
+    ? (data.provider as ProviderId)
+    : DEFAULT_SETTINGS.provider;
+
   return {
-    apiKeySecretId: stringOr(data.apiKeySecretId, DEFAULT_SETTINGS.apiKeySecretId),
-    model: stringOr(data.model, DEFAULT_SETTINGS.model),
+    provider,
+    models,
+    apiKeySecretIds,
     zettelkastenRoot: normalizeFolder(
       stringOr(data.zettelkastenRoot, DEFAULT_SETTINGS.zettelkastenRoot),
     ),

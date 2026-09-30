@@ -1,6 +1,8 @@
 import { MarkdownView, Plugin, debounce } from "obsidian";
 
-import { AnthropicProvider } from "./agent/provider";
+import type { ModelProvider } from "./agent/provider";
+import { PROVIDERS } from "./agent/providers/catalog";
+import { createProvider } from "./agent/providers";
 import { ChatSession } from "./session/chat-session";
 import { resolveSettings, type PluginSettings } from "./settings";
 import { ChatView, VIEW_TYPE_CHAT } from "./ui/ChatView";
@@ -52,11 +54,13 @@ export default class ZettelAgentPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  private createProvider(): AnthropicProvider | string {
-    const secretId = this.settings.apiKeySecretId;
+  private createProvider(): ModelProvider | string {
+    const { provider, models, apiKeySecretIds } = this.settings;
+    const secretId = apiKeySecretIds[provider];
     const apiKey = secretId ? this.app.secretStorage.getSecret(secretId) : null;
-    if (!apiKey) return "Add your Anthropic API key in Settings → Zettel Agent.";
-    return new AnthropicProvider(apiKey, this.settings.model);
+    if (!apiKey) return `Add your ${PROVIDERS[provider].label} API key in Settings → Zettel Agent.`;
+    if (!models[provider]) return "Enter a model ID in Settings → Zettel Agent.";
+    return createProvider(provider, apiKey, models[provider]);
   }
 
   private activeNotePath(): string | null {

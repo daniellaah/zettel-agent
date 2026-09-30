@@ -1,8 +1,8 @@
-import type { BetaMessageParam } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { describe, expect, it } from "vitest";
 
 import { Corpus } from "../retrieval/corpus";
 import { EvidenceLedger } from "./evidence";
+import { textOf, type AssistantMessage, type ChatMessage } from "./messages";
 import { runTurn, type Budget } from "./loop";
 import { ScriptedProvider, call, text, type Step } from "../testing/scripted-provider";
 
@@ -16,7 +16,7 @@ function makeContext() {
   return { corpus, ledger: new EvidenceLedger() };
 }
 
-async function run(steps: (Step | Error)[], budget?: Budget, history: BetaMessageParam[] = []) {
+async function run(steps: (Step | Error)[], budget?: Budget, history: ChatMessage[] = []) {
   const provider = new ScriptedProvider(steps);
   const deltas: string[] = [];
   const toolSummaries: string[] = [];
@@ -35,19 +35,24 @@ async function run(steps: (Step | Error)[], budget?: Budget, history: BetaMessag
 }
 
 /** Every tool_use in the transcript must be answered by a tool_result. */
-function expectValidTranscript(messages: BetaMessageParam[]) {
+function expectValidTranscript(messages: ChatMessage[]) {
   messages.forEach((message, index) => {
-    if (message.role !== "assistant" || typeof message.content === "string") return;
-    const ids = message.content.flatMap((b) => (b.type === "tool_use" ? [b.id] : []));
+    if (message.role !== "assistant") return;
+    const ids = message.parts.flatMap((p) => (p.type === "tool_call" ? [p.id] : []));
     if (ids.length === 0) return;
     const next = messages[index + 1];
     const answered =
-      next && typeof next.content !== "string"
-        ? next.content.flatMap((b) => (b.type === "tool_result" ? [b.tool_use_id] : []))
+      next?.role === "user"
+        ? next.parts.flatMap((p) => (p.type === "tool_result" ? [p.callId] : []))
         : [];
     expect(answered).toEqual(ids);
   });
 }
+
+const contentOf = (message: ChatMessage) =>
+  message.role === "assistant"
+    ? textOf(message)
+    : message.parts.map((p) => (p.type === "text" ? p.text : p.content)).join("\n");
 
 describe("runTurn", () => {
   it("returns a direct answer without tools", async () => {
@@ -71,12 +76,10 @@ describe("runTurn", () => {
   });
 
   it("sends history before the new turn", async () => {
-    const history: BetaMessageParam[] = [
-      { role: "user", content: "earlier" },
-      { role: "assistant", content: "reply" },
-    ];
+    const reply: AssistantMessage = { role: "assistant", parts: [text("reply")] };
+    const history: ChatMessage[] = [{ role: "user", parts: [text("earlier")] }, reply];
     const { provider } = await run([[text("ok")]], undefined, history);
-    expect(provider.requests[0]!.messages.map((m) => m.content)).toEqual([
+    expect(provider.requests[0]!.messages.map(contentOf)).toEqual([
       "earlier",
       "reply",
       "间隔重复有什么用？",
@@ -103,7 +106,7 @@ describe("runTurn", () => {
     expect(result.stop).toBe("budget_exhausted");
     expect(provider.requests[1]!.allowTools).toBe(false);
     const lastUser = provider.requests[1]!.messages.at(-1)!;
-    expect(JSON.stringify(lastUser.content)).toContain("research budget for this turn is used up");
+    expect(contentOf(lastUser)).toContain("research budget for this turn is used up");
   });
 
   it("nudges the model after repeated rounds without new evidence", async () => {
@@ -114,14 +117,14 @@ describe("runTurn", () => {
       [text("done")],
     ]);
     const nudges = provider.requests.map((r) =>
-      JSON.stringify(r.messages.at(-1)!.content).includes("only evidence you already had"),
+      contentOf(r.messages.at(-1)!).includes("only evidence you already had"),
     );
     expect(nudges).toEqual([false, false, false, true]);
   });
 
   it("answers tool calls it will not run, keeping the transcript valid", async () => {
     const { result } = await run([
-      { content: [call("search", { query: "间隔" })], stop: "max_tokens" },
+      { parts: [call("search", { query: "间隔" })], finish: "max_tokens" },
     ]);
     expect(result.stop).toBe("max_tokens");
     expectValidTranscript(result.messages);

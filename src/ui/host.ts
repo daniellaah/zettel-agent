@@ -7,6 +7,7 @@ export interface ChatHost {
   /** Owner for MarkdownRenderer children, so they unload with the view. */
   component: Component;
   model(): string;
+  providerLabel(): string;
   /** "Title › Heading" for an evidence id, or null if unknown. */
   describeEvidence(id: string): string | null;
   openEvidence(id: string, newLeaf: boolean): void;
