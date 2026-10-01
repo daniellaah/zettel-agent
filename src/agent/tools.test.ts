@@ -2,8 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import { resolveSettings, stageForPath } from "../settings";
 import { Corpus } from "../retrieval/corpus";
+import { parseNote } from "../retrieval/markdown";
 import { EvidenceLedger } from "./evidence";
-import { excerptAround, executeTool, toolDefinitions, type ToolContext } from "./tools";
+import {
+  excerptAround,
+  executeTool,
+  openingText,
+  toolDefinitions,
+  type ToolContext,
+} from "./tools";
 
 function makeContext(): ToolContext {
   const settings = resolveSettings({ zettelkastenRoot: "Z" });
@@ -117,8 +124,8 @@ describe("read", () => {
 describe("links and list", () => {
   it("shows outgoing links, backlinks and the two-hop neighbourhood", () => {
     const result = executeTool("links", { target: "链接需要理由", depth: 2 }, makeContext());
-    expect(result.content).toContain("Outgoing (1):\n- Retrieval practice (permanent)");
-    expect(result.content).toContain("Backlinks (1):\n- 一张卡片只承载一个想法 (permanent)");
+    expect(result.content).toContain("Outgoing (1):\n- [E2] Retrieval practice (permanent)");
+    expect(result.content).toContain("Backlinks (1):\n- [E3] 一张卡片只承载一个想法 (permanent)");
     expect(result.content).toContain("Two links away (0):");
     expect(result.summary).toBe("links 链接需要理由 → 1 out, 1 in");
   });
@@ -127,6 +134,42 @@ describe("links and list", () => {
     const result = executeTool("list", { orphans_only: true }, makeContext());
     expect(result.content).toContain("孤立的想法 (permanent, 0 out, 0 in)");
     expect(result.content).not.toContain("链接需要理由");
+  });
+
+  it("gives every listed note a citable evidence id", () => {
+    const context = makeContext();
+    const result = executeTool("list", { orphans_only: true, stages: ["permanent"] }, context);
+    expect(result.content).toMatch(/^- \[E1\] 孤立的想法 /);
+    expect(result.evidenceIds).toEqual(["E1"]);
+    expect(context.ledger.get("E1")?.path).toBe("Z/Permanent/孤立的想法.md");
+  });
+
+  it("gives every note in a link neighbourhood an evidence id", () => {
+    const context = makeContext();
+    const result = executeTool("links", { target: "链接需要理由" }, context);
+    expect(result.content).toMatch(/^Note: \[E1\] 链接需要理由 /);
+    expect(result.content).toContain("Outgoing (1):\n- [E2] Retrieval practice (permanent)");
+    expect(result.evidenceIds).toHaveLength(3);
+  });
+
+  it("previews opening lines as note data only when asked", () => {
+    const context = makeContext();
+    const filters = { orphans_only: true, stages: ["permanent"] };
+    const plain = executeTool("list", filters, context);
+    expect(plain.content).not.toContain("没有任何链接");
+    const preview = executeTool("list", { ...filters, preview: true }, context);
+    expect(preview.content).toBe(
+      "<note_lines>\n- [E1] 孤立的想法 (permanent, 0 out, 0 in) Z/Permanent/孤立的想法.md\n  没有任何链接。\n</note_lines>",
+    );
+  });
+});
+
+describe("openingText", () => {
+  it("drops headings, collapses whitespace and truncates", () => {
+    const note = parseNote("a.md", "# Title\n\nFirst line.\n\n## Part\n\nSecond   line.");
+    expect(openingText(note, 100)).toBe("First line. Second line.");
+    expect(openingText(note, 5)).toBe("First…");
+    expect(openingText(parseNote("empty.md", ""), 100)).toBe("");
   });
 });
 

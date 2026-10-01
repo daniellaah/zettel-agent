@@ -55,13 +55,13 @@ Adapters take an optional `fetch`. In Record mode, `recordingFetch` saves each r
 
 ## Tools (all read-only)
 
-| Tool     | Purpose                                                                                                                                               |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `search` | BM25 over sections, filtered by stage, folder or tag. Returns the best section of each note as an excerpt, with an evidence id and the matched terms. |
-| `match`  | Exact or regex line matches, for questions like "which notes mention X".                                                                              |
-| `read`   | Expands an evidence id to its section and sub-sections, or reads one section by heading, or a whole note. Size-capped.                                |
-| `links`  | Outgoing links, backlinks and unresolved links, with `depth: 2` for notes two hops away.                                                              |
-| `list`   | Notes by stage, folder, tag or orphan status, with link counts.                                                                                       |
+| Tool     | Purpose                                                                                                                                                                     |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search` | BM25 over sections, filtered by stage, folder or tag. Returns the best section of each note as an excerpt, with an evidence id and the matched terms.                       |
+| `match`  | Exact or regex line matches, for questions like "which notes mention X".                                                                                                    |
+| `read`   | Expands an evidence id to its section and sub-sections, or reads one section by heading, or a whole note. Size-capped.                                                      |
+| `links`  | Outgoing links, backlinks and unresolved links, with `depth: 2` for notes two hops away. Each note gets an evidence id, so structural facts can be cited.                   |
+| `list`   | Notes by stage, folder, tag or orphan status, with link counts and an evidence id each. `preview` adds each note's opening lines, for skimming the whole vault in one call. |
 
 Note text is wrapped in `<note>` tags that the text itself cannot close. The system prompt treats text inside those tags as data and never as instructions.
 

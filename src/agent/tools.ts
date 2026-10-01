@@ -29,6 +29,7 @@ export interface ToolOutcome {
 }
 
 const EXCERPT_CHARS = 600;
+const PREVIEW_CHARS = 200;
 const READ_CHARS = 12_000;
 const MAX_REGEX_LENGTH = 200;
 
@@ -89,6 +90,10 @@ const listInput = z
     folder: folderSchema,
     tag: tagSchema,
     orphans_only: z.boolean().optional().describe("Only notes with no links in or out."),
+    preview: z
+      .boolean()
+      .optional()
+      .describe("Add each note's opening lines, to skim many notes without reading each one."),
     limit: z.number().int().min(1).max(200).optional().describe("Maximum notes (default 50)."),
   })
   .strict();
@@ -254,20 +259,23 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
   defineTool({
     name: "links",
     description:
-      "A note's link neighbourhood: outgoing links, backlinks and unresolved links; depth 2 adds notes two hops away. Use to follow ideas across notes, check how a note is connected, or find orphans' context.",
+      "A note's link neighbourhood: outgoing links, backlinks and unresolved links; depth 2 adds notes two hops away. Each note has an evidence id. Use to follow ideas across notes, check how a note is connected, or find orphans' context.",
     schema: linksInput,
-    run: (input, { corpus }) => {
+    run: (input, { corpus, ledger }) => {
       const path = corpus.resolve(input.target);
       if (!path) {
         return failure(`No note named "${input.target}".`, `links "${input.target}" → not found`);
       }
       const graph = corpus.graph();
-      const describe = (p: string) => `- ${corpus.get(p)!.title} (${corpus.stage(p) ?? "—"}) ${p}`;
+      const delivered = new Delivery(ledger);
+      const label = (p: string) =>
+        `${delivered.noteLabel(corpus.get(p)!)}${corpus.get(p)!.title} (${corpus.stage(p) ?? "—"}) ${p}`;
+      const describe = (p: string) => `- ${label(p)}`;
       const outlinks = graph.outlinks(path);
       const backlinks = graph.backlinks(path);
       const unresolved = graph.unresolvedLinks(path);
       const lines = [
-        `Note: ${corpus.get(path)!.title} (${corpus.stage(path) ?? "—"}) ${path}`,
+        `Note: ${label(path)}`,
         `Outgoing (${outlinks.length}):`,
         ...outlinks.map(describe),
         `Backlinks (${backlinks.length}):`,
@@ -280,7 +288,7 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
         const twoHops = [...graph.neighborhood(path, 2)].filter(([, hop]) => hop === 2);
         lines.push(`Two links away (${twoHops.length}):`, ...twoHops.map(([p]) => describe(p)));
       }
-      return outcome(
+      return delivered.outcome(
         lines.join("\n"),
         `links ${corpus.get(path)!.title} → ${outlinks.length} out, ${backlinks.length} in`,
       );
@@ -290,9 +298,9 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
   defineTool({
     name: "list",
     description:
-      "List notes by stage, folder or tag, with their link counts. Use to survey what exists, find orphan notes, or browse when search terms are unclear.",
+      "List notes by stage, folder or tag, with their link counts and an evidence id each. With `preview`, each note also shows its opening lines. Use to survey what exists, skim many notes at once, find orphan notes, or browse when search terms are unclear.",
     schema: listInput,
-    run: (input, { corpus }) => {
+    run: (input, { corpus, ledger }) => {
       const graph = corpus.graph();
       const wantedTag = input.tag?.replace(/^#/, "").toLowerCase();
       const prefix = input.folder ? `${input.folder.replace(/\/+$/, "")}/` : null;
@@ -307,15 +315,22 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
         }
         return true;
       });
+      if (rows.length === 0) {
+        return outcome("No notes match these filters.", "list → 0 notes");
+      }
       const limit = input.limit ?? 50;
+      const delivered = new Delivery(ledger);
       const lines = rows.slice(0, limit).map((path) => {
         const note = corpus.get(path)!;
         const tags = note.tags.length > 0 ? ` #${note.tags.join(" #")}` : "";
-        return `- ${note.title} (${corpus.stage(path) ?? "—"}, ${graph.outlinks(path).length} out, ${graph.backlinks(path).length} in)${tags} ${path}`;
+        const row = `- ${delivered.noteLabel(note)}${note.title} (${corpus.stage(path) ?? "—"}, ${graph.outlinks(path).length} out, ${graph.backlinks(path).length} in)${tags} ${path}`;
+        const opening = input.preview ? openingText(note, PREVIEW_CHARS) : "";
+        return opening ? `${row}\n  ${quote(opening)}` : row;
       });
       const more = rows.length > limit ? `\n(${rows.length - limit} more not shown)` : "";
-      return outcome(
-        rows.length === 0 ? "No notes match these filters." : `${lines.join("\n")}${more}`,
+      const body = `${lines.join("\n")}${more}`;
+      return delivered.outcome(
+        input.preview ? `<note_lines>\n${body}\n</note_lines>` : body,
         `list → ${rows.length} note${rows.length === 1 ? "" : "s"}`,
       );
     },
@@ -366,6 +381,12 @@ class Delivery {
     return evidence.id;
   }
 
+  /** "[E3] " for a note cited as a whole (its first section), or "" for an empty note. */
+  noteLabel(note: ParsedNote): string {
+    const first = note.sections[0];
+    return first ? `[${this.add(note, first)}] ` : "";
+  }
+
   outcome(content: string, summary: string): ToolOutcome {
     return { content, isError: false, summary, evidenceIds: this.ids, newEvidence: this.fresh };
   }
@@ -409,6 +430,17 @@ export function excerptAround(text: string, terms: string[], size: number): stri
   if (lineStart !== -1 && start - lineStart < 80) start = lineStart + 1;
   const end = Math.min(text.length, start + size);
   return `${start > 0 ? "…" : ""}${text.slice(start, end).trim()}${end < text.length ? "…" : ""}`;
+}
+
+/** A note's first words of body text, headings dropped and whitespace collapsed. */
+export function openingText(note: ParsedNote, size: number): string {
+  const text = note.sections
+    .flatMap((section) => section.text.split("\n"))
+    .filter((line) => !/^#{1,6}\s/.test(line))
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return truncate(text, size);
 }
 
 function splitHeading(target: string): [string, string | undefined] {
