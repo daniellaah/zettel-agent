@@ -8,7 +8,7 @@ _The agent searches (in Chinese, then again in English), reads four notes, and a
 
 Zettel Agent is a thinking partner for a Zettelkasten (Fleeting, Literature, Permanent and Writing notes). It is **read-only by construction**: it has no tool that can change a file. It critiques and questions your drafts instead of writing them for you, because Zettelkasten notes are meant to be in your own words. Text reaches a note only when you copy or insert it yourself.
 
-> **Status:** v0.1, desktop only. Verified end to end with DeepSeek. The Claude and OpenAI adapters are covered by contract tests and still need a live check. You bring your own API key.
+> **Status:** v0.1, desktop only. Verified end to end with DeepSeek Flash, Claude Haiku 4.5 and GPT-6 Luna. You bring your own API key.
 
 ## Features
 
@@ -19,7 +19,7 @@ Zettel Agent is a thinking partner for a Zettelkasten (Fleeting, Literature, Per
 - **Context from Obsidian.** Type `@` to attach any note. The open note, and text you have selected in editing or reading view, are offered as one-click chips.
 - **Saved chats.** Chats are saved after every answer and can be reopened from History, with working citations and the model context intact. You can retry the last question or stop an answer with Esc.
 - **Copy and insert.** Copy an answer, or insert it at your cursor; either way citations become `[[Note#Heading]]` links.
-- **Choice of model.** Claude, OpenAI (Responses API) or DeepSeek, selected in settings. Each model provider has its own API key, kept in Obsidian's secret storage.
+- **Choice of model.** Claude, OpenAI (Responses API) or DeepSeek, selected in settings. Each provider defaults to its cheapest model, and a stronger one can be picked. Each model provider has its own API key, kept in Obsidian's secret storage.
 - **Offline mode.** Record answers once, then replay them with no network and no cost, for demos and interface work.
 
 ## Design
