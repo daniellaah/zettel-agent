@@ -233,7 +233,7 @@ describe("OpenAIResponsesProvider streaming (replayed)", () => {
       ["response.completed", { type: "response.completed", sequence_number: 11, response: completed }],
     ]); // prettier-ignore
 
-    const { fetch, sent } = replayAndCapture([body]);
+    const { fetch, sent } = replayAndCapture([body, body]);
     const provider = new OpenAIResponsesProvider("sk-test", "gpt-6.1-sol", { fetch });
     const text: string[] = [];
     const thinking: string[] = [];
@@ -263,6 +263,32 @@ describe("OpenAIResponsesProvider streaming (replayed)", () => {
       include: ["reasoning.encrypted_content"],
       tool_choice: "none",
       reasoning: { effort: "medium", summary: "auto" },
+    });
+
+    // The SDK adds `parsed_arguments` to function calls; the API rejects it as input.
+    await provider.send(
+      {
+        ...request("q"),
+        messages: [
+          ...request("q").messages,
+          response.message,
+          {
+            role: "user",
+            parts: [{ type: "tool_result", callId: "call_1", content: "r", isError: false }],
+          },
+        ],
+      },
+      { onText: () => {}, onThinking: () => {} },
+    );
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const input = (sent[1]!.requestBody as { input: Record<string, unknown>[] }).input;
+    expect(input.find((item) => item.type === "function_call")).toEqual({
+      type: "function_call",
+      id: "fc_1",
+      call_id: "call_1",
+      name: "search",
+      arguments: '{"query":"q"}',
+      status: "completed",
     });
   });
 });

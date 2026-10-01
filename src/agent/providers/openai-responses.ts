@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
 import type {
   Response,
   ResponseInputItem,
@@ -93,7 +94,9 @@ export function toResponsesInput(messages: ChatMessage[], model: string): Respon
       return text.length > 0 ? [...outputs, { role: "user", content: text.join("\n\n") }] : outputs;
     }
     const raw = rawFor<ResponseOutputItem[]>(message, "openai", model);
-    if (raw) return raw as ResponseInputItem[];
+    // The SDK adds fields such as `parsed_arguments` to output items that the API rejects
+    // as input; its own helper strips them. Applied here, it also fixes saved chats.
+    if (raw) return toResponseInputItems(raw);
     return message.parts.flatMap((part): ResponseInputItem[] => {
       if (part.type === "text" && part.text !== "")
         return [{ role: "assistant", content: part.text }];
