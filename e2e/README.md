@@ -13,9 +13,10 @@ E2E_KEEP_OBSIDIAN=1 npm run e2e              # leave Obsidian on the debugging p
 1. **Build.** `main.js` is built into `fixtures/vault/.obsidian/plugins/zettel-agent/`, and the plugin is enabled for that vault.
 2. **Launch.** If nothing is listening on port 9222, Obsidian is restarted with `--remote-debugging-port=9222`, which binds to 127.0.0.1 only. The fixture vault is then opened.
 3. **Connect.** The runner attaches only to the window whose vault is `fixtures/vault`. It never runs code in the window of any other vault.
-4. **Test.** The plugin is reloaded and the two test files run:
+4. **Test.** The plugin is reloaded and the test files run:
    - `plugin.e2e.ts` makes no model calls. It checks indexing by stage, the settings tab, the empty chat view, and the error shown when an API key is missing.
-   - `agent.e2e.ts` runs once for each selected provider. It asks the questions listed in `scenarios.ts`, then checks the rendered chat, citation and link clicks, and insert-at-cursor. It attaches context through the composer (`@`, the open-note chip and a selection), clicks retry, and reopens a chat from history after reloading the plugin. It also checks stopping and continuing, unresolved links, offline record and replay, and a wrong model name.
+   - `note-creation.e2e.ts` makes no model calls. It creates each note type through the command and dialog, checks the opened editor, source selection and indexing (fleeting captures are created but excluded), and exercises cancellation, duplicate names, invalid titles and blocked destination folders.
+   - `agent.e2e.ts` runs once for each selected provider. It asks the questions listed in `scenarios.ts`, then checks the rendered chat, citation and link clicks, and insert-at-cursor. Scenario expected paths and the attachment target must exist in the current frozen corpus; an offline unit test protects that boundary. A normal answer and the reserved final answer after request-budget exhaustion are both valid terminal states for mechanics checks. It attaches context through the composer (`@`, the open-note chip and a selection), clicks retry, and reopens a chat from history after reloading the plugin. It also checks stopping and continuing, unresolved links, offline record and replay, and a wrong model name.
 5. **Restore.** Obsidian is restarted normally, which closes the debugging port. This happens only if the run opened the port in step 2, and not when `E2E_KEEP_OBSIDIAN=1` is set.
 
 ## Assertions and reports
@@ -48,6 +49,10 @@ A run always checks recording and replay inside Obsidian as well. It records one
 - **Platform:** macOS. The runner uses `osascript` and `open`.
 - **API keys:** set the key for each provider you test in the fixture vault's plugin settings. A provider without a key is skipped. The tests check only that a key exists; they never read it.
 - **Cost:** each provider run makes roughly 15 model calls. DeepSeek Flash costs a few cents; Claude Opus costs more.
-- **Vault changes:** the only note the tests create is a temporary one at the vault root for the insert test, and it is moved to the fixture vault's git-ignored `.trash/` folder straight away. Settings changes, such as switching provider or setting a wrong model name, stay in memory and are restored after each test.
+- **Vault changes:** the insert test creates a temporary note at the vault root and moves it to the fixture vault's git-ignored `.trash/` folder straight away. Creation tests own a fresh temporary folder, delete only that folder in cleanup, and restore the original folder settings in memory. Other settings changes, such as switching provider or setting a wrong model name, also stay in memory and are restored after each test.
 
 `e2e/page/*.js` holds the code that runs inside Obsidian. Each file is the body of an async function with `args` in scope. Because these files are fragments, ESLint and Prettier skip them.
+
+## Current scenario scope
+
+The nine UI smoke scenarios now refer to the 318-note technical learning corpus. Old fixture-only references to deleted learning-science notes and fleeting injections have been removed. Prompt injection and adversarial contradictions use the separate `eval/robustness/cases.json` in-memory suite, rather than being planted in the frozen learning notes. Historical recordings remain regression material for their original corpus; their citation-hit numbers do not describe the current dataset.

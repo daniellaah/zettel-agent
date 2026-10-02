@@ -419,3 +419,16 @@
   opacity: 0.4;
   cursor: default;
 }
+
+/* Fixed-template note creation, invoked only from user commands. */
+.za-create-note .setting-item-control input[type="text"] {
+  width: 100%;
+}
+
+.za-create-note .setting-item-control {
+  flex: 1;
+}
+
+.za-create-destination {
+  overflow-wrap: anywhere;
+}

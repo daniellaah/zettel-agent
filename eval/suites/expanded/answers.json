@@ -1,0 +1,2283 @@
+{
+  "schema": 1,
+  "corpusId": "learning-v1-790b1b2bb6c7",
+  "review": "ai-reviewed; human-review-not-performed",
+  "items": [
+    {
+      "id": "a01",
+      "family": "qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Does using four-bit base weights mean all QLoRA matrix operations run in four-bit arithmetic?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "storage": {
+          "path": "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+        },
+        "precision": {
+          "path": "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md",
+          "basis": "permanent-inference",
+          "excerpt": "QLoRA separates compact weight storage from the higher-precision operations used after dequantization. Describing it only as four-bit training hides that distinction. Adapter parameters, matrix computation, activations, and optimizer state have their own representations. The relevant precision contract is component-specific, which matters when explaining both the memory savings and the numerical work actually performed."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "storage-compute",
+          "text": "No. Low-bit base-weight storage and higher-precision computation are different components.",
+          "supportSets": [["storage"], ["precision"]]
+        },
+        {
+          "id": "usual-types",
+          "text": "The literature note describes NF4 storage and BFloat16 computation, with trainable LoRA adapters.",
+          "supportSets": [["storage"]]
+        }
+      ],
+      "forbidden": [
+        "Claims that every tensor or matrix operation uses four bits.",
+        "Describes NF4 as universally optimal for arbitrary tensor distributions."
+      ],
+      "graphChecks": [],
+      "notes": "Either record supports the main distinction; exact numerical formats require the literature evidence."
+    },
+    {
+      "id": "a02",
+      "family": "logq-sampler",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is an arbitrary item-popularity statistic insufficient for choosing the LogQ correction?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "loss": {
+          "path": "02-Zettelkasten/Literature/In-batch negatives and sampling correction in neural retrieval.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper encodes queries and items with separate neural networks and scores a pair through their embedding inner product. Training approximates a full-corpus softmax using the items present in a minibatch as alternatives for each query. Rewards can weight the observed positive examples.\n\nBecause batch items follow a skewed interaction distribution, popular items appear disproportionately as negatives. The authors subtract the logarithm of an item's estimated batch sampling probability from its training logit. The corrected logits define the batch loss. The probability refers to how the training batch is sampled, and the method does not require a fixed item vocabulary."
+        },
+        "sampler": {
+          "path": "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md",
+          "basis": "permanent-inference",
+          "excerpt": "A sampling correction compensates for the distribution that generated the alternatives in the training loss. For interaction-sampled batches, that distribution reflects which items appear in those batches. Substituting a different popularity statistic can therefore correct the wrong sampling process.\n\nBefore applying LogQ, specify the negative sampler, the event whose probability is being estimated, and how repeated items are handled. [[Streaming frequency estimates can drift through hash collisions]] describes one source of error in estimating that probability."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "probability",
+          "text": "The correction must describe the distribution that actually generated alternatives in the batch loss.",
+          "supportSets": [["loss"], ["sampler"]]
+        },
+        {
+          "id": "training-role",
+          "text": "For interaction-sampled batches the literature note subtracts log estimated batch sampling probability from training logits.",
+          "supportSets": [["loss"]]
+        }
+      ],
+      "forbidden": [
+        "Invents a required serving-score correction absent from these notes.",
+        "Says any global popularity estimate is interchangeable with batch sampling probability."
+      ],
+      "graphChecks": [],
+      "notes": "Keep the supported training-loss statement separate from an unsupported serving prescription."
+    },
+    {
+      "id": "a03",
+      "family": "flash-numerical",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How can FlashAttention be exact without guaranteeing bitwise identical outputs to a full-matrix implementation?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "algorithm": {
+          "path": "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "FlashAttention loads blocks of queries, keys, and values into fast on-chip memory and combines their attention contributions without storing the full score or probability matrices in high-bandwidth memory. It maintains row maxima and normalization sums, rescales earlier contributions when the maxima change, and updates the output. The paper proves that this procedure returns the same attention expression as the full matrix computation."
+        },
+        "qualification": {
+          "path": "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md",
+          "basis": "permanent-inference",
+          "excerpt": "A blockwise algorithm can compute the same mathematical attention expression while changing reduction order and intermediate rounding. Exactness in this sense concerns the absence of an attention approximation, not a promise of bitwise identity across implementations. Numerical verification should use tolerances appropriate to dtype and operation order."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "expression",
+          "text": "The tiled method accumulates the same mathematical attention expression without storing the full attention matrix.",
+          "supportSets": [["algorithm"]]
+        },
+        {
+          "id": "rounding",
+          "text": "Different reduction order and intermediate rounding need not preserve bitwise identity; the permanent note recommends numerical tolerances.",
+          "supportSets": [["qualification"]]
+        }
+      ],
+      "forbidden": [
+        "Calls FlashAttention an approximation that drops attention interactions.",
+        "Attributes the permanent note numerical qualification as a quoted claim from the literature note."
+      ],
+      "graphChecks": [],
+      "notes": "The mathematical result is literature evidence; the verification qualification is explicitly permanent-note reasoning."
+    },
+    {
+      "id": "a04",
+      "family": "tfx-parity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "If preprocessing is exported with the TFX model, what training-serving discrepancies can still require investigation?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "export": {
+          "path": "02-Zettelkasten/Literature/Exported feature transformations in TFX.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "TFX implements feature transformations such as categorical value-to-integer mappings for training and serving. These mappings allow weights or embeddings to be looked up by feature value and can restrict IDs to selected values from large vocabularies. The paper emphasizes consistent transformation logic across training and inference. It exports the transformations as part of the trained model to prevent this form of training-serving discrepancy."
+        },
+        "skew": {
+          "path": "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The guide distinguishes performance differences between training and holdout data, holdout and next-day data, and next-day and live data. The first comparison concerns generalization, while the second may reveal time-sensitive features. Applying the same model to the same example in training and serving should give the same result. A discrepancy in that identical-example comparison is described as a likely engineering error."
+        },
+        "limits": {
+          "path": "02-Zettelkasten/Permanent/Exporting preprocessing reduces one source of skew without proving full parity.md",
+          "basis": "permanent-inference",
+          "excerpt": "Sharing transformation logic aligns an important part of training and inference. It does not establish that upstream inputs, timestamps, defaults, or runtime behavior also agree. An identical-example comparison remains useful because the complete path to a prediction includes more than the exported transformation itself."
+        },
+        "check": {
+          "path": "02-Zettelkasten/Permanent/Identical-example score checks isolate an engineering boundary.md",
+          "basis": "permanent-inference",
+          "excerpt": "A fixed model should compute the same score for the same example across training and serving environments, subject to explicit numerical tolerances. This check isolates implementation consistency from distribution change. Passing it does not establish that live examples resemble training data. It does establish a useful boundary for investigation: score disagreement on identical inputs points toward the execution or feature-processing path."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "narrow-benefit",
+          "text": "Shared exported transformations address inconsistent transformation logic, not every part of the prediction path.",
+          "supportSets": [["export"], ["limits"]]
+        },
+        {
+          "id": "remaining",
+          "text": "Upstream inputs, timestamps, defaults, runtime behavior or temporal distribution change can remain relevant.",
+          "supportSets": [["limits"], ["skew"]]
+        },
+        {
+          "id": "diagnostic",
+          "text": "Compare a fixed model on the same example across training and serving to isolate engineering mismatch; parity does not prove live-distribution similarity.",
+          "supportSets": [["check"], ["skew", "limits"]]
+        }
+      ],
+      "forbidden": [
+        "Claims exporting transformations proves complete parity.",
+        "Treats every offline-to-online gap as a feature-computation bug."
+      ],
+      "graphChecks": [],
+      "notes": "The diagnostic point requires the check note, or the combination of skew comparisons and the parity-limits synthesis."
+    },
+    {
+      "id": "a05",
+      "family": "idle-lateness",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does fixing a blocked Flink watermark by marking a source idle also require a late-data policy?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "minimum": {
+          "path": "02-Zettelkasten/Literature/Input watermark minima and idle sources in Flink.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Parallel source partitions can generate watermarks independently. An operator with several inputs advances its event time according to the minimum input watermark. The documentation explains that a partition without events may stop advancing its watermark and hold back active partitions. A watermark strategy can detect such idleness and mark that input idle so it no longer blocks the minimum in the same way."
+        },
+        "late": {
+          "path": "02-Zettelkasten/Literature/Allowed lateness and repeated window firing in Flink.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "For event-time windows, Flink can retain state after the watermark passes the window end for a configured allowed-lateness interval. Late elements within that interval are added to the window and can cause another firing under the event-time trigger. After the interval expires, the window state is removed and further late elements are dropped under the default handling. The documented allowed-lateness default is zero."
+        },
+        "tradeoff": {
+          "path": "02-Zettelkasten/Permanent/Ignoring an idle input trades a blocking risk for a lateness assumption.md",
+          "basis": "permanent-inference",
+          "excerpt": "Marking a partition idle lets active inputs advance event time. If that partition later resumes with old timestamps, those records can meet a downstream clock that has already advanced. Idleness handling should therefore be chosen together with the late-data policy, rather than viewed only as a throughput adjustment."
+        },
+        "progress": {
+          "path": "02-Zettelkasten/Permanent/A watermark is a progress assertion rather than proof that no late data exists.md",
+          "basis": "permanent-inference",
+          "excerpt": "Advancing a watermark enables a computation to proceed under a lateness policy. It does not physically prevent delayed records from arriving afterward. Correct interpretation of an emitted window result therefore includes the watermark-generation assumptions and the operator's policy for accepting, revising, or discarding later evidence."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "block",
+          "text": "An operator advances with the minimum input watermark; an idle input can otherwise hold it back.",
+          "supportSets": [["minimum"]]
+        },
+        {
+          "id": "resume",
+          "text": "Ignoring the idle input can let downstream event time advance before that input resumes with old timestamps.",
+          "supportSets": [["tradeoff"]]
+        },
+        {
+          "id": "policy",
+          "text": "Watermarks do not physically prevent late arrivals; retained state and allowed lateness determine acceptance, refiring or default dropping after expiry.",
+          "supportSets": [
+            ["late", "progress"],
+            ["late", "tradeoff"]
+          ]
+        }
+      ],
+      "forbidden": [
+        "Claims marking an input idle guarantees no later old events.",
+        "Says all late events are accepted indefinitely."
+      ],
+      "graphChecks": [],
+      "notes": "Both the mechanism and its consequence are required, without assuming an owner Flink configuration."
+    },
+    {
+      "id": "a06",
+      "family": "paged-lifecycles",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do QLoRA paged optimizers differ from vLLM PagedAttention, despite the shared memory-management terminology?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "optimizer": {
+          "path": "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "QLoRA uses unified memory for optimizer states to address transient GPU memory spikes, including those associated with long sequences and gradient checkpointing. The system can move state to CPU memory under pressure and return it when the optimizer update needs it. The paper presents this mechanism alongside low-bit weight storage and double quantization as a separate contribution to the fine-tuning memory design."
+        },
+        "cache": {
+          "path": "02-Zettelkasten/Literature/PagedAttention and logical KV-cache blocks.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "PagedAttention divides a request's key-value cache into fixed-size token blocks that can occupy non-contiguous physical memory. A mapping connects logical sequence blocks to physical cache blocks. Allocating blocks as needed avoids reserving a contiguous maximum-length region for every request. Equal-size blocks remove external fragmentation, while unused slots can remain in a partially filled final block. The paper implements this design within the vLLM serving engine."
+        },
+        "comparison": {
+          "path": "02-Zettelkasten/Permanent/Paged optimizer states and paged KV caches solve different lifecycles.md",
+          "basis": "permanent-inference",
+          "excerpt": "QLoRA paging manages training optimizer state under transient GPU pressure, while PagedAttention organizes the growing attention cache during serving. Both use memory-management ideas, but the stored tensors and workloads differ. The common word paged should not suggest interchangeable implementations or benefits. Explaining the tensor lifecycle makes clear which memory problem each technique addresses."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "training",
+          "text": "QLoRA paging addresses optimizer-state pressure during training; the literature record describes CPU/GPU state movement.",
+          "supportSets": [["optimizer"]]
+        },
+        {
+          "id": "serving",
+          "text": "PagedAttention allocates logical and physical KV-cache blocks for requests during serving.",
+          "supportSets": [["cache"]]
+        },
+        {
+          "id": "boundary",
+          "text": "The mechanisms manage different tensors and lifecycles and should not be treated as interchangeable.",
+          "supportSets": [["comparison"], ["optimizer", "cache"]]
+        }
+      ],
+      "forbidden": [
+        "Equates optimizer-state paging with KV-cache paging.",
+        "Says PagedAttention eliminates every unused cache slot."
+      ],
+      "graphChecks": [],
+      "notes": "Comparison can be supported by a standalone synthesis or the two jointly required literature records."
+    },
+    {
+      "id": "a07",
+      "family": "context-continuity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "After a context reset, why is merely having stored task notes insufficient to ensure the next decision uses the right information?",
+      "kind": "follow-up",
+      "answerability": "answerable",
+      "history": [
+        "How do compaction and structured task notes differ in the way they preserve information across long tasks?"
+      ],
+      "activeNote": null,
+      "evidence": {
+        "persistence": {
+          "path": "02-Zettelkasten/Literature/Structured notes outside the agent context window.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Structured note-taking stores information outside the current context window and brings those records back into context later. The article describes agents maintaining task progress, critical dependencies, and strategic notes across long sequences of tool calls. Its examples include a task list or a dedicated notes file. After a context reset, an agent can read the stored records and continue work using information that would otherwise have left its active context."
+        },
+        "retrieval": {
+          "path": "02-Zettelkasten/Permanent/Persistent memory requires a retrieval decision as well as storage.md",
+          "basis": "permanent-inference",
+          "excerpt": "Writing information outside the current context preserves it, but it does not ensure that a later decision will use it. The system must select and reintroduce the relevant record when needed. Memory quality consequently involves both what is saved and how it is retrieved. This connects long-task continuity to ordinary evidence selection rather than treating persistence as sufficient by itself."
+        },
+        "loss": {
+          "path": "02-Zettelkasten/Permanent/Compaction is a lossy state transition that needs continuity checks.md",
+          "basis": "permanent-inference",
+          "excerpt": "A summary replaces part of the previous task state and can omit constraints whose importance emerges later. Continuing successfully therefore depends on preserving decisions, unresolved issues, and evidence needed for the next steps. Compaction quality should be judged by continuity of task behavior, not just compression ratio or readability. Persistent notes can supplement the summary when precise details must remain recoverable."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "selection",
+          "text": "Saved records must be selected and reintroduced when relevant; storage alone does not ensure use.",
+          "supportSets": [["retrieval"]]
+        },
+        {
+          "id": "continuity",
+          "text": "Preserve and recover decisions, unresolved issues and necessary evidence; evaluate continuity rather than compression ratio alone.",
+          "supportSets": [["loss"]]
+        }
+      ],
+      "forbidden": [
+        "Claims every saved record is automatically available in the next model context.",
+        "Claims compaction guarantees lossless preservation."
+      ],
+      "graphChecks": [],
+      "notes": "At live evaluation time run the history question first, then this follow-up in the same conversation; reset between independent trials."
+    },
+    {
+      "id": "a08",
+      "family": "hnsw-lifecycle",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Which literature notes support the open permanent note, and how do they support its distinction between construction and query tuning?",
+      "kind": "provenance",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+      "evidence": {
+        "source_construction": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "metadata",
+          "excerpt": "[[HNSW construction parameters and neighbor selection]]"
+        },
+        "source_hierarchy": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "metadata",
+          "excerpt": "[[Hierarchical search and insertion in HNSW]]"
+        },
+        "construction": {
+          "path": "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "HNSW separates the breadth of insertion search from that of query search. During construction, efConstruction controls the candidate search used to establish connections. M controls the number of selected neighbors, subject to layer-specific limits.\n\nThe paper compares simply choosing the closest neighbors with a heuristic that also considers distances among candidate neighbors. The heuristic creates connections in different directions and is particularly useful in clustered data, where purely local neighbors can trap search at cluster boundaries. Construction choices therefore affect the connectivity available to later queries, rather than merely increasing the amount of insertion work."
+        },
+        "hierarchy": {
+          "path": "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "HNSW stores vectors in a hierarchy of proximity graphs. Each inserted vector receives a randomly selected maximum level with an exponentially decreasing level distribution. Insertion searches from upper layers downward and connects the new vector to selected neighbors on its eligible layers.\n\nQuery search first performs greedy traversal on upper layers, using a small candidate set to find an entry point near the query. The bottom layer performs a broader search with a dynamic set of promising candidates. The final nearest candidates are returned from this ground-layer search. Upper and lower layers therefore use different search breadths."
+        },
+        "thought": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "permanent-inference",
+          "excerpt": "Query breadth controls how extensively HNSW explores an existing graph. Construction determines which edges are available to explore. These controls operate at different points in the lifecycle, so a graph with poor connectivity cannot be understood solely through its query parameter.\n\nTune insertion breadth, neighbor limits and query breadth with separate measurements of build cost, memory and recall. The distinction parallels [[Increasing IVF search breadth addresses pruning rather than quantization]]: a search-time control does not alter every source of approximation."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "provenance",
+          "text": "Its source metadata links to the construction-parameters record and the hierarchical-search record.",
+          "supportSets": [["source_construction", "source_hierarchy"]]
+        },
+        {
+          "id": "construction",
+          "text": "efConstruction and neighbor selection determine connections available in the graph.",
+          "supportSets": [["construction"]]
+        },
+        {
+          "id": "query",
+          "text": "Query breadth explores the existing graph, so it cannot be described as the same control as creating edges.",
+          "supportSets": [["thought"], ["construction", "hierarchy"]]
+        }
+      ],
+      "forbidden": [
+        "Lists IVF or quantization notes as this permanent note direct literature sources.",
+        "Invents a missing direct source link."
+      ],
+      "graphChecks": [
+        {
+          "from": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "to": "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md",
+          "relation": "outlink"
+        },
+        {
+          "from": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "to": "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md",
+          "relation": "outlink"
+        }
+      ],
+      "notes": "Read source metadata as provenance, then literature bodies as claim evidence. No particular tool order is prescribed."
+    },
+    {
+      "id": "a09",
+      "family": "retrieval-support-link",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Would a direct link between the open note and \"Citation presence is weaker than citation support\" help? Explain the relationship and keep it a suggestion.",
+      "kind": "link-suggestion",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+      "evidence": {
+        "matches": {
+          "path": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+          "basis": "permanent-inference",
+          "excerpt": "Different query embeddings can match different parts of a document with high similarity. Those local matches need not jointly express the proposition an answer would cite. Retrieval scores help choose evidence to inspect, while checking whether the passage supports a generated claim remains a separate operation."
+        },
+        "citations": {
+          "path": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "basis": "permanent-inference",
+          "excerpt": "A citation marker shows that an answer refers to a source, but only comparing the claim with that source establishes whether the reference supports it. Correctness and support can also diverge: a true statement may cite the wrong passage. Evaluating these dimensions separately makes grounded-answer quality more precise and prevents a high citation count from substituting for evidence verification."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "retrieval",
+          "text": "Local token similarities help choose passages but do not establish a coherent supporting proposition.",
+          "supportSets": [["matches"]]
+        },
+        {
+          "id": "support",
+          "text": "Citation markers, factual truth and actual passage support are distinct.",
+          "supportSets": [["citations"]]
+        },
+        {
+          "id": "relationship",
+          "text": "A defensible link connects evidence selection to claim verification; explain that relationship as a proposed synthesis.",
+          "supportSets": [["matches", "citations"]]
+        }
+      ],
+      "forbidden": [
+        "Claims to have created or modified a link.",
+        "Treats the proposed connection as an already stated claim of the original paper."
+      ],
+      "graphChecks": [
+        {
+          "from": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+          "to": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "relation": "no-direct-link"
+        }
+      ],
+      "notes": "These permanent notes have no existing direct link in either direction. A justified proposal or a reasoned decision against adding a redundant link is acceptable."
+    },
+    {
+      "id": "a10",
+      "family": "citation-support",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "If the answer is factually correct and has valid citation IDs, what still needs checking?",
+      "kind": "follow-up",
+      "answerability": "answerable",
+      "history": [
+        "What do these notes say about evaluating answer correctness separately from citations?"
+      ],
+      "activeNote": null,
+      "evidence": {
+        "presence": {
+          "path": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "basis": "permanent-inference",
+          "excerpt": "A citation marker shows that an answer refers to a source, but only comparing the claim with that source establishes whether the reference supports it. Correctness and support can also diverge: a true statement may cite the wrong passage. Evaluating these dimensions separately makes grounded-answer quality more precise and prevents a high citation count from substituting for evidence verification."
+        },
+        "alce": {
+          "path": "02-Zettelkasten/Literature/Answer correctness and citation coverage in ALCE.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ALCE evaluates generated answers and their citations as separate dimensions. Correctness measures vary with dataset answer format, including exact-match answer recall and entailment-based claim recall. Citation recall checks whether generated statements are supported by the passages they cite. The paper uses a natural-language-inference model for automated support judgments, rather than treating the presence of a citation marker as sufficient evidence of support."
+        },
+        "joint": {
+          "path": "02-Zettelkasten/Literature/Irrelevant citations and joint passage support in ALCE.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ALCE's citation precision identifies citations that do not contribute support to a generated statement. Its procedure considers whether a cited passage supports the statement alone or whether removing it leaves the other cited passages sufficient. This accommodates statements requiring combined evidence from several passages. The paper presents precision alongside citation recall so that a fully cited answer can still be assessed for unnecessary or irrelevant references."
+        },
+        "set": {
+          "path": "02-Zettelkasten/Permanent/Joint support requires evaluating the cited set rather than isolated passages.md",
+          "basis": "permanent-inference",
+          "excerpt": "Some statements require evidence distributed across several passages. Demanding that every citation independently establish the complete claim can wrongly reject useful partial support. Conversely, adding irrelevant references can inflate apparent coverage. A citation assessment should examine whether the set supports the statement and whether each member contributes, reflecting the distinction between coverage and precision."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "support",
+          "text": "Check whether the attached passages actually support each claim; ID validity and factual truth are insufficient.",
+          "supportSets": [["presence"], ["alce"]]
+        },
+        {
+          "id": "joint",
+          "text": "For multiple citations assess their joint support and whether individual references are irrelevant or unnecessary.",
+          "supportSets": [["joint"], ["set"]]
+        }
+      ],
+      "forbidden": [
+        "Treats ledger membership as an entailment judgment.",
+        "Requires each passage alone to support a claim that legitimately needs a jointly supporting set."
+      ],
+      "graphChecks": [],
+      "notes": "Run the setup question before the follow-up; this tests evidence use rather than merely citation syntax."
+    },
+    {
+      "id": "a11",
+      "family": "owner-speculative-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What draft lookahead should I deploy for lowest latency, and do these notes contain measurements from my service that determine it?",
+      "kind": "partial",
+      "answerability": "partial",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "model": {
+          "path": "02-Zettelkasten/Literature/Acceptance cost and lookahead in speculative speedup.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper models tokens produced per speculative iteration using an average acceptance probability and the draft lookahead length. Its expected-token calculation assumes independent, identically distributed acceptance probabilities. The walltime analysis also assumes enough computation for concurrent target evaluations without increased target latency and includes the draft cost. Lookahead selection trades additional draft work against the diminishing expected number of accepted tokens."
+        },
+        "optimum": {
+          "path": "02-Zettelkasten/Permanent/Speculative lookahead has a workload-dependent optimum.md",
+          "basis": "permanent-inference",
+          "excerpt": "A longer draft block gives more opportunities to accept tokens, but later proposals are useful only if the earlier prefix survives. Their expected contribution diminishes while draft cost continues accumulating. Lookahead should be selected using acceptance behavior and actual execution costs for the workload, including the effect of batching on those costs."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "tradeoff",
+          "text": "Lookahead trades draft work against expected accepted tokens; acceptance, draft cost and target execution conditions affect latency.",
+          "supportSets": [["model"], ["optimum"]]
+        },
+        {
+          "id": "missing",
+          "text": "The frozen notes do not record an owner service latency experiment, so no measured deployment optimum can be stated.",
+          "supportSets": []
+        }
+      ],
+      "forbidden": [
+        "Invents a numeric lookahead or owner latency result.",
+        "Presents a paper speedup as an owner production measurement.",
+        "Refuses to explain the supported tradeoff merely because the owner measurement is absent."
+      ],
+      "graphChecks": [],
+      "notes": "A useful answer explains the documented tradeoff and clearly separates it from the missing service measurement. No evidence group is attached to the absence claim; it is a corpus-level annotation."
+    },
+    {
+      "id": "a12",
+      "family": "owner-sasrec-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Do these notes contain a measured online CTR improvement from my SASRec deployment?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "history": [],
+      "activeNote": null,
+      "evidence": {},
+      "keyPoints": [
+        {
+          "id": "absence",
+          "text": "No such owner deployment result is recorded in the frozen corpus; do not infer whether a deployment actually occurred.",
+          "supportSets": []
+        },
+        {
+          "id": "boundary",
+          "text": "Paper-level sampled ranking metrics cannot be substituted for an owner online CTR measurement.",
+          "supportSets": []
+        }
+      ],
+      "forbidden": [
+        "Invents an uplift percentage or a claim that the owner ran an experiment.",
+        "Uses paper Hit Rate or NDCG as proof of owner CTR improvement."
+      ],
+      "graphChecks": [],
+      "notes": "No positive citation is required for the absence statement. Citing a protocol note to explain its narrower scope is allowed if it is not represented as owner-result evidence."
+    },
+    {
+      "id": "a13",
+      "family": "lora",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Does LoRA make the pretrained weight matrix low rank, and why is the initial adaptation zero?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Frozen weights and low-rank updates in LoRA.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "LoRA freezes a pretrained weight matrix and represents its trainable update as a product of two smaller matrices. The forward computation sums the frozen matrix output and the low-rank update output for the same input. One factor is initialized randomly and the other to zero, so the initial update is zero. A scaling factor controls the contribution of the update while the rank sets the dimension of the adaptation factors.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The base matrix is frozen; the trainable increment is a product of two smaller matrices.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "One adaptation factor is initialized to zero, so the initial increment is zero.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims the pretrained base matrix itself must be low rank."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a14",
+      "family": "lora",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What does merging a LoRA adapter change at deployment, and when is keeping it separate useful?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/LoRA merging and adapter storage.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "LoRA's learned update can be absorbed into the pretrained matrix for deployment, eliminating the additional computation from a separate adapter path. The paper also describes keeping modules separate when selecting among adaptations dynamically is desirable. Multiple adaptations can share the same pretrained model while storing their own small update factors. This reduces adaptation storage, but the underlying model is still required for deployment.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Merging absorbs the learned update into the base and removes the separate adapter computation path.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Separate adapters permit dynamic adaptation selection and share the underlying pretrained model.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims the small adapter factors eliminate the need for the base model."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a15",
+      "family": "qlora",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What does QLoRA double quantization compress beyond the four-bit weight codes?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Double quantization of blockwise scaling constants.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "QLoRA's double quantization compresses the constants required by its first weight quantization. The paper explains that small quantization blocks improve precision while increasing scaling-constant overhead. It uses a second quantization for those constants, along with higher-level constants, to reduce their average storage cost. The reported memory calculation distinguishes this metadata saving from the four-bit codes used for the underlying model weights.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "It applies a second quantization to the constants used by the first blockwise weight quantization.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Small blocks trade improved precision against scaling-constant overhead; the metadata saving is separate from weight-code storage.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims double quantization means quantizing the base weights twice to two bits."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a16",
+      "family": "flashattention",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Does FlashAttention remove quadratic arithmetic when it removes the stored attention matrix?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Arithmetic memory and IO bounds in FlashAttention.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "For sequence length N and head dimension d, the paper states that FlashAttention uses O(N squared times d) arithmetic and O(N) additional memory beyond its inputs and output. For on-chip memory size M between d and N times d, its analyzed high-bandwidth-memory accesses are proportional to N squared times d squared divided by M. These bounds describe arithmetic, auxiliary storage, and memory traffic separately.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The stated arithmetic is O(N squared times d), while additional memory is O(N).",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The analyzed memory traffic depends on on-chip memory M; eliminating a full intermediate matrix is not linear-time exact attention.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims exact dense attention becomes linear-time because auxiliary storage is linear."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a17",
+      "family": "flashattention",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How can FlashAttention perform extra backward arithmetic and still run faster in the paper?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Backward recomputation in FlashAttention.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "FlashAttention stores the attention output and row-level softmax statistics instead of retaining the full intermediate score and probability matrices for backward computation. It reconstructs the needed blocks from queries, keys, and values in on-chip memory. The paper describes this as selective gradient checkpointing. In its measured implementation, the additional arithmetic reduces memory accesses enough to make backward computation faster.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "It retains outputs and row softmax statistics and reconstructs needed blocks from Q, K and V.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The measured implementation reduces memory accesses enough to outweigh extra recomputation; this is a conditional implementation result.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims recomputation universally speeds up every hardware and workload."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a18",
+      "family": "speculative",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does speculative decoding verify proposed tokens while preserving an accepted prefix?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Draft proposal verification in speculative decoding.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Speculative decoding first generates a block of candidate tokens autoregressively with a cheaper draft model. The target model evaluates the distributions for their draft prefixes in parallel. Each proposed token is accepted with probability equal to the smaller of one and its target-to-draft probability ratio, using distributions adjusted for the selected sampling method. The algorithm keeps the accepted prefix up to the first rejection.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "A cheaper draft proposes an autoregressive block and the target evaluates draft-prefix distributions in parallel.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Acceptance uses min(1,target probability/draft probability), with sampling-adjusted distributions, and keeps the prefix until the first rejection.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Reverses the target-to-draft acceptance ratio."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a19",
+      "family": "speculative",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is sampling from the target directly after a draft rejection not the residual correction described in these notes?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Residual resampling after a speculative rejection.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "When a draft token is rejected, speculative sampling draws a replacement from the normalized positive part of the target distribution minus the draft distribution for that prefix. The paper proves that combining acceptance with this residual sampling preserves the target distribution. If all proposed tokens are accepted, the algorithm draws one additional token directly from the target distribution after the accepted block.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "A rejection replacement comes from the normalized positive part of target minus draft for that prefix.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Acceptance plus residual sampling preserves the target distribution; an all-accepted block gets an additional direct target token.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims rejection correction uses the original draft distribution unchanged."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a20",
+      "family": "vllm",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "When can vLLM share KV-cache blocks and when must it copy them?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Shared prefixes and copy-on-write in vLLM.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Sequences generated from the same prompt can map their logical prompt blocks to the same physical KV-cache blocks. vLLM tracks references to shared blocks. When a sequence needs to modify a shared block, it allocates and copies a private block before writing. This block-level copy-on-write approach lets parallel sampling and beam search reuse common prefix state while storing divergent continuations separately.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Sequences with a shared prompt can reference the same physical prefix KV blocks.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Modifying a shared block allocates and copies a private block; divergent continuations retain private writable state.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims divergent continuations always write into the same shared block."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a21",
+      "family": "sasrec",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What ranking problem do SASRec sampled HR@10 and NDCG@10 evaluate?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Sampled candidate evaluation in SASRec.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "SASRec reports Hit Rate at ten and NDCG at ten. For each user, its evaluation ranks the ground-truth next item with one hundred randomly sampled negative items to avoid scoring every user-item pair. With one relevant test item per user, hit rate equals recall at the same cutoff and is proportional to precision. NDCG additionally distinguishes the position of the relevant item.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The source ranks the next item against one hundred randomly sampled negative items per user.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "With one relevant item hit rate equals recall at the cutoff; NDCG distinguishes its position, and the protocol is sampled rather than full catalog.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Presents the sampled candidate protocol as scoring the full catalog."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a22",
+      "family": "youtube",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does watch-time weighting change a YouTube logistic ranker from an ordinary CTR predictor?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Watch-time weighting in YouTube ranking.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "YouTube's ranking model trains a logistic predictor on impressions. Clicked impressions receive weights equal to their observed watch time, while unclicked impressions receive unit weight. This changes the quantity represented by the fitted model from an ordinary click probability.\n\nThe authors relate the learned odds to expected watch time. Under their assumption that positive impressions form a small fraction of the data, those odds approximate the expected watch time of an impression. At inference, exponentiating the model's output produces the odds used for scoring. The approximation explicitly depends on the low-click-probability setting.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Clicked impressions are weighted by observed watch time, while unclicked impressions have unit weight.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The learned odds approximate expected watch time under the small-positive-fraction assumption; they are not an unweighted click probability.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Drops the low-click-probability qualification from the odds approximation."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a23",
+      "family": "youtube",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does YouTube retrieval use earlier actions for a future-watch label and limit examples per user?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Temporal labels and user weighting in YouTube retrieval.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The authors train candidate generation on watches from across YouTube rather than only watches produced by the recommender. They also generate a fixed number of examples per user so that highly active users do not dominate the objective.\n\nFor the prediction task, a randomly selected watch supplies the label, and only earlier actions supply its context. The authors report better results from predicting a future watch than from predicting a randomly held-out watch using the remaining history. The latter setup can expose later actions and discard the asymmetric order of consumption.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Only actions earlier than the label watch supply context, preventing later-history exposure.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "A fixed number of training examples per user prevents very active users from dominating the objective.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims all remaining actions, including later watches, are a valid future-prediction context."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a24",
+      "family": "mind",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does MIND randomize routing logits when it shares the behavior-to-interest mapping?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Behavior-to-interest routing in MIND.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "MIND adapts capsule routing to aggregate variable-length behavior histories into interest vectors. It shares one bilinear mapping across behavior and interest capsules so that the resulting representations occupy a common vector space. Because shared mappings and identical routing initialization would produce identical interest capsules, the routing logits are initialized with Gaussian noise. Routing repeatedly computes assignment weights, aggregates the transformed behavior embeddings, and updates agreement between behavior and interest capsules.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "One bilinear mapping is shared across behavior and interest capsules to place them in a common vector space.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Gaussian-noise routing initialization breaks the symmetry that shared mappings and identical initialization would create.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims identical initialization necessarily gives distinct interest capsules."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a25",
+      "family": "mind",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Is MIND interest count a discovered ground-truth preference count or an allocation heuristic?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Adaptive interest count in MIND.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "MIND sets a user-specific number of interest capsules from the base-two logarithm of the number of historical behaviors, bounded below by one and above by the configured maximum. The paper presents this as a heuristic for allocating capsules to different users. Algorithm 1 computes this number before routing. The authors describe reduced computation and memory use for users assigned fewer capsules.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The count is based on the base-two logarithm of history length and bounded by one and the configured maximum.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "This is a user-specific allocation heuristic computed before routing, with reduced resources for fewer capsules.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Treats the heuristic count as a measured number of real preferences."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a26",
+      "family": "swing",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What evidence and popularity controls define a Swing item-similarity contribution?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/User-pair evidence in Swing similarity.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Swing computes item similarity from pairs of users who clicked both items. For each contributing user pair, the score is divided by a smoothing term plus the number of items shared by those users. The paper uses this structure to distinguish support from multiple users from an isolated click connection. It further multiplies contributions by user weights that decrease with the number of items each user has clicked.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Contributions come from user pairs who clicked both items, divided by smoothing plus their shared-item count.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "User weights also decrease with each user clicked-item count; the score is interaction evidence rather than a causal preference proof.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims a broader shared history increases the pair contribution through this denominator."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a27",
+      "family": "swing",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why can Swing have extra offline construction work compared with a simpler item-neighborhood method?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Swing construction cost and parallelization.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper compares Swing's construction cost with conventional local item-similarity computation. Its complexity analysis introduces an additional factor for item-neighborhood user degree because Swing considers user pairs. The implementation parallelizes construction using a MapReduce framework: input consists of per-user clicked-item lists, mapper outputs distribute local neighborhoods, and reducers gather users associated with seed items. The similarity computation described in this part of the paper uses clicks rather than explicit ratings.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Considering user pairs introduces an additional item-neighborhood user-degree factor in the construction analysis.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The implementation uses MapReduce over clicked-item lists and local neighborhoods; the described signal is clicks.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Describes this construction as using explicit rating values."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a28",
+      "family": "colbert",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Over which token axis does ColBERT MaxSim aggregate its score, and what can be precomputed?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Contextual token matching with ColBERT MaxSim.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ColBERT encodes queries and documents independently into sets of contextual token embeddings. For every query embedding, its late interaction takes the highest similarity to a document embedding and sums these maxima over the query embeddings. The paper describes cosine similarity and also evaluates squared L2 distance. Independent encoding allows document representations to be computed offline while retaining token-level matching at query time.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "For each query embedding take its maximum similarity over document embeddings, then sum over query embeddings.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Independent encoders permit offline document representations while retaining query-time token matching.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Sums the maxima over document tokens instead of query tokens."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a29",
+      "family": "colbert",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do ColBERT approximate token retrieval and exhaustive candidate document scoring differ?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Token-index filtering and document refinement in ColBERT.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ColBERT indexes document token embeddings and retains a mapping from each embedding to its source document. At query time it searches the vector index separately for each query embedding, maps the matches to document IDs, and deduplicates them. It then exhaustively computes its document score for that candidate set. The paper uses an approximate IVFPQ index for the initial filtering stage.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Token matches map back to document IDs and are deduplicated into a candidate set.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The final document score is computed exhaustively only for that set; the initial filter uses approximate IVFPQ.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims exhaustive candidate scoring can recover every document excluded by filtering."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a30",
+      "family": "faiss",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What is asymmetric about Faiss distance computation with product-quantized database residuals?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Product quantization and asymmetric distance computation.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Product quantization divides a vector into subvectors and quantizes each part with its own codebook. Concatenating the subvector codes produces a compact representation whose possible combinations greatly exceed the size of the individual codebooks.\n\nFaiss uses query-dependent lookup tables to estimate distances to these codes. The query remains uncompressed while database residuals are quantized, which gives the computation its asymmetric form. Summing table entries avoids reconstructing every full database vector during scanning. The resulting distances remain estimates of distances to the original vectors.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The query remains uncompressed while database residuals are represented by subvector codes.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Query-dependent table sums avoid full reconstruction but remain estimates of original-vector distances.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims quantized lookup distances are always exact original-vector distances."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a31",
+      "family": "dpo",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is DPO still reference-relative even though it removes a separately trained reward network?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Reference-relative preference optimization in DPO.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "DPO derives a policy objective from KL-regularized reward maximization and a preference model. Rewriting rewards in terms of policy-to-reference probability ratios makes a prompt-dependent partition function cancel in pairwise preference comparisons. The resulting loss directly trains the policy on preferred and dispreferred responses without fitting a separate reward model or running an RL optimization loop. The derivation relies on the assumed preference model and reference policy.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Policy-to-reference probability ratios enter a derivation from KL-regularized reward optimization and a preference model.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "It directly trains preferred/dispreferred responses without a separate reward model or RL optimization loop, but still depends on the reference and preference assumptions.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims removal of a reward network makes DPO reference-free."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a32",
+      "family": "dpo",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do DPO offline preference pairs and its fixed reference determine the update?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Pairwise updates and offline data in DPO.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper describes DPO updates as increasing the likelihood of preferred responses relative to dispreferred responses, with a weight depending on how incorrectly the implicit reward orders the pair. Its pipeline constructs or reuses an offline preference dataset and optimizes against a fixed reference policy. When the dataset's original supervised model is unavailable, the paper describes fitting a reference to preferred responses to mitigate a distribution mismatch.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Updates increase preferred likelihood relative to dispreferred likelihood, weighted by the implicit reward ordering error.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The procedure uses offline preference data and a fixed reference; it can fit a reference to preferred responses if the original supervised model is unavailable.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims the rejected response and reference are irrelevant to the described update."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a33",
+      "family": "r1",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What do accuracy and format rewards check in R1-Zero, and why are these not universal reasoning validators?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Rule-based accuracy and format rewards in R1-Zero.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "DeepSeek-R1-Zero uses rule-based rewards for verifiable mathematical, coding, and logical reasoning tasks. Accuracy rewards assess answers or execution against task checks; format rewards encourage separating reasoning from the final answer with designated tags. The paper describes applying RL to the pretrained base and observing longer responses and reflective behavior during training. It avoids neural reasoning reward models in this setup because of observed reward-hacking and training-complexity concerns.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Accuracy rewards check task answers or execution; format rewards encourage designated reasoning/final-answer tags.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The described setup targets verifiable math, coding and logic tasks and avoids neural reasoning reward models for the stated hacking/complexity concerns.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims correctly formatted output establishes correct reasoning for arbitrary tasks."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a34",
+      "family": "r1",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is DeepSeek-R1 training not interchangeable with the R1-Zero or distilled-model pipelines?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Cold-start training and supervised data in DeepSeek-R1.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "DeepSeek-R1 adds cold-start examples to address readability and language-mixing problems observed in R1-Zero. Its pipeline alternates supervised training and reinforcement learning, including rejection-sampled reasoning data and non-reasoning examples before a final alignment stage. The described supervised collection contains approximately 600,000 reasoning and 200,000 non-reasoning samples. Distilled Qwen and Llama models are fine-tuned on this 800,000-example collection rather than being presented as the same training process as R1-Zero.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "R1 adds cold-start examples and alternates supervised training and RL, including rejection-sampled reasoning and non-reasoning data.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The collection contains about 600000 reasoning and 200000 non-reasoning examples; distilled Qwen/Llama models are fine-tuned on it rather than trained by the identical R1-Zero process.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims the distilled models reproduce the R1-Zero training process."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a35",
+      "family": "grpo",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does GRPO construct an outcome advantage without training a value model?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Group-relative advantages in GRPO.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "GRPO samples several outputs for the same question and estimates a baseline from their rewards rather than training a value model. For outcome supervision, it subtracts the group's mean reward and divides by the group standard deviation, applying the resulting advantage to tokens in each output. Its objective includes clipped policy-ratio terms and reference-policy regularization. The paper also explores process rewards, which assign feedback to intermediate reasoning steps.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "It samples outputs for one question and normalizes rewards using their group mean and standard deviation.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The objective retains clipped policy-ratio terms and reference-policy regularization; removing a value model does not remove every training cost.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims GRPO requires no reference-policy regularization."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a36",
+      "family": "qwen3",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does Qwen3 stop a thinking segment when a reasoning-token budget is reached?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Thinking-mode fusion and budget control in Qwen3.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The Qwen3 report describes a four-stage post-training pipeline that develops reasoning through cold-start training and RL, then combines thinking and non-thinking behavior and applies general RL. Thinking-mode fusion permits responses with and without explicit reasoning. For a thinking-token budget, the implementation stops the reasoning segment at a threshold and inserts an instruction to produce the final response from the reasoning accumulated so far. The report distinguishes this control from running every query through unrestricted thinking.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "At a threshold it stops the reasoning segment and inserts an instruction to produce a final response from accumulated reasoning.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Thinking-mode fusion supports responses with and without explicit reasoning; this control is distinct from unrestricted thinking and from a final-answer token bound.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Equates the reasoning-token threshold with the final-answer token limit."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a37",
+      "family": "dpr",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do DPR in-batch negatives and a BM25 hard negative contribute different training alternatives?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Negative passage selection in DPR.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "DPR optimizes the negative log probability of a positive passage against selected negative passages. The paper considers random corpus passages, high-ranked BM25 passages without the answer, and positives belonging to other questions. In-batch negatives reuse passage embeddings across the batch, creating a matrix of question-passage scores. The reported best training setup combines these in-batch gold passages with a BM25 negative.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The options include random passages, answer-free high-ranked BM25 passages and positives for other questions.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "In-batch reuse forms a question-passage score matrix; the reported best setup combines in-batch gold passages with a BM25 negative.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims any passage positive for another question is necessarily relevant to the current question."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a38",
+      "family": "rag",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do RAG-Sequence and RAG-Token differ, and which retriever components moved during the reported training?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Latent documents and joint training in RAG.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "RAG-Sequence marginalizes one retrieved latent document across an entire output sequence, while RAG-Token marginalizes documents separately at each output position. Both use a top-K approximation. The reported training optimizes target sequence likelihood without explicit labels for which document to retrieve. It updates the query encoder and generator while keeping the document encoder and index fixed, avoiding repeated index reconstruction during fine-tuning.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "RAG-Sequence marginalizes one document over the sequence, while RAG-Token marginalizes documents at each output position, both with top-K approximation.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The reported setup updates query encoder and generator while freezing document encoder/index.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims both document encoder and index are updated in the described setup."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a39",
+      "family": "react",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What does ReAct reasoning add between actions and observations, and what retrieval interface was evaluated?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Interleaved reasoning and external actions in ReAct.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ReAct interleaves language reasoning with task-specific actions and observations. Reasoning can decompose a question, track progress, extract information, and reformulate a search after an observation. For question answering and fact verification, the paper provides Wikipedia search, lookup, and finish actions and manually composed few-shot trajectories. It notes that this deliberately limited retrieval interface is weaker than contemporary lexical or neural retrievers, because it is designed to require explicit interactive search.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Reasoning can decompose, track progress, extract information and reformulate searches after observations.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The paper uses search, lookup and finish actions with manually composed trajectories; the interface is deliberately limited and weaker than contemporary retrievers.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims the original interface was designed as the strongest lexical/neural retriever."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a40",
+      "family": "agent-design",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What decision separates a predefined workflow from an agent, and what costs come with added autonomy?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Predefined workflows and model-directed agents.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The article distinguishes workflows, whose orchestration follows predefined code paths, from agents that dynamically direct their process and tool use. It recommends starting with the simplest adequate design and adding complexity when outcomes justify it. Workflows suit decomposable, well-defined tasks, while agents offer flexibility for open-ended paths. The article identifies increased latency, cost, and compounding errors as considerations for autonomous systems.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "A workflow follows predefined code paths while an agent dynamically directs process and tool use.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The source recommends adequate simple designs and notes extra latency, cost and compounding errors for autonomy.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Calls every fixed LLM pipeline an agent merely because it uses a language model."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a41",
+      "family": "swebench",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What must happen for a SWE-bench patch to count as resolved, beyond a plausible explanation?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Patch application and regression tests in SWE-bench grading.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "SWE-bench evaluates a proposed patch by applying it to the task codebase and running the task-associated tests. A successful resolution requires the patch to apply and those tests to pass. The tests include cases failing before the reference fix and additional cases that check existing functionality. The reported benchmark metric is the fraction of task instances resolved under this procedure.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The patch must apply to the task codebase and pass task-associated tests.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Tests include fail-before-fix cases and checks of existing functionality; the metric is the fraction resolved under that procedure.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Treats a plausible patch description as resolution without application and tests."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a42",
+      "family": "alce",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why can citation precision and recall reveal different failures in an otherwise fully cited answer?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Irrelevant citations and joint passage support in ALCE.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ALCE's citation precision identifies citations that do not contribute support to a generated statement. Its procedure considers whether a cited passage supports the statement alone or whether removing it leaves the other cited passages sufficient. This accommodates statements requiring combined evidence from several passages. The paper presents precision alongside citation recall so that a fully cited answer can still be assessed for unnecessary or irrelevant references.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Precision checks whether citations contribute support, including support requiring combined passages.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Citation recall concerns support coverage; a fully cited answer can still contain unnecessary or irrelevant references.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims a valid citation marker guarantees that the passage supports its statement."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a43",
+      "family": "agent-evals",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does increasing attempts affect at-least-one success differently from every-trial reliability?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/At-least-one success and repeated reliability.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The article distinguishes the probability of at least one successful attempt among k trials from the probability that every one of those trials succeeds. More attempts can improve the former while making the latter requirement harder. It discusses coding and customer-facing workflows as examples where these measures answer different questions. At one trial the measures coincide, while larger trial counts reveal the difference between finding a success and delivering it consistently.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "At least one successful attempt and all attempts succeeding describe different events.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "They coincide at one trial; increasing k can help finding one success while making all-success harder.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Equates any-trial success with reliable success on every attempt."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a44",
+      "family": "ir-book",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What happens to term-frequency saturation and length normalization when BM25 parameters change?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Term saturation and length scaling in BM25.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The book introduces BM25 as a probabilistic scoring scheme sensitive to term frequency and document length. Its term-frequency component increases with occurrences while saturating, controlled by a tuning parameter. Another parameter controls scaling by document length relative to average collection length. Setting the length parameter to zero removes that normalization; setting it to one gives full length scaling in the presented formulation.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "A tuning parameter controls term-frequency saturation, while a separate parameter controls length scaling relative to collection average.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Setting the length parameter to zero removes that normalization; one gives full length scaling in the shown formulation.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims setting the length parameter to zero disables every BM25 frequency effect."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a45",
+      "family": "rrf",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does reciprocal rank fusion combine systems with incomparable raw scores, and is its reported constant a universal optimum?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Rank-based combination with reciprocal rank fusion.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Reciprocal rank fusion sums a reciprocal contribution from each system's rank for a document, using an added constant to moderate the influence of very high positions. The method combines rankings without requiring comparable raw retrieval scores or training examples. The authors fix the constant at 60 after a pilot investigation and retain it for subsequent validation. Their reported improvements concern the particular TREC and LETOR combinations studied.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "It sums reciprocal rank contributions with an added constant without requiring comparable raw scores.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The authors used 60 after a pilot and studied specific TREC/LETOR combinations; this is not a universal best constant.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims the constant 60 is proven optimal for every workload."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a46",
+      "family": "deep-learning",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Which moments does Adam track and why does zero initialization require bias correction?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Moment estimation and bias correction in Adam.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Adam maintains exponentially weighted estimates of the gradient's first moment and uncentered second moment. It uses these estimates to adapt updates and includes corrections for the bias introduced by initializing the accumulators to zero. The book compares these choices with momentum and RMSProp. It also notes that learning-rate adjustment can still be needed rather than treating the suggested defaults as universally sufficient.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "It estimates gradient first and uncentered second moments with exponential weighting and corrects their zero-initialization bias.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The notes still allow learning-rate adjustment; suggested defaults are not universally sufficient.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims bias correction makes learning-rate choice unnecessary."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a47",
+      "family": "deep-learning",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is dropout not independent training of every possible subnetwork?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Dropout as shared-subnetwork training.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Dropout samples binary masks that remove input or hidden units during training. Each sampled subnetwork inherits parameters from the same underlying network. Training takes gradient steps for sampled masks rather than independently fitting every possible subnetwork. The book compares this with bagging while emphasizing shared parameters and the fact that only a small fraction of the possible subnetworks can be explicitly sampled.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Training samples masks and takes gradient steps for subnetworks sharing the underlying network parameters.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Only a small fraction of possible subnetworks is sampled; the masks are not separately fitted models.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims every masked subnetwork is trained independently with its own parameters."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a48",
+      "family": "simclr",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Which transformations create a SimCLR positive pair, and what did its image experiments say about composition?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Augmented positive views in SimCLR.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "SimCLR creates a positive pair by applying two independently sampled augmentation sequences to the same image. Its image transformations include cropping and resizing, color distortion, and Gaussian blur. The paper studies how compositions of these operations change the contrastive task and reports that combining random cropping with color distortion is particularly important in its visual representation experiments.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Two independently sampled augmentation sequences transform the same original image into a positive pair.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The image experiments studied cropping/resizing, color distortion and Gaussian blur, with cropping plus color distortion particularly important.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims positives are arbitrary unrelated original images."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a49",
+      "family": "simclr",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Which representation is used after SimCLR training and what did its projection-head comparison show?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Projection heads and downstream representations in SimCLR.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "SimCLR applies a small nonlinear projection head between the encoder representation and the contrastive loss. After training, it discards the projection head and uses the encoder output for downstream tasks. The authors compare identity, linear, and nonlinear heads and report better linear-evaluation results with a nonlinear head. They also report that the representation before the head performs better than its projected output in that evaluation.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The nonlinear projection head sits between encoder and contrastive loss and is discarded after training.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Downstream tasks use encoder output; the studied linear evaluation favored nonlinear-head training and pre-head representations.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims downstream tasks necessarily use the projected output instead of the encoder output."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a50",
+      "family": "xgboost",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What statistics and regularization determine an XGBoost leaf weight for a fixed structure?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Second-order leaf optimization in XGBoost.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "XGBoost adds trees to an ensemble while minimizing prediction loss and a tree-complexity penalty. Its second-order approximation uses each example's gradient and Hessian evaluated at the current prediction. For a fixed tree structure, the optimal leaf weight is the negative sum of gradients divided by the sum of Hessians plus the weight regularization parameter. The structure score also includes a penalty for the number of leaves.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The optimal leaf weight is negative gradient sum divided by Hessian sum plus weight regularization.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The objective also penalizes tree complexity including leaf count; gradients/Hessians are evaluated at current predictions.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Omits both Hessians and regularization from the stated optimal weight."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a51",
+      "family": "xgboost",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does XGBoost route a missing sparse value without scanning every dense entry?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Learned default directions for sparse tree inputs.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "XGBoost assigns each split a learned default direction for examples without the relevant sparse feature value. Split finding visits the non-missing entries and evaluates possible default directions using the training statistics. The paper treats non-presence as missing in its presented algorithm and also discusses a user-specified absent value. This allows the split procedure to exploit sparse input rather than scanning a dense representation.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Split finding visits non-missing entries and evaluates default directions using training statistics.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Each split learns its absent-value direction; non-presence is treated as missing in the presented algorithm.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims all missing feature values use one fixed global branch."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a52",
+      "family": "factorization-machines",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does a second-order factorization machine parameterize interactions in sparse features?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Pairwise interaction parameters in factorization machines.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "A second-order factorization machine combines a global bias, linear feature terms, and pairwise feature interactions. Each feature has a latent factor vector, and the coefficient for a pair is the inner product of its two factor vectors. The interaction term also multiplies the corresponding feature values. Factor dimensionality is a model hyperparameter; the model does not allocate an independently learned coefficient to every feature pair.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The pair coefficient is an inner product of feature latent-factor vectors, multiplied by their feature values.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Bias and linear terms accompany the pair interactions; factor dimensionality is a hyperparameter and factors are shared.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims the model stores an independently learned parameter for every feature pair."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a53",
+      "family": "factorization-machines",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does an FM evaluate pair interactions without enumerating all feature pairs?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Linear-time evaluation of factorization-machine interactions.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The pairwise interaction sum in a second-order factorization machine can be rearranged into squared sums of feature-factor products minus their squared individual terms. This avoids explicitly enumerating every feature pair. Prediction has complexity linear in both feature count and factor dimension. For sparse feature vectors, the sums need only traverse nonzero values, so the cost depends on active features rather than the full vocabulary of possible features.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "The pair sum is rewritten using squared sums minus sums of squared individual factor terms.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Complexity is linear in feature count and factor dimension, traversing only nonzero entries for sparse inputs.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims sparse prediction must scan the full possible feature vocabulary."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a54",
+      "family": "comirec",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How does ComiRec-SA form several interests and incorporate the order of past behaviors?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Self-attentive interest extraction in ComiRec.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ComiRec-SA maps a sequence of item embeddings into multiple attention-weight distributions over historical items. Each distribution produces an interest vector by taking a weighted sum of the history embeddings. The model adds trainable positional embeddings when computing attention so that positions in the behavior sequence can influence the weights. These multiple interest representations feed independent candidate searches before the controllable aggregation module constructs the final recommendation list.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Multiple attention distributions yield weighted sums of history item embeddings.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Trainable positional embeddings influence attention weights, and interest vectors drive separate searches before aggregation.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims weighted history aggregation is order-sensitive without any positional input."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a55",
+      "family": "comirec",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What generalization boundary and recall weighting does the ComiRec evaluation protocol use?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Sequence evaluation protocol in ComiRec.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ComiRec's public-dataset experiments divide users into training, validation, and test groups in an 8:1:1 ratio. Training uses the sequences of training users. For validation and test users, the first 80 percent of behaviors provide context, and the remaining behaviors provide prediction targets. Histories are truncated to 20 items for Amazon Books and 50 for Taobao. The evaluation reports recall, NDCG, and hit rate, and averages recall over users.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Users split 8:1:1 into train/validation/test; validation/test use the first 80 percent of behavior as context.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Recall is averaged over users and the remaining behaviors are targets; user-disjoint evaluation differs from overlap-user interaction splits.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims validation and test users are training users with merely different target interactions."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a56",
+      "family": "experiments",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why should sample-ratio mismatch be investigated before interpreting an experiment uplift?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Sample-ratio mismatch in experiment monitoring.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Sample-ratio mismatch occurs when observed treatment and control user counts do not satisfy the expected allocation ratio. The article describes this as a problem that typically invalidates the experiment and makes its other metric movements untrustworthy. It recommends checking for mismatch early and setting alerts. Feature teams can then investigate the cause and stop an experiment when its results cannot be salvaged.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Observed treatment/control counts inconsistent with intended allocation indicate sample-ratio mismatch.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The source treats mismatch as typically invalidating the experiment and recommends early checks/alerts and investigation.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Claims significant uplift alone repairs sample-ratio mismatch."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a57",
+      "family": "experiments",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why can segmenting by activity during treatment distort an experiment comparison?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Stable segments for experiment analysis.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The article recommends segmenting by characteristics unlikely to change because of treatment, such as market or activity measured before the experiment. Segmenting by activity during treatment can move users between segment values as a consequence of the change being tested. It recommends checking segment stability and allocation balance. For dynamic behavioral segments, it points to weighted metrics rather than treating the segment membership as fixed.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Treatment can change activity and move users between dynamic segment values.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Use stable pre-treatment characteristics and check segment stability/allocation; dynamic behavioral segments may require weighted metrics.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Treats treatment-affected segment membership as fixed and comparable without investigation."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a58",
+      "family": "flink",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What must a Flink source support for checkpoint recovery to maintain exactly-once processing semantics?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Checkpoint state and source replay in Flink.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "A Flink checkpoint records source positions together with operator state for a consistent point in the dataflow. On failure, the system restores a completed checkpoint and resumes the input streams from the recorded positions. The documentation describes this combination of state restoration and replay as maintaining exactly-once processing semantics. Sources must support rewinding to the required point, and checkpoint frequency trades runtime overhead against replay work during recovery.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "A consistent checkpoint records source positions and operator state, then restores both with replay.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Sources must rewind to the required position; checkpoint frequency trades runtime overhead against recovery replay work.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims a checkpoint gives universal exactly-once external effects without source replay support."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a59",
+      "family": "ml-debt",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How can two ML systems create a feedback loop without an explicit data dependency?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Direct and hidden feedback loops in ML systems.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "A model can influence the selection of its own future training data, creating a direct feedback loop. The paper discusses partial randomization and isolating some observations from model influence as mitigations. Hidden feedback loops arise when separate systems affect each other indirectly through the world, such as product and review selectors that change user interactions. These indirect loops can connect systems without an explicit data dependency.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Direct loops arise when predictions influence future training-data selection.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "Hidden loops arise through indirect effects of interacting systems; randomization or isolated observations are described mitigations.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": [
+        "Claims feedback requires an explicit direct data dependency between the systems."
+      ],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    },
+    {
+      "id": "a60",
+      "family": "bpr",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What preferences does BPR infer from implicit interactions, and which comparisons remain unspecified?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "source": {
+          "path": "02-Zettelkasten/Literature/Observed and unobserved item comparisons in BPR.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Implicit-feedback observations contain positive interactions, while unobserved user-item pairs mix missing and negative feedback. BPR constructs training triples from a user, an observed item, and an unobserved item, assuming the observed item is preferred. The paper does not infer an ordering between two observed items or between two unobserved items. Its supervision is therefore a partial set of pairwise preferences derived from the interaction data.\n"
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "p1",
+          "text": "Training triples assume an observed item is preferred to a sampled unobserved item, whose absence can mix missing and negative feedback.",
+          "supportSets": [["source"]]
+        },
+        {
+          "id": "p2",
+          "text": "The source does not order two observed items or two unobserved items; supervision is partial.",
+          "supportSets": [["source"]]
+        }
+      ],
+      "forbidden": ["Treats every unobserved pair as an explicit confirmed dislike."],
+      "graphChecks": [],
+      "notes": "AI-authored interview question grounded in the frozen literature record. No source text is supplied to the solver; alternative delivered supporting records remain acceptable."
+    }
+  ]
+}

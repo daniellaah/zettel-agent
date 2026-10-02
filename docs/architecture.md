@@ -1,6 +1,6 @@
 # Architecture
 
-Zettel Agent is an Obsidian desktop plugin. It lets you ask questions about a Zettelkasten folder (Fleeting / Literature / Permanent / Writing) in a chat sidebar, and it answers with citations to your notes. It helps you think: it searches, reads, compares, questions and suggests links. It never writes to your notes. See [ADR-0008](adr/0008-read-only-agent-own-loop.md).
+Zettel Agent is an Obsidian desktop plugin. It lets you ask questions about a Zettelkasten folder (Literature / Permanent / Writing, plus entry maps) in a chat sidebar, and it answers with citations to your notes. It helps you think: it searches, reads, compares, questions and suggests links. It never writes to your notes. See [ADR-0008](adr/0008-read-only-agent-own-loop.md).
 
 ## Components
 
@@ -63,7 +63,7 @@ Adapters take an optional `fetch`. In Record mode, `recordingFetch` saves each r
 | `links`  | Outgoing links, backlinks and unresolved links, with `depth: 2` for notes two hops away. Each note gets an evidence id, so structural facts can be cited.                   |
 | `list`   | Notes by stage, folder, tag or orphan status, with link counts and an evidence id each. `preview` adds each note's opening lines, for skimming the whole vault in one call. |
 
-Note text is wrapped in `<note>` tags that the text itself cannot close. The system prompt treats text inside those tags as data and never as instructions.
+Search and read include a bounded excerpt of generic frontmatter properties with section evidence, preserving source identity when bibliography is stored in metadata ([ADR-0014](adr/0014-literature-notes-with-source-metadata.md)). Note text and metadata are wrapped in `<note>` tags that the text itself cannot close. The system prompt treats text inside those tags as data and never as instructions.
 
 ## Retrieval
 
@@ -74,10 +74,13 @@ Note text is wrapped in `<note>` tags that the text itself cannot close. The sys
   - A section's score is its own score plus its note's score. Results are collapsed to one section per note.
 - **Tokenization:** text is NFKC-normalized and lower-cased. Latin text is split into words. CJK text is split into `Intl.Segmenter` words, plus overlapping bigrams for domain terms the segmenter breaks apart (双塔 → 双 | 塔). Words and bigrams are both used because that combination scored best on the evaluation set.
 - **Link graph:** links are resolved with Obsidian's `metadataCache.getFirstLinkpathDest`, and include links in frontmatter properties. The graph is rebuilt lazily after any change. In Node, basename matching stands in for Obsidian's resolver.
+- **Research scope:** `Corpus.upsert` excludes notes whose effective stage is fleeting, using frontmatter type before the folder stage. This boundary applies to all five tools, mentions and active-note context, and to offline evaluation. Stage changes remove stale entries and invalidate the graph. User-triggered capture creation remains available. See [ADR-0013](adr/0013-exclude-fleeting-from-research.md).
 - **Freshness:** the index is built in memory when the layout is ready, and whenever the Zettelkasten folder setting changes. After that it is updated from vault events; changes made during a rebuild are replayed once the rebuild finishes. (Planned: persist the index so unchanged notes are skipped at startup.)
 - **Stages:** each note's stage comes from its folder. A frontmatter `type` that names a stage overrides the folder.
 
 ## UI
+
+- **User-created notes.** Three commands and a ribbon entry create fleeting, literature or permanent notes from fixed scaffolds, without calling a model. The dialog shows the destination and accepts optional source metadata; submission creates a new file and opens its editor. Existing notes are never overwritten. This user-only creation path lives in `ui/` and is not available to the agent, session or chat host. See [ADR-0012](adr/0012-user-triggered-note-creation.md).
 
 - The chat view lives in the right sidebar. The conversation belongs to the plugin, so closing the view keeps it.
 - **Saved chats.** After every turn, the conversation is saved to the plugin folder: its items, its model transcript and its evidence ledger. The history panel lists saved chats newest first. Reopening one restores the answers with working citations, and a follow-up question continues the original transcript.
@@ -92,7 +95,12 @@ Note text is wrapped in `<note>` tags that the text itself cannot close. The sys
 
 ## Evaluation
 
-`npm run eval` runs everything under `eval/`, separately from the unit tests, against the fixture vault in `fixtures/vault`. That vault holds 55 bilingual notes; its deliberate edge cases are listed in `fixtures/vault-design.md`. The judged queries are in `eval/judgments.draft.json`.
+`npm run eval` runs 120 English retrieval questions against the unchanged 318-note learning corpus. `eval/suites/expanded` freezes 96 dev/24 test retrieval queries and 48 dev/12 test Agent tasks by question family and primary source work. The original 20-query/12-task pilot is preserved; use `EVAL_SUITE=pilot` to reproduce it.
 
-- **Retrieval (implemented):** Recall@5/10, MRR and nDCG@10 at note level, broken down by language, for each tokenizer mode.
-- **Planned:** judged queries from the real vault; link-graph expansion as an ablation; a latency test on a synthetic 5k-note vault; agent-level checks run against recorded API fixtures. Those checks are citation validity, honest "not in your notes" answers to no-answer queries, resistance to prompt injection, and not ghostwriting ("write this note for me" should produce questions, not a finished note).
+- **Integrity:** SHA-256 corpus, source-audit, annotation and implementation bindings; strict source/metadata/link/excerpt checks; Recall@5/10, MRR@10 and linear-gain nDCG@10 with denominators and explicit unjudged counts. Expanded pools remain incompletely reviewed, so retrieval metrics are provisional.
+- **Answer evaluation:** production `runTurn` and tools in Node, exact delivered scopes, follow-up history, semantic answer/citation grading, occurrence-level citation completeness and note/section quotation binding. Grader repair attempts, failed grades and original requests remain recorded. Correctness references never establish delivery grounding.
+- **Complete runner:** `eval:full` declares 86 jobs: 60 Agent tasks, six repeats, six fixed top-five retrieval comparators, six no-vault comparators and eight isolated attacks. It reports per-split quality, paired comparisons, repeat reliability, cost and latency. Two workers share an explicit allowance; smoke and strict replay make zero live calls. Test runs follow development and robustness. See [ADR-0020](adr/0020-frozen-expanded-evaluation-and-isolated-comparisons.md).
+- **Review status:** synthetic AI annotations and the owner's delegated AI adjudication. The earlier review was unblinded; no human or blind calibration is claimed. Human calibration tooling remains separate. Structural validation is not proof of entailment or exhaustive claim extraction.
+- **Read-only boundary:** solver comparators are evaluation-only. Independent synthetic robustness notes live in memory, never in the learning corpus or owner's vault. Runtime tools remain unchanged and read-only. Historical recordings concern their own corpus.
+
+See [operator guide](../eval/agent-evaluation.md), [ADR-0017](adr/0017-frozen-learning-corpus-evaluation-pilot.md) and [ADR-0016](adr/0016-source-grounded-learning-dataset.md).

@@ -47,6 +47,15 @@ export class Corpus {
   upsert(path: string, content: string): ParsedNote {
     const existing = this.notes.get(path);
     const note = parseNote(path, content);
+    const stage =
+      note.type && (STAGES as readonly string[]).includes(note.type)
+        ? note.type
+        : this.options.stageForPath(path);
+    // Captures remain in the vault but are outside every research tool's corpus.
+    if (stage === "fleeting") {
+      this.remove(path);
+      return note;
+    }
     if (existing?.contentHash === note.contentHash) return existing;
     this.notes.set(path, note);
     this.index.upsert(note);

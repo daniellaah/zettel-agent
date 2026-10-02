@@ -7,6 +7,7 @@ import { recordingFetch, replayFetch, type Cassette } from "./agent/recording";
 import { ChatSession } from "./session/chat-session";
 import { resolveSettings, type PluginSettings } from "./settings";
 import { ChatView, VIEW_TYPE_CHAT } from "./ui/ChatView";
+import { registerNoteCommands } from "./ui/CreateNoteModal";
 import { SettingsTab } from "./ui/SettingsTab";
 import { FileConversationStore } from "./vault/conversations";
 import { RecordingStore } from "./vault/recordings";
@@ -48,6 +49,7 @@ export default class ZettelAgentPlugin extends Plugin {
       name: "Open chat",
       callback: () => void this.activateChatView(),
     });
+    registerNoteCommands(this, () => this.settings);
     this.addSettingTab(new SettingsTab(this.app, this));
 
     this.app.workspace.onLayoutReady(() => {

@@ -1,0 +1,1599 @@
+{
+  "schema": 1,
+  "corpusId": "learning-v1-790b1b2bb6c7",
+  "frozenOn": "2026-10-02",
+  "corpusHash": "790b1b2bb6c70b4cb0db6e4fdd9a3db21a1839a1c13bb3be473d6e0558b737c0",
+  "sourceAuditSha256": "ef7c2b7cbd10685f16429da643f317451f40fb407e9c8c491ee16f35404406bc",
+  "notes": [
+    {
+      "path": "02-Zettelkasten/Literature/Acceptance cost and lookahead in speculative speedup.md",
+      "stage": "literature",
+      "sha256": "08d842193d57b1435ffa03b111ea338ac0fcd284b4fac566abb603691d90b148"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Adaptive interest count in MIND.md",
+      "stage": "literature",
+      "sha256": "12224fc2b2e7f879683be0e22e304c05f100c4f08f31bb443b36496ec65e0dbb"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Adjusted cosine for user rating scales.md",
+      "stage": "literature",
+      "sha256": "c14e6aa56efc6d59782130f2b349bfbf71312be638fed62270b29fe462eaf25b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Allowed lateness and repeated window firing in Flink.md",
+      "stage": "literature",
+      "sha256": "fad1b586186866d7a06918cb871f0c2206a78b2e58b56ca2a5e9cbc3e518b5ec"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Answer correctness and citation coverage in ALCE.md",
+      "stage": "literature",
+      "sha256": "9428fad684afd04bbb3e4f9ca73fe812a340d67c4541080c32f42df7337c092a"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Arithmetic memory and IO bounds in FlashAttention.md",
+      "stage": "literature",
+      "sha256": "291fb9a7ecf6f7e9a27a0fae441434c64770c8a5cd1374d1873de33d3b62c85c"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Assumed relevance in pseudo relevance feedback.md",
+      "stage": "literature",
+      "sha256": "02b8cb34e6e4b671c73c50b8073794b65e6ebb0e59d2bae2d2dee67106fa167c"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/At-least-one success and repeated reliability.md",
+      "stage": "literature",
+      "sha256": "56412c148a74df11aa813e6926de010fd664c4fd442a109a29a91221780bb4f4"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Attention sharpness experiments in MIND.md",
+      "stage": "literature",
+      "sha256": "65b6de09126e241ec3b99bcbf675b5ea2ba4fe7bac6da7e847739cd85c7a2cd6"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Augmented positive views in SimCLR.md",
+      "stage": "literature",
+      "sha256": "be4a477f81080144609a50e9c7c0373952951a70d439fb376b5fc57042a5c85d"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Automated model promotion checks in TFX.md",
+      "stage": "literature",
+      "sha256": "e2997ed41e81c3c2fc2c00eb6bee6619908894b4d0715359730765645fdd0625"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Autoregressive information flow through attention masks.md",
+      "stage": "literature",
+      "sha256": "55f52c674b557b3ee416bf9129aa6937afce904438bc0db59b7824bc00394a02"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Average precision and graded ranking evaluation.md",
+      "stage": "literature",
+      "sha256": "3e715ac370ee82ab8e5463e715a94ffe076772216c47c08c4042ab1bd009034b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/BM25 and reference-file contexts in SWE-bench.md",
+      "stage": "literature",
+      "sha256": "3b377370a45b957d41eece4f0365e34da1613a63e2b1adb86b34f1d3e1bb10a6"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Backpropagation through a computational graph.md",
+      "stage": "literature",
+      "sha256": "bc0e5b267ce61d6cbb3e32749abe1084d36242ff52e0531cad6a9eed976bf8b4"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Backward recomputation in FlashAttention.md",
+      "stage": "literature",
+      "sha256": "875deea1c3988a155bd66d3137151b18cc1a7bf361d1ddd4e3173dd4ec2186db"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Batching and memory tiling in GPU similarity search.md",
+      "stage": "literature",
+      "sha256": "2fa956bbf4629591e2aa827a7ccd48421063109b078a5616f5094d7739220f1e"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Behavior-to-interest routing in MIND.md",
+      "stage": "literature",
+      "sha256": "1535b6b45cf1b5bc1b5ea141a4b4a9747d57a81c8c65b82a3a18bc043c29ad2f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md",
+      "stage": "literature",
+      "sha256": "046b9ac314d8232cc21acfa60fb5481740699235ba3f6170163aca0ddab75570"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Bootstrap resampling for estimator variability.md",
+      "stage": "literature",
+      "sha256": "9b5ea2fe7266db3515ffb695650ad3418745df71f57111f482ac1d4df251fa65"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Candidate generation and ranking at YouTube.md",
+      "stage": "literature",
+      "sha256": "8a28ecf01baa5803e2f26c104bc2148c5a62798a416008326124e6b551251bff"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Capacity and generalization in supervised learning.md",
+      "stage": "literature",
+      "sha256": "5ec4983aa96ce6a2625be8ec7e717a92816addfcaf03191c4a68b6bdbd219461"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Causal next-item supervision in SASRec.md",
+      "stage": "literature",
+      "sha256": "0c74273227f3a9846b42978a5b83cd5af603c02f29ad1120875dc1312bb0630e"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Checkpoint state and source replay in Flink.md",
+      "stage": "literature",
+      "sha256": "e4e68286bb5cd32aeda2ca9d14046ebf5b663b3637918dcd14a149e7cd635210"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Cold-start training and supervised data in DeepSeek-R1.md",
+      "stage": "literature",
+      "sha256": "97f2e9201c3c212e07221436a56e1dc46e4f95bb6c5c6e204ed00359ac1e0d97"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Compaction for long-running agent tasks.md",
+      "stage": "literature",
+      "sha256": "7fc8e07963d449ca713a6e72747579d5be4fe5be9f5c2c3e18aa71e2dc903845"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Contextual token matching with ColBERT MaxSim.md",
+      "stage": "literature",
+      "sha256": "6a9bd6d86a3cd62e6f9500454441d0f68165f5fda9344aba288fe4d0cc879582"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Cosine normalization for document vectors.md",
+      "stage": "literature",
+      "sha256": "4010ead2bbf706b7e569b971665537b7452d8e8a465460b3ed30ec996d033eba"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Counterfactual logging for affected traffic.md",
+      "stage": "literature",
+      "sha256": "f7778ddee8b6d65cbbd222c31448f7db654c51d49002ca32108cd6e2559d1593"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Dataset solver and scorer roles in Inspect.md",
+      "stage": "literature",
+      "sha256": "b6d4c3f681ed14ae7cd26da652b74f2f798288cb9e1c12484f20f9a0780e8d47"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Date segmentation and novelty effects in experiments.md",
+      "stage": "literature",
+      "sha256": "ac6e2ad33a66e7556fb4eaec70264624460f34d0e8e62fadfcc374b7390e08c9"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Dependencies introduced by correction cascades.md",
+      "stage": "literature",
+      "sha256": "10ebb3cf2295b2a10a467103ca6d47034399a1e374d43609c641d9efedc6daa9"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Direct and hidden feedback loops in ML systems.md",
+      "stage": "literature",
+      "sha256": "1370232494ca418d40bceab2ddd942dff88923a84cbdad6d95356257a3ea7e3f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Document frequency and tf-idf weighting.md",
+      "stage": "literature",
+      "sha256": "f6ace3ba3e4a1368d5a135fe9dc462582a181d514c391b51eb2a083bee757387"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Double quantization of blockwise scaling constants.md",
+      "stage": "literature",
+      "sha256": "0dbd6c0b48fb5cb2d63a887bc5833b2d9431c2006560476c36496267becbfd27"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Draft proposal verification in speculative decoding.md",
+      "stage": "literature",
+      "sha256": "110a18e102d779fa5479fd19397a805dfed4e2b26378edf06989e0ba9e916c7b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Dropout as shared-subnetwork training.md",
+      "stage": "literature",
+      "sha256": "871d49f7b141cb2e644671ea519e7cf714339bbbfddd4b3b5977a7fcc5e74a04"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Dual encoders and passage preparation in DPR.md",
+      "stage": "literature",
+      "sha256": "61313bd3dcec3c24db4018b1bb9de57001203a69971c453ab134ea8f1e9e50b4"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Dynamic routing and target-selected training in ComiRec.md",
+      "stage": "literature",
+      "sha256": "4482a70b1fff0e0d76dccabd14387c017cb668af2baa466bd80da39865ecd98f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Entanglement among ML model changes.md",
+      "stage": "literature",
+      "sha256": "b4c3dfb59c3de6eda56a4451babdf3b18767e50c92fe08ab03489cda4877c628"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Event-time and processing-time window semantics in Flink.md",
+      "stage": "literature",
+      "sha256": "95e988f4408c3b8dbdef47c325e9af1c7d72eb23d43e4703ce9811cb0b8c58dc"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Evidence position in long-context question answering.md",
+      "stage": "literature",
+      "sha256": "f98000284d98f836877413e855d0427ec61dbc3213e066b455b7b259345bf9e5"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Experiment hypotheses and metric roles.md",
+      "stage": "literature",
+      "sha256": "ba936b43f9a3ee3138f1648446122e2955132fa1b76eea572d21d4be6bb5f2ac"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Exported feature transformations in TFX.md",
+      "stage": "literature",
+      "sha256": "715984794648dd20d384e27862e634bcf1126a4be557f3fbd5c9ac777b8e5fb8"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Feature subsampling to decorrelate random forests.md",
+      "stage": "literature",
+      "sha256": "85c1dda1286664558aed089e934a6b4e17d039ca85392433e01b2ff0cec643cd"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Fleeting notes.md",
+      "stage": "literature",
+      "sha256": "5a7f5ae045ba59add33ec8dc9f0ad6a20db7427f421cdb6c6e5a735fce38fd89"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Frozen weights and low-rank updates in LoRA.md",
+      "stage": "literature",
+      "sha256": "445d37e9006b43ea353f0192a834fd8fcc5299dc4ca8e882939b8ed78e98704c"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Group-relative advantages in GRPO.md",
+      "stage": "literature",
+      "sha256": "33234635b34843e7353b64b22a1d1f4e4dec5bad2253ec419a596cf941341ae7"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/HNSW complexity assumptions and graph memory.md",
+      "stage": "literature",
+      "sha256": "98d0a7ae0d6ba798efbe6b94cdd7cab44a51799e7fe8e0fc3f5c227ae673aa9f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md",
+      "stage": "literature",
+      "sha256": "cd45bc5874aad6d3b042b4def81944896d978f18c545207b494a151d2873ccd7"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md",
+      "stage": "literature",
+      "sha256": "9ca09331698d16a3d22a2660dd6c948604f7e36b29a2a0735b1e879005ccfa83"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/In-batch negatives and sampling correction in neural retrieval.md",
+      "stage": "literature",
+      "sha256": "85678b85d9e672da682c8383caceee504d86f90dec7ab7b781dc008b537d4092"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Input watermark minima and idle sources in Flink.md",
+      "stage": "literature",
+      "sha256": "e91c4bb6d132e0d987d89ccfc7a4fc21005c3a0be6eb815d0f6f5a69925389cc"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Interleaved reasoning and external actions in ReAct.md",
+      "stage": "literature",
+      "sha256": "b55ae6ee9ff231773406e3f161f597bf54aec1bb32233e4f1c9a73b6cf23efaa"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Inverted-file pruning in Faiss similarity search.md",
+      "stage": "literature",
+      "sha256": "f0615b18e235e61b8decca13601164a334e01733a49355212dc76cde25b572f1"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Irrelevant citations and joint passage support in ALCE.md",
+      "stage": "literature",
+      "sha256": "ddac6c45b0626a247946a776800796411f266e2c4043b4b1e615dbfd8cec1ce5"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Issue and pull-request construction of SWE-bench tasks.md",
+      "stage": "literature",
+      "sha256": "7a9a2b75e56892e9bdc44786a48b31107abd58259da766b788a0aa986e4db8ae"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Item-neighborhood prediction in item-based collaborative filtering.md",
+      "stage": "literature",
+      "sha256": "a86e5ea8315158a06150dcbb03531f9ae5e37f81315e3bc81d840a3dd2f1d6bb"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Keyed state partitioning and redistribution in Flink.md",
+      "stage": "literature",
+      "sha256": "d76d6ed722469a3905537dc2619d1e5f9389ef73fb7cd60c4bf3bbdab655563c"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Label-aware training and ANN serving in MIND.md",
+      "stage": "literature",
+      "sha256": "9930ddbe93aa87060270255645fcf01dc853ed93212f6eafcb9299bbb51a3f21"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Latent documents and joint training in RAG.md",
+      "stage": "literature",
+      "sha256": "9c6b9797022f5e44330508228a27710ba33e34548b29ecc263a4145697b347a1"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Learned default directions for sparse tree inputs.md",
+      "stage": "literature",
+      "sha256": "21585ac4ca2b39e43a8cb06c223579b7aea0930458419eee49b4b6ea22d5f300"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Linear-time evaluation of factorization-machine interactions.md",
+      "stage": "literature",
+      "sha256": "6d792a030726227070907be3e2a58b152db3022e1ca22c1f2edb86f2f1d80cfb"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Literature notes.md",
+      "stage": "literature",
+      "sha256": "d722a85e7175037d5f6d121f1c4d92955b815e1578cf4260415f3e3602e9b8ea"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/LoRA merging and adapter storage.md",
+      "stage": "literature",
+      "sha256": "44108997d611b8f4b6b70331af10aa12387bc8e8665cfce93546f24fbe0f52fb"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Logistic probabilities and linear log odds.md",
+      "stage": "literature",
+      "sha256": "3994a017d51d6306f3b77ced3731ee70a51e8837cc73d9359287cf795472efa1"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Masked query augmentation in ColBERT.md",
+      "stage": "literature",
+      "sha256": "d47a7fc2b3d211ba143ec35a899076f61b2a0bc9ad63a84aafa8fa0e01506fcc"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Metric roles in trustworthy experiments.md",
+      "stage": "literature",
+      "sha256": "29993bd9bf2d63dbda273d4673d806e2e11e25f3a0b9ac1219632dbb5d9854f6"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Moment estimation and bias correction in Adam.md",
+      "stage": "literature",
+      "sha256": "03d93500c7ec645db8f20c7d44ff8c0d016198a3e944db74827e8ffab6827270"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Momentum and optimization geometry.md",
+      "stage": "literature",
+      "sha256": "fb55a34ff9e20c24c8da9e3cce9195343b26ab1b734ac72ffea5031ad86f6314"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Multi-interest representations in MIND.md",
+      "stage": "literature",
+      "sha256": "0bcd553b048b6f908aa9cff2c1ae6d2ae460010d31fd23b16a4a59cb2e18142b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Negative passage selection in DPR.md",
+      "stage": "literature",
+      "sha256": "d0bf16a0677f2ec19a307546f3dd1e6a91edd2c2628f4cb10b1bf8972e9eae55"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Normalized temperature-scaled contrastive loss in SimCLR.md",
+      "stage": "literature",
+      "sha256": "309441016736ddf8dae455c78f700674d644faf9c48322c48e3828f3cb5fcbf2"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Observed and unobserved item comparisons in BPR.md",
+      "stage": "literature",
+      "sha256": "19fb93de30d40d466aa47a8990e6e92df046f48a99aea2011faa8740e5012803"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md",
+      "stage": "literature",
+      "sha256": "5fa431d945973b22334ceedf6e96c7a40c1a37b99446a012fd4eb11a731533f9"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/PagedAttention and logical KV-cache blocks.md",
+      "stage": "literature",
+      "sha256": "b560df0d46ee0d256108b778b4dd6b7ee89b6646ec53fb1231f106f6c911a919"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Pairwise interaction parameters in factorization machines.md",
+      "stage": "literature",
+      "sha256": "2142d62dfc3b1ab4085523529d7fdc9231b4b3cd31055da2013289ee8c869441"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Pairwise logistic likelihood and priors in BPR.md",
+      "stage": "literature",
+      "sha256": "553c54b77c1ad80cf2cf2f6e9562dd64fa2625085e4e1bd32841cc8926f7d11b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Pairwise updates and offline data in DPO.md",
+      "stage": "literature",
+      "sha256": "cba0f6fb5472f841ec790eace90c4939774eedc860c04accf197b2d1d0a8d953"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Patch application and regression tests in SWE-bench grading.md",
+      "stage": "literature",
+      "sha256": "5a0870868c961e8ca9b9c32970686eff5f7672ff1c2c12b273f9840294029310"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Permanent notes.md",
+      "stage": "literature",
+      "sha256": "7b0e7aaf8bc0e064256d2c0f9631eba209785ddf2efea9fd907bd8543709bd71"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Positional encodings in the Transformer.md",
+      "stage": "literature",
+      "sha256": "f785a6b104365debb18b8e13aa58528a5da54b577959175fee88404faca2a007"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Precomputed item neighborhoods for scalable prediction.md",
+      "stage": "literature",
+      "sha256": "b92a4ff1e0629d713e5f23e3be5380dd8bf59b4d223732293e76ea4924425752"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Predefined workflows and model-directed agents.md",
+      "stage": "literature",
+      "sha256": "984a955860fc19af64b79d44b6a44d1227e525b09a05605dd1d8fa760b6c0e17"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Prediction tasks and input design for factorization machines.md",
+      "stage": "literature",
+      "sha256": "6818fc78ced32ad758c8f778ab1a9eb59ca2a0bb370374bc0b822facce908a29"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Predictor scaling before ridge regression.md",
+      "stage": "literature",
+      "sha256": "02d58e0f7d0a20984f62561127ad75c7899ef72c8430fb25b4962fcd7cfdd58f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Product quantization and asymmetric distance computation.md",
+      "stage": "literature",
+      "sha256": "decfeac8911480e8dc06cf1604bf4dbfe515050b5420511968f7896681b06f14"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Projected subspaces in multi-head attention.md",
+      "stage": "literature",
+      "sha256": "f5876eecbd06dd7ae2e34ba86ef9bf4a767e86f25bb1b4737f3dfd523a75b9ba"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Projection heads and downstream representations in SimCLR.md",
+      "stage": "literature",
+      "sha256": "bae3f6d81a0983a2d636501fcd7e3fdc9a96571fc4d2a008c02ade3858b005c1"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Prompt chaining and intermediate gates.md",
+      "stage": "literature",
+      "sha256": "09c1438e1c711865b2f42953c583be3bb723bfd44dff8c250f41a6f39d60e539"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Randomization units and interference.md",
+      "stage": "literature",
+      "sha256": "07e1fce3ab11934349eb8074610e4480f4f3e0f7384ff06a6ac2a5a6a8319289"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Rank-based combination with reciprocal rank fusion.md",
+      "stage": "literature",
+      "sha256": "4ce61a6873b9878eded075880b62710bc244d36da6f52a9781b9a0a81782a776"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Ranking exposure and positional features in Rules of ML.md",
+      "stage": "literature",
+      "sha256": "48d995f48fde7e2dce6ecf99e0acc8eccc6531300ac3c7e7eb31054c5877f4a8"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Reference-relative preference optimization in DPO.md",
+      "stage": "literature",
+      "sha256": "98044302f8f53215007626125650be4d274ea9b97ac70764a219688562c4a067"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Regularized split gain in XGBoost.md",
+      "stage": "literature",
+      "sha256": "3060511c163821db3fd228583a9387956c1d7b034c3f21bdddce64ba519ebaaf"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Relevance and diversity aggregation in ComiRec.md",
+      "stage": "literature",
+      "sha256": "daf7f9d3d87d69052b254e2c9f182a1edad558e4ea62f6d8c75c79ba9a8642c9"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Repeated monitoring and early experiment decisions.md",
+      "stage": "literature",
+      "sha256": "e6019aa1ae39516fa2175d6853932a5e3c4cac74ca121226df1e6ff64294faa9"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Repeated test-set use and model selection.md",
+      "stage": "literature",
+      "sha256": "f190f142492c69a94707773b523465cf72feb939929d7deef288302452a29df1"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Residual resampling after a speculative rejection.md",
+      "stage": "literature",
+      "sha256": "68fcb2a60fc08d3e38672a788777307b595644e2d6ba30baacad404181df86a4"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Ridge penalties and coefficient shrinkage.md",
+      "stage": "literature",
+      "sha256": "77e25cd9325b94b180bb1361a7a44af7c5d99a2666705a3e654b5eb87807a3ea"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Rotating held-out folds in cross-validation.md",
+      "stage": "literature",
+      "sha256": "f8546a02de6793b5b07689b87a77528d7f0c61f3301900dfeb1590d31f24e6c3"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Rule-based accuracy and format rewards in R1-Zero.md",
+      "stage": "literature",
+      "sha256": "6c500765c8f17233ba76f73ebdac6202856ab5db4b1860da8c2d0ac845d1f574"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sample-ratio mismatch in experiment monitoring.md",
+      "stage": "literature",
+      "sha256": "778561170cde736b8b4fd64f4b18a7afec93174610024e197044d690fc17b8e3"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sampled binary next-item training in SASRec.md",
+      "stage": "literature",
+      "sha256": "bf156e6308c0bc23ae213b569ce6afce9cbb65750ca5624b359315c6ed32ab14"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sampled candidate evaluation in SASRec.md",
+      "stage": "literature",
+      "sha256": "ac60639556c84004cc9d5eb0505d832c4e15a3d079605369f70fda5740967ffa"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Scaled dot-product attention.md",
+      "stage": "literature",
+      "sha256": "4613f0b497ec8bc43a794b4c68ae49ef698f531bcf7e0ce1435c9156441cd3ef"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Schema-based data validation in TFX.md",
+      "stage": "literature",
+      "sha256": "66c47535f4a0400ccf23a9d975fe2c04a4f3b571d4625fe83bc86f761ab3bd12"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Second-order leaf optimization in XGBoost.md",
+      "stage": "literature",
+      "sha256": "f7891132216419e66a865599f1a58526f39ee7b73a79e556c22f942dbde76952"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Self-attentive interest extraction in ComiRec.md",
+      "stage": "literature",
+      "sha256": "00a6daca6ad999825a15b36ee106e5b4bbdd8c33d0137bbac87598aec0576dd3"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sequence evaluation protocol in ComiRec.md",
+      "stage": "literature",
+      "sha256": "a82c4ccc68a8cfe1175d922b4732e20060591770c76910f4bc97f0c6a7bb340b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sequential training and indexed serving in neural retrieval.md",
+      "stage": "literature",
+      "sha256": "b028995b2beb7bcd135f53ab685913520f3c6c1e9abec3a865714448cc59453b"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Shared interaction evidence under sparse observations.md",
+      "stage": "literature",
+      "sha256": "9b06888d7cf13486605952e33df5dad85501eb0856fb50b1ced4044f923cd970"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Shared item embeddings and asymmetric transitions in SASRec.md",
+      "stage": "literature",
+      "sha256": "620ecac39b1a62eef58069b98da1eb57b8ee3ae4dba06f12c4899fd8e3de04ea"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Shared prefixes and copy-on-write in vLLM.md",
+      "stage": "literature",
+      "sha256": "20f6373460e49310a34130c1bac7cc62826ef344a0b369494c7c1a717d5b9c66"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Simple models and independent infrastructure tests.md",
+      "stage": "literature",
+      "sha256": "134a8ff2687215c6b99e1fb874ac7f6fb39af41c95d0b6a0e48ed5a9a3d9d078"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Softmax classification and cross-entropy gradients.md",
+      "stage": "literature",
+      "sha256": "1ddae8f34a975b2ef22db443f4ada11b78f7dcb69c1abaae732781452a9db942"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Sparse coefficient selection with the lasso.md",
+      "stage": "literature",
+      "sha256": "e728c1971274de02acdb44eca0ec00a5a10634bef00a73506d5d206dd8c0e10f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Stable segments for experiment analysis.md",
+      "stage": "literature",
+      "sha256": "7aca1dcbd93a73e7f6e0d3e333f282ef0933cae7336bb0b0d8f1e7a4b611df30"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md",
+      "stage": "literature",
+      "sha256": "a9bf96aab1e8562464bfc5eb20f9ba0301a56a848753c33587d45ef07b7be52d"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Streaming estimation of item sampling probabilities.md",
+      "stage": "literature",
+      "sha256": "31a2f0fe2260c31925cc6a9e3f915df01488a0edae5571f70266ff6246838057"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Structured notes outside the agent context window.md",
+      "stage": "literature",
+      "sha256": "ce02db0e878301b6f89c17b9b29cbcd43e17ab21ff1aa55910a08391d386e17f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Swing construction cost and parallelization.md",
+      "stage": "literature",
+      "sha256": "a79799ebe359fe35e542086b0d77a1126ebb9b42320640f96396d53747a4b22f"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Tasks trials transcripts and environment outcomes.md",
+      "stage": "literature",
+      "sha256": "517a4007d11af03f791db1b6a9f6c722267ea344a56fcda6caeea79f0db1d2c4"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Temporal labels and user weighting in YouTube retrieval.md",
+      "stage": "literature",
+      "sha256": "25db31eb12681e1ba37d6a41ce5d50205c161a73a8d221aced292669b031e9f6"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Term saturation and length scaling in BM25.md",
+      "stage": "literature",
+      "sha256": "9a5bac10dac5d32066002a554265634d8155d9d4323d5aa5873159047f783497"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Thinking-mode fusion and budget control in Qwen3.md",
+      "stage": "literature",
+      "sha256": "118aaaf9bbfd2657511d76361461873f0a2444ce6d3d5ff3c77a2a002281b8dd"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Token-index filtering and document refinement in ColBERT.md",
+      "stage": "literature",
+      "sha256": "1db692ef787885d7343ccb064cb8c2f6800ca280b1fade7b9e69ddc571757f23"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Tool contracts and minimal agent context.md",
+      "stage": "literature",
+      "sha256": "251081f9fa1ed4f8f7cc253d6fee9a9e3187a970419f2c211552425ef956fe4a"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md",
+      "stage": "literature",
+      "sha256": "eeff54ad3eaa49103bc4d1f0ea6593c44aecf4804dd5a4ea4644c729772c8714"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Undeclared consumers of model predictions.md",
+      "stage": "literature",
+      "sha256": "bda433007b14a2c804da7c87a8fb3f2b217b13b308c0ee48d3d8b95805972756"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Underutilized feature dependencies.md",
+      "stage": "literature",
+      "sha256": "dc71b2ed156a1587fa2df2bcdefbe574e2579c1200dc6896d493bc6b06ec2780"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Uniform triple sampling in LearnBPR.md",
+      "stage": "literature",
+      "sha256": "b86f8c07f1c1c1ff8683eb41676a319b3ce1d71fce5a6791a73d3efbf5b1d311"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Unstable upstream data dependencies.md",
+      "stage": "literature",
+      "sha256": "ca1207dc8e341f06a7cd639833d5a08ef98624f731ad4824c9e1616c172ad722"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/User-pair evidence in Swing similarity.md",
+      "stage": "literature",
+      "sha256": "7d3f1576022e3bc07c47838abc8f624eed725f78666f01ba8e497ab3e000e5bb"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Validation-based early stopping.md",
+      "stage": "literature",
+      "sha256": "9bb4bdef4867ab6e65e21b1bdf518b5a7a6fac722cdd87a9d94b57605c02afe2"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Watch-time weighting in YouTube ranking.md",
+      "stage": "literature",
+      "sha256": "4bce249954883dcef645a300ca5f2313e4a2a0638972ec01d91da15a0c4c1455"
+    },
+    {
+      "path": "02-Zettelkasten/Literature/Zettelkasten note system.md",
+      "stage": "literature",
+      "sha256": "9343b214199227ef499cde33b9e0ed6f0e4e3871c61d67b10d16b08c42384e65"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A baseline comparison makes model promotion a relative decision.md",
+      "stage": "permanent",
+      "sha256": "04ce59d14616752722cfe8d20f9df926908c82ad215c5b85093f4b753ff2bf24"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A better draft model is one that agrees with the target distribution.md",
+      "stage": "permanent",
+      "sha256": "4c7e5a6173e9e3057386b35caab1bae2764004bf1298d951c98ed555d3f862e8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A cached neighborhood separates similarity construction from prediction.md",
+      "stage": "permanent",
+      "sha256": "6492d4235db1bf10c5ab8cc973a84688a65f2ee4b7ec3b4336fb72a840e30ab5"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A categorical mapping is part of embedding compatibility.md",
+      "stage": "permanent",
+      "sha256": "f7165e059e34c65e747b3db2cd4576ea9d1dbd88cfe5648f7cb6b55edf928201"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md",
+      "stage": "permanent",
+      "sha256": "ce0321b5734a2ba612cad4dd09072a89cdd935410cbab35e16eb67a85a7e605f"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A contrastive denominator defines a local competition set.md",
+      "stage": "permanent",
+      "sha256": "012437b4fb8eab88d9218497cf0061dce43d57ca94187f1876cfd3f3910d2e73"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A diversity objective inherits the meaning of its dissimilarity function.md",
+      "stage": "permanent",
+      "sha256": "afc81170e2a4f122fdeccb8fad0f033ed64ade013d2fd80a40f722f3eef85b92"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A feature improvement can invalidate a consuming model.md",
+      "stage": "permanent",
+      "sha256": "e2043ded15f26bc4affe1d0a146cb013524a6b069ae3600591dc6d55da3f8843"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A hot key can remain a bottleneck after adding stream workers.md",
+      "stage": "permanent",
+      "sha256": "71537b9c645124e16087eb874e297df86205f43284f298a2d64af4cdf9a3dc47"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A learned interest slot does not supply its own semantic label.md",
+      "stage": "permanent",
+      "sha256": "d070630f17f1296015be5516f13d6d9398789555059b0b1013a23a185764a3ac"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A learned missing-value route uses absence as predictive information.md",
+      "stage": "permanent",
+      "sha256": "ce9e827db461dc85122ceae35cd4d71f69a74d15cd643b89d7b015c18159afbf"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A logistic coefficient describes an odds change rather than a probability increment.md",
+      "stage": "permanent",
+      "sha256": "694ac51c004f35b498f09a4d542abcb9fe30418f0e1f8774fb331d871e75000c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A long context window does not guarantee uniform evidence access.md",
+      "stage": "permanent",
+      "sha256": "056e31218eb602b446143ccbe05fad40109424d3a57f80c69924ac5982c47813"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A masked query embedding is a learned matching signal rather than an explicit added term.md",
+      "stage": "permanent",
+      "sha256": "21fd983b60d68e32d099ed5d270f679e8aa7ac34b805fd5d73c458c66a321694"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A monotone probability mapping preserves ranking while changing score interpretation.md",
+      "stage": "permanent",
+      "sha256": "06af173401762b79b44e45962b584579f5c5beef33589992821f1a8c805b9b8d"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A negative sampling distribution changes which ranking errors receive attention.md",
+      "stage": "permanent",
+      "sha256": "769cfc5a505b2c2be7951dd50b82c95cf6410a11be6864e995330d1e9df6f76e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A noisy gradient can still contain a consistent direction.md",
+      "stage": "permanent",
+      "sha256": "4f3aeca1d2729f3c30fb8d33c0c050f9b455d94e7a97b9b790a7e1b5277425c6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A pairwise preference objective does not calibrate click probabilities.md",
+      "stage": "permanent",
+      "sha256": "428265be70c4c23598e91e12cf2330e7c0d18129b7fcdbf7813c430b218dbbf1"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A passage positive for one question can be a false negative for another.md",
+      "stage": "permanent",
+      "sha256": "573085ae921029a53b9e8e8946296d893af2b3ea2ced6c7ce7a1c3a3936f69e3"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A permanent note must make its necessary context explicit.md",
+      "stage": "permanent",
+      "sha256": "11d15d550369ddde4e4ac4770b7005da1becf81db5551a8290a11795bb08d404"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A readable trajectory is diagnostic evidence rather than a correctness proof.md",
+      "stage": "permanent",
+      "sha256": "8350341389724b8e3ede58756ecc49033ca4d274d07ee60e0aee98622def8419"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A recovery point couples input positions with operator state.md",
+      "stage": "permanent",
+      "sha256": "d2f90dac49afc5bf2b2a051d311673b5baf460eedf7a956a14df2ead07c43c32"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A reference solution is evidence of solvability rather than the only valid output.md",
+      "stage": "permanent",
+      "sha256": "c8809ebc91245e63f2cbb97683c03cb438f8ffd418236d93c879f7afd115dcb1"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A repository task includes its code revision and execution conditions.md",
+      "stage": "permanent",
+      "sha256": "84baa8eae3ae0a1c59666bf63f8f8324a9bbcad347f7298ecd6284e2ba216c37"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A resampling unit should preserve the dependence relevant to the estimate.md",
+      "stage": "permanent",
+      "sha256": "977ceccc126e406d6b8c63f3af51bde181d71ede79c8b2668b4bbf9729eab1ee"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A retrieval deployment includes the model and its item index.md",
+      "stage": "permanent",
+      "sha256": "2dc69a2cb8d7194065b326ab43f6ca8d36ba51e1020a2daa752f92586374b2e8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A reusable item index requires a factorized scoring function.md",
+      "stage": "permanent",
+      "sha256": "421ff88d81f98b5e6d302026d3419c307b82c7b2a0fa91f99176ab9f726429e1"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A schema anomaly identifies a contract disagreement before its cause.md",
+      "stage": "permanent",
+      "sha256": "73c64587c1b9966a47e0c41c2872500b9c5850dd7d113351752e880806c720a8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md",
+      "stage": "permanent",
+      "sha256": "7991037aac214323e3c12f4ba8abe3c10040ba6a2c96e250b93e8516cfc3660c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A scorer operationalizes success and can introduce its own errors.md",
+      "stage": "permanent",
+      "sha256": "5499bf65390b12d1971b85391da624e3c166f8d0b58b9a3142a90de409b1c546"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A shared temperature changes training probabilities without changing score order.md",
+      "stage": "permanent",
+      "sha256": "c594d21bc1a70c267740ece8e2f6ee1c967d02297378b4d52db1217b66c0ab6d"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A simple baseline can validate the prediction pipeline.md",
+      "stage": "permanent",
+      "sha256": "121c01b08274d2df517b7c1d08d1900198b1b0c56e7d23598fd663ce07d2152c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A softmax probability depends on its competing classes.md",
+      "stage": "permanent",
+      "sha256": "3b5063799e836aec1662e204f588d25be373c170939f788b93b948c41ea07776"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A split criterion inherits the loss and regularization used to derive it.md",
+      "stage": "permanent",
+      "sha256": "9eee22b61f6de5eb5c523e2d225513beba42e5e4cce08575ac76268584daab00"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A success claim should be checked against the resulting state.md",
+      "stage": "permanent",
+      "sha256": "2c764e570320ed0a716c7d7f27e274add921119d1757a947d3c7321479360ac9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A training projection can differ from the representation used at serving.md",
+      "stage": "permanent",
+      "sha256": "f7bad1ad7ebb548e1e358236ce7324a12bfef4a1138493461f3c5f0367bde860"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A validation set is part of the model-selection procedure.md",
+      "stage": "permanent",
+      "sha256": "16362ef75cd0f21de165e95b63d34b1a90a3dbed395ffbde0d69e9d8c7466035"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A watermark is a progress assertion rather than proof that no late data exists.md",
+      "stage": "permanent",
+      "sha256": "2cbe4fa5733caffc9d02359d6740aee67687af97a210225b2c85d2ff500c9f67"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A weak feature can still carry a strong maintenance obligation.md",
+      "stage": "permanent",
+      "sha256": "e694da4e30817a381f30b559cfbd3438959299df4d3b1f1198545860c3179afe"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A zero initial adapter update preserves the starting function.md",
+      "stage": "permanent",
+      "sha256": "345fe0b98c3a65681223b68ba77a483bef61a879fe86b3fc3aefd410b362e6c0"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/A zero lasso coefficient is a conditional modeling result.md",
+      "stage": "permanent",
+      "sha256": "a14bb64b8eec85f303a3aa2eb3e127482cb8f8470c3e1b611e218a4426edb411"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/ANN approximation adds a separate source of retrieval loss.md",
+      "stage": "permanent",
+      "sha256": "7cdb43eb86ba67bf1d14a5a20a62ac5ca0923d8042247540fdbf946bc10e0f38"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Adam initialization correction is not a model-bias correction.md",
+      "stage": "permanent",
+      "sha256": "a65ce0b25c51011f94d66383921f8e4160ea9b886967c7c18c293b72e9eca81e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Adapter merging trades runtime flexibility for a combined weight representation.md",
+      "stage": "permanent",
+      "sha256": "c5ceb4e1640ebb16f22ba026bd305bac665f2a81c26d100b3e9385011d873379"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Affected-traffic analysis requires comparable eligibility in both variants.md",
+      "stage": "permanent",
+      "sha256": "fa8f84e6f7d1ed03597c686f7c9729345aac9b7d30c7da232aa5e2dd681201bb"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Agent autonomy belongs to the orchestration policy.md",
+      "stage": "permanent",
+      "sha256": "3cae62dbedecf15ce5aba36aee8feb7e3f5f6099e454dddb82ce40cb544af3ba"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An acceleration claim needs the resource and baseline to be named.md",
+      "stage": "permanent",
+      "sha256": "40d93ff26910fd933458bed604ecd86116ef050830769692d9b49568dc3287f6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An agent benchmark evaluates the harness together with the model.md",
+      "stage": "permanent",
+      "sha256": "ac52e28bccad3b73e7e046f26fbb854f8529170daecca214915dc70bca57bdd6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An aggregate uplift can conceal a transient novelty effect.md",
+      "stage": "permanent",
+      "sha256": "3aeee0a6fbd15938ce1dea6b744900a27c24c9b87cb4912b65300e7c7514a446"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An experiment needs a measurable hypothesis before a significance test.md",
+      "stage": "permanent",
+      "sha256": "0be40ddfb424a70ccf9a5b0cdad4a7f879b9cdc00ea7c230e94b4643e46f1622"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An observation should be able to change the next action.md",
+      "stage": "permanent",
+      "sha256": "70e1c9080cc1e5b4f6d4c1134ad0ab8e69abe734bce783854622d7cdff907a92"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An oracle context measures reasoning under supplied localization.md",
+      "stage": "permanent",
+      "sha256": "06e5090799a29f29cf50e51ecb1dee5c7cfe2333a13fc6b003efd01b1f372fd1"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md",
+      "stage": "permanent",
+      "sha256": "6a3ab5b4a3e06858d0af389c5da9bca15f70bdda9bb96c0321fd73a5107f6943"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Attention scaling depends on an explicit variance argument.md",
+      "stage": "permanent",
+      "sha256": "15c966669abe0dc78c20c20a5d32baef6f8ca7986f64dda1c33677988c4b513b"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Augmentation defines which changes the representation is trained to ignore.md",
+      "stage": "permanent",
+      "sha256": "2c556e3659896fa00fdb15b954c2b5005934ae81f32112105e008837f1a232a5"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md",
+      "stage": "permanent",
+      "sha256": "cf070d853db03babe7170e7c707370a465bff12c7e68d5b0cf0593ff967a7620"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Backpropagation computes derivatives rather than choosing updates.md",
+      "stage": "permanent",
+      "sha256": "eacd4992661dae9dec394f9a6189b9d8268b5080a66efc98dd9638d6b4a78cbe"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Bootstrap duplicates represent resampling rather than additional evidence.md",
+      "stage": "permanent",
+      "sha256": "d6ad446b7c739fed7063481a5574c58cad64987b7b91916f9e055c0e64b32e1f"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Broad overlap reduces the specificity of a user-pair signal.md",
+      "stage": "permanent",
+      "sha256": "338ff8c55190dc43d4e5c3a3df33246c3f4b170ed36c05e844bb6e99e86262de"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Candidate aggregation is a separate serving decision.md",
+      "stage": "permanent",
+      "sha256": "e5fbd22498a9cfcc4ae80759b9cd53d39c179ace63953c2359c418771069ea79"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Candidate coverage limits what a ranker can recover.md",
+      "stage": "permanent",
+      "sha256": "6f34b17d46ff93b6d207490ef1c6829566b6ac3c06bdc76c8a421f33f767dc2c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Candidate filtering can exclude a document with a competitive aggregate score.md",
+      "stage": "permanent",
+      "sha256": "07f506e5a86b49b3376850ffcb6d5618cd42f1db0081b4fb248ae6e225c368c4"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Candidate-source features preserve useful evidence for ranking.md",
+      "stage": "permanent",
+      "sha256": "d1f8d15190c9bff2efa4154ad494243d7d346270dab3cf22f1cca6d2af8f3f93"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Causal masking enforces the prediction-time information boundary.md",
+      "stage": "permanent",
+      "sha256": "65db4c51d9f0e29d93a8dd5422a89711e446cb744fb7a76c2fdf9a6443bfdaf4"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+      "stage": "permanent",
+      "sha256": "9b707a0e6840020ee517004db3bc73e33d25ee426b265a5638e6ef32c6a62273"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Collection changes can alter lexical scores for unchanged documents.md",
+      "stage": "permanent",
+      "sha256": "f968de403637449877f19960b369eb0b3a1b27ce1199c43ccb121ac2ce495dfd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Compact vector codes trade storage for distance fidelity.md",
+      "stage": "permanent",
+      "sha256": "8a9732a5eaa62182bce36c438f175e1bd54ce6ac338e81ae3a9a3b31154001dc"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Compaction is a lossy state transition that needs continuity checks.md",
+      "stage": "permanent",
+      "sha256": "3fbde80b2780c18d4fdb7d1f9c01039216d98c599746d0b90d7aaf5ebf8dd394"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Component accuracy is insufficient for evaluating a correction cascade.md",
+      "stage": "permanent",
+      "sha256": "5d2315c9c571b46d203fd1f78ee330b87a58eb8971363abfda032c2f3dbfe580"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Cosine normalization does not recover lost word order.md",
+      "stage": "permanent",
+      "sha256": "206ec427c0af350ec0935fa81b9f02ef84f3cdaebe3f3ecdaa54155d890e8e83"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Cross-entropy supplies a directional error for every class logit.md",
+      "stage": "permanent",
+      "sha256": "07f3c06b110d81878b8de41dd4a7974ab2389fcbccc22f026ed3b7cb241ed10b"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Cross-validation evaluates repeated fits rather than one fixed artifact.md",
+      "stage": "permanent",
+      "sha256": "72b29b093c32a208e3afe9a101ef33ef5a0ceac8db7471b7f836bc47d23ba424"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/DPO removes an explicit reward model while retaining a preference model.md",
+      "stage": "permanent",
+      "sha256": "e75f0e29a0f8aff73e9f92f98b788e0a1cb5329148aad3dc0fddb2508c4b3dea"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Document rarity and repeated occurrences measure different evidence.md",
+      "stage": "permanent",
+      "sha256": "615127a80ac2bb3c528ad9f1d4ccc826ae291531756b6cc23333040f246586fa"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Dropout subnetworks share evidence through their parameters.md",
+      "stage": "permanent",
+      "sha256": "f9572166ab372a227ed99d3207a178e35b29f815fd7a98322279ce2332bfcfe4"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Early stopping selects a point on the optimization trajectory.md",
+      "stage": "permanent",
+      "sha256": "20d7ce7f2365bb678f46117a996bbf2f7a9bc6c99eddf5879efc29e51f4ef5d5"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Embedding normalization removes magnitude from retrieval scores.md",
+      "stage": "permanent",
+      "sha256": "9af7d9fe0e0d82e778b2244af1d20309e640c2a1a9b31f1dc151d21fdf38d7fe"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Equal output distributions do not promise the same sampled token sequence.md",
+      "stage": "permanent",
+      "sha256": "27f874830e00d73872b147e5ba21da4729758f313abea5f51b2976ec269d63df"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Equal query weighting can conceal uneven task difficulty.md",
+      "stage": "permanent",
+      "sha256": "f1ecba72c8a95cca3c75921e8f611071791d1eb8cd2f1a6bbb0b2427572b4fd8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Equal user sampling changes whose errors dominate training.md",
+      "stage": "permanent",
+      "sha256": "af7cef6ef7172b79a9f5debf56b92ddbe14f0b688e286ba98aa21b5c4c97bd4a"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Event freshness and processing delay describe different times.md",
+      "stage": "permanent",
+      "sha256": "b93f350637a6ed229f6a99212aa22636ccaf14090fb8115ae092bc5b4c87f279"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md",
+      "stage": "permanent",
+      "sha256": "b70c2f72423495dd374153e23e610d103239f6e8a5604862b884a45eda046fd8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Exporting preprocessing reduces one source of skew without proving full parity.md",
+      "stage": "permanent",
+      "sha256": "6d6008226444bda18f36e005b7c70c6a2b6b927d71023835b7085a5061075dfb"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Extra agent steps need an outcome benefit to justify their cost.md",
+      "stage": "permanent",
+      "sha256": "ad9d63fb09f805896b87294ec3b799495033132bf037e39631fa45ba2bc395dd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Factor dimension controls both sharing and expressiveness.md",
+      "stage": "permanent",
+      "sha256": "66fc41e6d0b50e451910d0232f599649ade5b8c7b00be5077da0474f92798d6e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Fast interaction evaluation does not remove the interaction model.md",
+      "stage": "permanent",
+      "sha256": "edc27161cbbc270341f8a89a8c9ad6f1f218df578d246485848a94f74e88a18b"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Feature construction determines which interactions an FM can express.md",
+      "stage": "permanent",
+      "sha256": "882bdc763f0fbc9ed1d28948d57e15a9b1ea68c3bc2b0bde5ee6650e0bad7b7d"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Feature scaling is part of the trained model interface.md",
+      "stage": "permanent",
+      "sha256": "c5fd7e53a05eb4bb367c1a793d8b3b9ea67c17244bb92f4d26352f5971ccaaac"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Fewer serial target calls can require more total arithmetic.md",
+      "stage": "permanent",
+      "sha256": "8d66fa6eaa4149f47cce78afcc9e3ba7e699bff8809ef877eb10f7ba936c98fd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Fixed subtasks can use explicit intermediate acceptance checks.md",
+      "stage": "permanent",
+      "sha256": "94f1a4d0d6702eb348dbb8c30cd7bb2c687b4cfad7a34438ec39b15e94038c04"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md",
+      "stage": "permanent",
+      "sha256": "b6cf9ea383b2b44c9e2407d2e1dcb2ae6d9f26efcf78615166a6fbce7cfa02ed"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Frequent monitoring needs a corresponding inference procedure.md",
+      "stage": "permanent",
+      "sha256": "fffe49b0e86389f376457cf18ce7c2ce2f013db5c38bcb5a4e46de9375ee82cc"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md",
+      "stage": "permanent",
+      "sha256": "ad52d8a77331f52408ae445183b308c4b6fec2b1fcc239a6dbe786872f872e6d"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Group-relative feedback requires meaningful reward variation.md",
+      "stage": "permanent",
+      "sha256": "c7a0db5158e62a79234757e295e255ea7be84e411443db37517d755766292134"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/HNSW logarithmic scaling is a qualified performance claim.md",
+      "stage": "permanent",
+      "sha256": "b5140f739ca0b7781398d765b0f41f56a5980d7e512ee809ce6ff10028cf604b"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+      "stage": "permanent",
+      "sha256": "58a149bf9e1cd78e480c92c36e6f3e0a7fedc2f931290cc09601291daf9d9275"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Hard interest assignment concentrates a target learning signal.md",
+      "stage": "permanent",
+      "sha256": "c567d74172873c4e0299af9ed0b266d2b96ee26d58b4c2f5a620fd3d1653e9d4"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Hard negatives define the distinctions a retriever learns to make.md",
+      "stage": "permanent",
+      "sha256": "462bf177c8b030e3248ec55e77e0c05235aa31a67af2b6ff8747571aa3150b91"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Identical-example score checks isolate an engineering boundary.md",
+      "stage": "permanent",
+      "sha256": "c451809b215ce797042e70cb0105060ac370114e01ffe72c96c0f79b39b06578"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Ignoring an idle input trades a blocking risk for a lateness assumption.md",
+      "stage": "permanent",
+      "sha256": "78a93ad17d4135d9725ac1753cdab5adf6a04e5f99675f4b9fb21b5e4a5a083a"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Increasing IVF search breadth addresses pruning rather than quantization.md",
+      "stage": "permanent",
+      "sha256": "ad721725844da842b5c7a673894cb4e957b635e522563b923181121f32607d36"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Independent document encoding limits where query-specific interaction can occur.md",
+      "stage": "permanent",
+      "sha256": "b62f60bbdce7ddf455688d6256f94e879d0ee42036d7977242f6d7659ba3864f"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Interest extraction and list diversity solve different problems.md",
+      "stage": "permanent",
+      "sha256": "99d33243e8331ce0dfb50d382a0564cdf2fb212f513d7e6b214a1dc3d387d939"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Joint support requires evaluating the cited set rather than isolated passages.md",
+      "stage": "permanent",
+      "sha256": "be8303f89f96378412793cb915fe03ac379b2e2e46a5997a8f4e605cafb58cd7"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/KV-cache sharing follows shared prefixes until continuations diverge.md",
+      "stage": "permanent",
+      "sha256": "b76fdf1a852823659500b9ad7ce9ea6871c79c101d76eb68d94f1fbc6ff465a0"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Late window updates require consumers to recognize revisions.md",
+      "stage": "permanent",
+      "sha256": "b9096a2b7c8d86f3d78ef39504566001cc27670f10e5c23706438f0cfad8483f"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Latent factor sharing can estimate a pair that was never observed.md",
+      "stage": "permanent",
+      "sha256": "b18b1e2917ce292e63a2d37f2fd73720b015973eeb35c02288ac0032aca3b4a7"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Latent-document marginalization is more specific than prompt concatenation.md",
+      "stage": "permanent",
+      "sha256": "f2b75c54bb11a9b184af1329f1577a06baf76857aba12a28351134450dc952f6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Linear attention workspace does not imply linear attention arithmetic.md",
+      "stage": "permanent",
+      "sha256": "335a1344c1118a8ccefa03e436978b3fe48c812a41a8110a9d2c574ed18ce72d"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/LoRA constrains the update rank rather than the base-weight rank.md",
+      "stage": "permanent",
+      "sha256": "85874f564c365290cf2a36cba09fb0b2152b85802911e4b9abda47143c3506b3"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/MaxSim scoring is asymmetric between query and document.md",
+      "stage": "permanent",
+      "sha256": "6136f6d7fcbf2c1a3889ed4ffbb43cfa9820fd3cf119f5f9ead1f7c07813f3ad"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Model promotion needs serving evidence as well as quality evidence.md",
+      "stage": "permanent",
+      "sha256": "2f9f5c50b1e300bcee4ff12a7d749706f20adb160e9b150fb3f4bc79f0411f0e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/More trees cannot fully compensate for highly correlated predictions.md",
+      "stage": "permanent",
+      "sha256": "67d6558f074db2f12695e2987828b1db7c0fb6fdbc8d32db3c109fb9c8f401b7"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Multiple attention heads offer subspaces rather than guaranteed specializations.md",
+      "stage": "permanent",
+      "sha256": "1afbb29efde5551a9ef335f360085d820fc83110a7ce44eeeae2ee74bbae60b0"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Multiple retrieval vectors preserve distinct matching directions.md",
+      "stage": "permanent",
+      "sha256": "b38af00950d62274b99952dba244634b5b7da7127444334eed75aa5f11b81f63"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Neighborhood similarity and learned interaction coefficients are different quantities.md",
+      "stage": "permanent",
+      "sha256": "30ce060439d36ffcb134d8f2893c4c1873798501522e40b5b420e74fd7ae3af6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Observed clicks partly reflect the policy that exposed items.md",
+      "stage": "permanent",
+      "sha256": "47f46924c98c0f5b339f8f333c1f4e1d6ce3794c79182420d869aec584f8a772"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Offline preference optimization inherits the coverage of its response pairs.md",
+      "stage": "permanent",
+      "sha256": "a852913afcc768515667cf4388e845df07dbf515bd6baf682bc5080c51ac1156"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Optimization success and generalization success are different outcomes.md",
+      "stage": "permanent",
+      "sha256": "51b039f292201cb2ada9c5f51d5b84662f9c3646635673a30adc81f995d50507"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Optimizer state is part of an exact training continuation.md",
+      "stage": "permanent",
+      "sha256": "f2f6d635c11bf7100ca3c72551337c96a687a302d4e18fe78deb2c1fda6a0101"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Optimizing a smooth ranking surrogate does not reproduce every ranking metric.md",
+      "stage": "permanent",
+      "sha256": "709b2051665981f488c72b93a9131df9c35f27cf19f2fa690932795b8c49e469"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Outcome rewards do not directly supervise every reasoning step.md",
+      "stage": "permanent",
+      "sha256": "ef972dc7f5c0343ebcaf3fcf53f58474db6c5e8b2d05e587e9e9e5360d314c65"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Overlapping tools create an additional selection problem.md",
+      "stage": "permanent",
+      "sha256": "04a43e54370c8ac3ba4e31a306b0dafede6d03e846162e05cba3b1fa6afd8e1f"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Paged optimizer states and paged KV caches solve different lifecycles.md",
+      "stage": "permanent",
+      "sha256": "2644b8ff1dc71cc6f17c83cab0a1fa2bd34527d7818f6b611c3bba06f297ed6e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Pairwise score differences leave a user-specific score offset unidentified.md",
+      "stage": "permanent",
+      "sha256": "047e7da51130006eed18900e7d84a2c5c795fa71f808e5a255469883c79b6cc2"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Parameter-efficient training still needs the base model computation.md",
+      "stage": "permanent",
+      "sha256": "e9ea592fb35bbec7770eea6cbf0574cc2a0567151fca9eadd8a0aa34324bf7bf"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Passage preparation defines what the retriever can return.md",
+      "stage": "permanent",
+      "sha256": "00f02c735bc58a5a70b6bf034fa9bd4745378e730a6b48ec2dd994912a684edf"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Per-user recall gives users equal weight rather than interactions.md",
+      "stage": "permanent",
+      "sha256": "fb4cf49175bab373226424194f1af05dea8c092ecf2c946ec25c05b5566f6baa"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Persistent memory requires a retrieval decision as well as storage.md",
+      "stage": "permanent",
+      "sha256": "41225b1a79069234e3e9b780b483fa3f54f127779b1799e3df01b807ae3092e9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Pointwise and pairwise losses impose different supervision constraints.md",
+      "stage": "permanent",
+      "sha256": "760f24a93282598399ade7612fc7cc7b0b2619b78293a2e892da9b389873f49e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Post-treatment segments can change the population being compared.md",
+      "stage": "permanent",
+      "sha256": "0a41bffdfa85a7ac0ecac1f3ace89ccda5ef873f567ca35a93d8d547a993ba3e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Prediction context must end before the event being predicted.md",
+      "stage": "permanent",
+      "sha256": "cf9bd5d087b1094267060de30e5958367735cfd1e2295c25bdf06d66e382af2e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Preprocessing must respect the held-out fold boundary.md",
+      "stage": "permanent",
+      "sha256": "18c8ba272b60395b70909a2b3bb9b849c4c191b7ea028791b680618410b27261"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Pseudo feedback can amplify an initial interpretation error.md",
+      "stage": "permanent",
+      "sha256": "cbedbde8536fab2a1f29643d6ab92bfed50930b92c4cf389ff6339b422f05c1c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Quantization metadata belongs in the memory budget.md",
+      "stage": "permanent",
+      "sha256": "e56217b3332b00878338ecbbd5a08964a2d8f82448fe6ec99bcfaae779da6658"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/R1-Zero and R1 represent different training interventions.md",
+      "stage": "permanent",
+      "sha256": "50a0d2c187b45d0e9274be5729d118492e35291e22bf3e2d3c19f23c6884e1b7"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Rank fusion avoids score-scale alignment by discarding score magnitude.md",
+      "stage": "permanent",
+      "sha256": "e4d0aeb3f2a939227f665b79e381a68173ae075c1bf1fcbdabce798047fbf6b8"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Ranking comparisons require the same candidate protocol.md",
+      "stage": "permanent",
+      "sha256": "8974b410d005d47a675eb0c8a71ac24fa0e38100403949ddc3b35c4b2c9b25ca"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Ranking metrics encode different notions of usefulness.md",
+      "stage": "permanent",
+      "sha256": "e07a6a13251b7845a163ea601ad05fd9ad197931773ac2d046dded3472482ff6"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Rating-scale correction is distinct from popularity correction.md",
+      "stage": "permanent",
+      "sha256": "0e0037dc4fcbec130d4e5cc49a42a63628b2582085abb1e9fdfd6a6e5a51bf4a"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Recomputation can improve speed when memory traffic is the bottleneck.md",
+      "stage": "permanent",
+      "sha256": "e1366a2695017f4042586bef00df6486b575df509db356b757904cd1ee6bf22c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Regression checks protect behavior beyond the reported defect.md",
+      "stage": "permanent",
+      "sha256": "ce7008422b03a6dcd5737fbbcb2a41c9b3cdb1ac67b8b79636b7fe1ae52f4cec"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Regularization strength is meaningful only relative to the feature representation.md",
+      "stage": "permanent",
+      "sha256": "d6bcd75621135e1370cbeac65e9f7cc3b5df8ee943a92257c37e3286b9e37596"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Removing the critic shifts GRPO cost toward sampled comparisons.md",
+      "stage": "permanent",
+      "sha256": "a493e3f1a52ac3cdd05f220ed753011226e9f926b6e181a733f3ee334cea9fd9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Repeated co-click support is evidence rather than a causal explanation.md",
+      "stage": "permanent",
+      "sha256": "e35f4bf95627d641d6914849c10678735df1d43dbe703e8e14ba0967a267e11e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Residual correction is essential to distribution-preserving draft acceptance.md",
+      "stage": "permanent",
+      "sha256": "984ebf6746c025e2a474f949f93b19fe47bb9891fa6a68fabbdcf3093db56908"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Retrieval coverage and evidence use need separate measurements.md",
+      "stage": "permanent",
+      "sha256": "f91f64d04356defa6164774262d218246b19ec54378abc0f782880c660db1739"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Retriever updates and index updates are coupled choices.md",
+      "stage": "permanent",
+      "sha256": "908847a138e09415281309b5bada562350bd32614a2ac1773ace736ae1f0a748"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Retry success and reliable first delivery answer different product questions.md",
+      "stage": "permanent",
+      "sha256": "f20e5a2853a96d8e8aead52e18fae9f046cb0844f1c9c116800cb646833d461e"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Routing symmetry depends on transformation sharing.md",
+      "stage": "permanent",
+      "sha256": "b2038fb0a9bdc383f10318ebd62893bb5402c8b7e3b77ad1d09e67db34f33524"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sample-ratio mismatch challenges the comparison before the outcome.md",
+      "stage": "permanent",
+      "sha256": "a6022225b6745b78aeb014f771229a57e4a3c40629f15b222d1de36822b80c87"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sampled candidate metrics describe the sampled ranking problem.md",
+      "stage": "permanent",
+      "sha256": "ef59c9e076c1eab2fb267961b41e61625bb8cb1b3622acb2d6ef17fe2ac29735"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md",
+      "stage": "permanent",
+      "sha256": "e841ebd35f5874bfb4a68cd898c2b247a6e8842882f3c360bc8e4e8350a8d37a"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Schema validity and predictive usefulness are separate checks.md",
+      "stage": "permanent",
+      "sha256": "b36cbc5280896077edf3ed1712234d95e9351195e232ef92b318a8ce32e18d76"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sequence order must enter the representation computation.md",
+      "stage": "permanent",
+      "sha256": "6f2d3bf0370165fef8c6c73088422c401bd25706417526bd6ba1a352a902c3dc"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Shared embeddings do not force symmetric recommendation scores.md",
+      "stage": "permanent",
+      "sha256": "2e415823b95b05b979f72561e7bbd7b207c1e79a5ab4d1e826d9dc96bfa855b9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sharing negatives changes the training compute pattern.md",
+      "stage": "permanent",
+      "sha256": "43163fe14ec4fbf97da0f3d208243f391cae8256fe0601c8f175062a1cfd0849"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Shifted sequence targets require a matching information boundary.md",
+      "stage": "permanent",
+      "sha256": "696c2693ff36aaf3450218424c248500398c14e161b25f05c73ede3e489fbce3"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Shrinkage can improve prediction while worsening training fit.md",
+      "stage": "permanent",
+      "sha256": "42a465ebc3c580b1f59b72b68afab12cb282f7c22934f0fd4147ca91a7ab8d30"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sparse prediction cost follows active features rather than vocabulary size.md",
+      "stage": "permanent",
+      "sha256": "469772be8c8ad774da6ead97844b9a3af394f2780f2b0f9b918eae47c5dbca75"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Sparse selection and coefficient shrinkage solve different deployment needs.md",
+      "stage": "permanent",
+      "sha256": "8178239c63a8f556e85c64d6f732797920f82ae89d8a136bb7b6d814e43c3d02"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Speculative lookahead has a workload-dependent optimum.md",
+      "stage": "permanent",
+      "sha256": "24d23f0122fe928cd34622e9226839c6ede1411266f00993e04ccfec7918125c"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Streaming frequency estimates can drift through hash collisions.md",
+      "stage": "permanent",
+      "sha256": "29c531e505922295bd05ff923ac091267024897f2d5c7f76f5a178aa6b89d706"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+      "stage": "permanent",
+      "sha256": "f94842cc101a0be3bb4655095db0454fc9ead880961a76314cc24f6d8be812dd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Stronger structural evidence can increase offline graph cost.md",
+      "stage": "permanent",
+      "sha256": "09ace5daf664e44948bc75d68552936006cd3cb1f84fcf42d29eb231aad1b3d9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Target-aware training can support target-independent retrieval.md",
+      "stage": "permanent",
+      "sha256": "91e205dcd93633a1ba3c2c38146bea993fc3fe79dc207e3f5fae33ca525bc949"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Teacher-generated supervision transfers outputs without reproducing the teacher pipeline.md",
+      "stage": "permanent",
+      "sha256": "89b2148cdbd0afaad0b56bbee9ad67c67b61f5b9d6ef3f392c938805af7bb0a7"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Test feedback can leak through human decisions.md",
+      "stage": "permanent",
+      "sha256": "0e3ade79d17f7b2d1c57849613493f91e0819e42370c8cbce33d5a9e44e415b2"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/The DPO reference defines relative change rather than absolute preference.md",
+      "stage": "permanent",
+      "sha256": "63058eb43d66de25aa521d0aaa58fd7bee5a1339061d19fc40429ecb6e69a398"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/The interest count is a capacity setting rather than a measured preference count.md",
+      "stage": "permanent",
+      "sha256": "9023437493d540984481fab87894cd9150905949887d90a290873d9703f0c651"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/The randomization unit determines the interference boundary.md",
+      "stage": "permanent",
+      "sha256": "342e213221eeb8bcb0cd03d28ca44b8bbf93e761599736d112fd73adbe0b3542"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Thinking-token limits and final-answer limits control different stages.md",
+      "stage": "permanent",
+      "sha256": "c8e3cc45e914d95ab5d81377db1466abde233e1e9d6afb60b37c32d02e471bb0"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Tool output size and evidence usefulness are separate quantities.md",
+      "stage": "permanent",
+      "sha256": "57e92949509868780a5624cd821c34dd73ee1099a498c3bab6415f6996790fde"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Training memory includes saved computation states.md",
+      "stage": "permanent",
+      "sha256": "a774b80460090d379c0e53387ec6268dd2f3e5e5ac50bcf4904779417cdb5bd9"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Training-serving skew has several distinct causes.md",
+      "stage": "permanent",
+      "sha256": "63581d66f7b475237e204f560bd083f9f5fa05f5b774ae1bfe899743c2da1079"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Two views of one example do not provide two independent observations.md",
+      "stage": "permanent",
+      "sha256": "60d09021cc6802866eda5b95cb763a2867971389216990ea56815e4f15806a4b"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Undeclared consumers turn model outputs into hidden interfaces.md",
+      "stage": "permanent",
+      "sha256": "6e07f46f955e36f7552b7579e40e6243692970ea1c331df3907248840ad874d4"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/User-disjoint evaluation tests a different generalization boundary.md",
+      "stage": "permanent",
+      "sha256": "9689c64ba6e2c9eee31feb944a2cc7abe8fd8f3dbd8d3a7d36826c83e1b34abd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Verifiable rewards depend on the task and checker boundary.md",
+      "stage": "permanent",
+      "sha256": "7c5f4bb07257da03c320870bbfbea01a2004f9aee48b990ed8b86463d3c5a2dd"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Visual augmentation results require a new justification in recommendation.md",
+      "stage": "permanent",
+      "sha256": "b08b0a837e6bd0c4be0473d4b1ee9a6dd5b2c49235e8331f237441bb21b32635"
+    },
+    {
+      "path": "02-Zettelkasten/Permanent/Watch-time-weighted logistic scores need an explicit probability assumption.md",
+      "stage": "permanent",
+      "sha256": "312bbe79d2d57246ffa432e03cdae84aff842e31e8837a78b9f68adf4ccdf4bd"
+    }
+  ]
+}

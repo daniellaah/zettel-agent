@@ -15,9 +15,9 @@ import { Icon, IconButton } from "./icons";
 import { Markdown } from "./Markdown";
 
 const STARTERS = [
-  "哪些 fleeting 笔记已经值得发展成永久笔记？",
+  "Which ideas in my literature notes are worth developing further?",
   "Which permanent notes have no links at all?",
-  "我的笔记里有没有互相矛盾的观点？",
+  "Do my notes contain conflicting views?",
 ];
 
 export function ChatApp({ session }: { session: ChatSession }) {

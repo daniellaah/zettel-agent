@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import { STAGES } from "../settings";
 import type { Corpus } from "../retrieval/corpus";
 import { sectionSubtree, type ParsedNote, type Section } from "../retrieval/markdown";
 import type { EvidenceLedger } from "./evidence";
@@ -34,9 +33,9 @@ const READ_CHARS = 12_000;
 const MAX_REGEX_LENGTH = 200;
 
 const stagesSchema = z
-  .array(z.enum(STAGES))
+  .array(z.enum(["literature", "permanent", "writing"]))
   .optional()
-  .describe("Only notes in these Zettelkasten stages.");
+  .describe("Only notes in these research stages; fleeting captures are excluded.");
 const folderSchema = z.string().optional().describe("Only notes under this vault folder.");
 const tagSchema = z.string().optional().describe("Only notes with this tag or a sub-tag of it.");
 
@@ -124,7 +123,7 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
       });
       if (hits.length === 0) {
         return outcome(
-          `No notes match "${input.query}". Try synonyms, the other language (中文/English), fewer filters, or \`list\` to browse.`,
+          `No notes match "${input.query}". Try synonyms, aliases, fewer filters, or \`list\` to browse.`,
           `search "${input.query}" → no matches`,
         );
       }
@@ -164,7 +163,8 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
       let total = 0;
       for (const path of corpus.paths()) {
         const stage = corpus.stage(path);
-        if (input.stages && (!stage || !input.stages.includes(stage))) continue;
+        if (input.stages && (!stage || stage === "fleeting" || !input.stages.includes(stage)))
+          continue;
         const note = corpus.get(path)!;
         for (const section of note.sections) {
           section.text.split("\n").forEach((line, offset) => {
@@ -306,7 +306,8 @@ export const TOOLS: ToolSpec<z.ZodType>[] = [
       const prefix = input.folder ? `${input.folder.replace(/\/+$/, "")}/` : null;
       const rows = corpus.paths().filter((path) => {
         const stage = corpus.stage(path);
-        if (input.stages && (!stage || !input.stages.includes(stage))) return false;
+        if (input.stages && (!stage || stage === "fleeting" || !input.stages.includes(stage)))
+          return false;
         if (prefix && !path.startsWith(prefix)) return false;
         if (input.orphans_only && !graph.isOrphan(path)) return false;
         if (wantedTag) {
@@ -409,7 +410,10 @@ function noteBlock(corpus: Corpus, note: ParsedNote, header: string, parts: stri
     note.aliases.length > 0 ? `aliases="${note.aliases.join(", ")}"` : "",
   ].filter(Boolean);
   const heading = header ? `${header}\n` : "";
-  return `${heading}<note ${attributes.join(" ")}>\n${parts.map(quote).join("\n\n")}\n</note>`;
+  const metadata = Object.keys(note.properties).length
+    ? `Metadata: ${truncate(JSON.stringify(note.properties), 2000)}\n\n`
+    : "";
+  return `${heading}<note ${attributes.join(" ")}>\n${quote(metadata)}${parts.map(quote).join("\n\n")}\n</note>`;
 }
 
 function sectionLabel(section: Section): string {

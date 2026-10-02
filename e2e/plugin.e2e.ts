@@ -19,8 +19,8 @@ afterAll(() => page?.close());
 describe("plugin in Obsidian", () => {
   it("loads and indexes the fixture Zettelkasten by stage", () => {
     expect(state.loaded).toBe(true);
-    expect(state.notes).toBe(55);
-    expect(state.stages).toEqual({ literature: 15, fleeting: 11, permanent: 26, writing: 3 });
+    expect(state.notes).toBe(318);
+    expect(state.stages).toEqual({ literature: 137, permanent: 181 });
   });
 
   it("renders the settings tab for the selected provider", async () => {

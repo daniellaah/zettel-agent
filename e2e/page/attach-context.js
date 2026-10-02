@@ -1,6 +1,10 @@
 // Attaches context through the composer like a user: "@" + pick, the open-note chip, and a
 // selection chip; then asks and reports what the chat rendered.
 const plugin = app.plugins.plugins["zettel-agent"];
+// openLinkText creates missing notes. A stale fixture must fail without changing it.
+if (!app.metadataCache.getFirstLinkpathDest(args.openNote, "")) {
+  throw new Error(`Required fixture note is missing: ${args.openNote}`);
+}
 const session = plugin.session;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const root = () => document.querySelector(".za-chat");

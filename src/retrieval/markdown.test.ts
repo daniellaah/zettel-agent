@@ -45,6 +45,23 @@ describe("parseNote", () => {
     expect(note.tags).toEqual(["zettelkasten", "atomicity", "method"]);
   });
 
+  it("retains source and other scalar/list properties without adding them to body sections", () => {
+    const parsed = parseNote(
+      "Literature/Reading.md",
+      '---\nsource_title: "How to Take Smart Notes"\nauthor: "Sönke Ahrens"\nyear: "2017"\nsource: "Book.pdf"\ncustom: [first, second]\n---\n# Reading\n\nA faithful paraphrase.',
+    );
+    expect(parsed.properties).toEqual({
+      source_title: "How to Take Smart Notes",
+      author: "Sönke Ahrens",
+      year: "2017",
+      source: "Book.pdf",
+      custom: ["first", "second"],
+    });
+    expect(parsed.sections).toHaveLength(1);
+    expect(parsed.sections[0]?.text).not.toContain("source_title");
+    expect(parseNote("Plain.md", "No metadata").properties).toEqual({});
+  });
+
   it("splits sections by heading and ignores headings inside code fences", () => {
     expect(note.sections.map((s) => s.headingPath.join(" > "))).toEqual([
       "一张卡片只承载一个想法",
@@ -103,6 +120,20 @@ describe("parseNote edge cases", () => {
 });
 
 describe("parseFrontmatter", () => {
+  it("decodes quoted metadata and keeps a block-list alias containing commas intact", () => {
+    const title = 'Writing, Learning and "Thinking"';
+    const author = "A: B";
+    const parsed = parseFrontmatter([
+      "---",
+      "aliases:",
+      `  - ${JSON.stringify(title)}`,
+      `author: ${JSON.stringify(author)}`,
+      "---",
+    ]);
+    expect(parsed.data.aliases).toEqual([title]);
+    expect(parsed.data.author).toBe(author);
+  });
+
   it("returns no data when the closing fence is missing", () => {
     expect(parseFrontmatter(["---", "type: x", "# Title"])).toEqual({ data: {}, bodyStart: 0 });
   });

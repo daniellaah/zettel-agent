@@ -1,0 +1,299 @@
+{
+  "schema": 1,
+  "status": "first-version-evaluation-complete; independent judge/human calibration incomplete",
+  "completedAt": "2026-10-02",
+  "corpus": {
+    "notes": 318,
+    "literature": 137,
+    "permanent": 181,
+    "hash": "790b1b2bb6c70b4cb0db6e4fdd9a3db21a1839a1c13bb3be473d6e0558b737c0"
+  },
+  "splits": {
+    "retrieval": {
+      "dev": 96,
+      "test": 24
+    },
+    "answers": {
+      "dev": 48,
+      "test": 12
+    }
+  },
+  "execution": {
+    "planned": 86,
+    "attempted": 86,
+    "primaryAnswers": 60,
+    "repeatTrials": 6,
+    "comparatorTrials": 12,
+    "robustnessTrials": 8,
+    "solverFailures": 1,
+    "originalValidModelGrades": 63,
+    "originalInvalidModelGrades": 23,
+    "aiAdjudicatedRepairs": 23,
+    "finalGraded": 86,
+    "pendingReviews": 0
+  },
+  "adjudication": {
+    "solver": "deepseek-flash",
+    "originalJudge": "claude-sonnet-5-5 (stopped after insufficient credit)",
+    "replacementJudge": "deepseek-flash",
+    "reviewer": "Codex",
+    "blinding": "unblinded",
+    "humanReviews": 0,
+    "scope": "Selected structural and grounding adjudications only; remaining model semantic decisions retained. AI-only and unblinded, not human or independent calibration. Historical costs include only the selected grading round; phase budgets/recordings retain all incurred spending."
+  },
+  "stages": {
+    "dev": {
+      "trials": 48,
+      "gradedTrials": 48,
+      "pilotPassRate": 0.14583333333333334,
+      "agentLatencyMs": {
+        "median": 11475.924729500002,
+        "p95": 21266.073916349993
+      },
+      "judgeLatencyMs": {
+        "median": 6667.940541499993,
+        "p95": 13204.078966449993
+      },
+      "estimatedAgentUsd": 0.247583364,
+      "estimatedJudgeUsd": 0.31191708,
+      "passes": 7,
+      "macroScores": {
+        "keyPointCoverage": {
+          "mean": 0.9947916666666666,
+          "items": 48
+        },
+        "claimSupportRate": {
+          "mean": 0.6765602453102453,
+          "items": 48
+        },
+        "citationPrecision": {
+          "mean": 0.982811180960852,
+          "items": 48
+        }
+      },
+      "forbiddenViolations": 0
+    },
+    "test": {
+      "trials": 12,
+      "gradedTrials": 12,
+      "pilotPassRate": 0.08333333333333333,
+      "agentLatencyMs": {
+        "median": 9118.834999499988,
+        "p95": 13111.41697864999
+      },
+      "judgeLatencyMs": {
+        "median": 4801.635145500011,
+        "p95": 6550.718010599999
+      },
+      "estimatedAgentUsd": 0.040373676,
+      "estimatedJudgeUsd": 0.061326707999999994,
+      "passes": 1,
+      "macroScores": {
+        "keyPointCoverage": {
+          "mean": 1,
+          "items": 12
+        },
+        "claimSupportRate": {
+          "mean": 0.5361111111111111,
+          "items": 12
+        },
+        "citationPrecision": {
+          "mean": 0.9756944444444444,
+          "items": 12
+        }
+      },
+      "forbiddenViolations": 0
+    },
+    "robustness": {
+      "trials": 8,
+      "gradedTrials": 8,
+      "pilotPassRate": 0.25,
+      "agentLatencyMs": {
+        "median": 3857.5558124999807,
+        "p95": 5693.018943649988
+      },
+      "judgeLatencyMs": {
+        "median": 2874.2115420000046,
+        "p95": 4228.899610850005
+      },
+      "estimatedAgentUsd": 0.005512392,
+      "estimatedJudgeUsd": 0.008640072,
+      "passes": 2,
+      "macroScores": {
+        "keyPointCoverage": {
+          "mean": 1,
+          "items": 8
+        },
+        "claimSupportRate": {
+          "mean": 0.5,
+          "items": 8
+        },
+        "citationPrecision": {
+          "mean": 1,
+          "items": 8
+        }
+      },
+      "forbiddenViolations": 0
+    }
+  },
+  "comparisons": {
+    "agent": {
+      "trials": 6,
+      "pilotPassRate": 0.16666666666666666,
+      "agentLatencyMs": {
+        "median": 14099.763020499999,
+        "p95": 22159.490604
+      },
+      "estimatedAgentUsd": 0.035724456
+    },
+    "fixed-retrieval": {
+      "trials": 6,
+      "pilotPassRate": 0,
+      "agentLatencyMs": {
+        "median": 3964.9651670000017,
+        "p95": 6980.884833500004
+      },
+      "estimatedAgentUsd": 0.009605339999999999
+    },
+    "no-vault": {
+      "trials": 6,
+      "pilotPassRate": 0,
+      "agentLatencyMs": {
+        "median": 4489.72154150001,
+        "p95": 7566.2411874999925
+      },
+      "estimatedAgentUsd": 0.0048751440000000005
+    }
+  },
+  "repeats": {
+    "trials": 12,
+    "firstTrialPassRate": 0.16666666666666666,
+    "anyTrialPassRate": 0.16666666666666666,
+    "allTrialsPassRate": 0
+  },
+  "replay": {
+    "schema": 1,
+    "apiCalls": 0,
+    "sourceReportSha256": "66211402a1905c84ea83bf0aee915392cf82e281745922a9ace7242fbbb4b4d4",
+    "fullSolverReplays": 85,
+    "failedDispatchPrefixes": 1,
+    "originalValidJudgeReplays": 63,
+    "originalInvalidJudgeReplays": 23
+  },
+  "costs": {
+    "phaseKnownUsageEstimatedUsd": 4.202163648,
+    "phaseUnknownUsageReservedUsd": 1.530588699999999,
+    "phaseAccountedUsd": 5.732752347999999,
+    "phases": [
+      {
+        "directory": "eval/artifacts/2026-10-02T20-00-14-191Z-full-live",
+        "agentModel": "deepseek-flash",
+        "judgeModel": "claude-sonnet-5-5",
+        "knownUsageEstimatedUsd": 3.1771496639999994,
+        "agentUsd": 0.13147466400000002,
+        "judgeUsd": 3.0456749999999992,
+        "unknownUsageReservedUsd": 1.4685849999999987,
+        "allowanceAccountedUsd": 4.645734663999998,
+        "logicalDispatches": 153,
+        "returnedExchanges": {
+          "agent": 106,
+          "judge": 44
+        }
+      },
+      {
+        "directory": "eval/artifacts/2026-10-02T20-13-23-621Z-full-continuation-live",
+        "agentModel": "deepseek-flash",
+        "judgeModel": "deepseek-flash",
+        "knownUsageEstimatedUsd": 0.19354596000000004,
+        "agentUsd": 0.0,
+        "judgeUsd": 0.19354596000000004,
+        "unknownUsageReservedUsd": 0.0620036999999998,
+        "allowanceAccountedUsd": 0.25554965999999985,
+        "logicalDispatches": 33,
+        "returnedExchanges": {
+          "agent": 0,
+          "judge": 32
+        }
+      },
+      {
+        "directory": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live",
+        "agentModel": "deepseek-flash",
+        "judgeModel": "deepseek-flash",
+        "knownUsageEstimatedUsd": 0.6130091400000002,
+        "agentUsd": 0.135100308,
+        "judgeUsd": 0.4779088320000002,
+        "unknownUsageReservedUsd": 1.1102230246251565e-16,
+        "allowanceAccountedUsd": 0.6130091400000003,
+        "logicalDispatches": 200,
+        "returnedExchanges": {
+          "agent": 103,
+          "judge": 97
+        }
+      },
+      {
+        "directory": "eval/artifacts/2026-10-02T20-32-28-856Z-full-finish-live",
+        "agentModel": "deepseek-flash",
+        "judgeModel": "deepseek-flash",
+        "knownUsageEstimatedUsd": 0.034137287999999995,
+        "agentUsd": 0.0,
+        "judgeUsd": 0.034137287999999995,
+        "unknownUsageReservedUsd": 6.938893903907228e-18,
+        "allowanceAccountedUsd": 0.034137288,
+        "logicalDispatches": 14,
+        "returnedExchanges": {
+          "agent": 0,
+          "judge": 14
+        }
+      },
+      {
+        "directory": "eval/artifacts/2026-10-02T20-37-33-540Z-full-finish-live",
+        "agentModel": "deepseek-flash",
+        "judgeModel": "deepseek-flash",
+        "knownUsageEstimatedUsd": 0.18432159599999998,
+        "agentUsd": 0.07179649199999999,
+        "judgeUsd": 0.112525104,
+        "unknownUsageReservedUsd": 2.220446049250313e-16,
+        "allowanceAccountedUsd": 0.1843215960000002,
+        "logicalDispatches": 118,
+        "returnedExchanges": {
+          "agent": 87,
+          "judge": 31
+        }
+      }
+    ],
+    "priorPilotKnownEstimatedUsd": 1.825743156,
+    "priorPilotUnknownUsageReservedUsd": 1.9991808,
+    "knownE2eSceneUsd": 0.14785182,
+    "allKnownEstimatedUsd": 6.175758624,
+    "allKnownPlusRetainedReservationsUsd": 9.705528123999999,
+    "limitation": "Usage estimates at configured prices, not invoices. Retain failed credit/in-flight unknown reservations, include discarded repair responses, avoid double-counting inherited runs. Auxiliary live UI calls were not fully metered; totals exclude their unavailable spending."
+  },
+  "checks": {
+    "unitTests": 248,
+    "unitFiles": 37,
+    "e2eTests": 33,
+    "e2eReport": "e2e/reports/2026-10-02T20-04-04-752Z-deepseek.json",
+    "offlineRetrievalQuestions": 120,
+    "strictReplayApiCalls": 0,
+    "smokeJobs": 86
+  },
+  "sourceHashes": {
+    "eval/suites/expanded/freeze.json": "eae2832f697bfc99e5377572128c26a7410ecdd03f5ffcf3cc749bd37ff60d5e",
+    "eval/suites/expanded/answers.json": "4794ddc115020661d240b227f6ce6c84b292826216daf04e8f62aed8889a3a53",
+    "eval/suites/expanded/retrieval.json": "cf2f4f1276960c2c5bda7724a8dcdf630a5657d6b1351d923c3d208a356228f9",
+    "eval/robustness/cases.json": "b08017ed206d470ae3eeef9d986d6e725d2ed9eb0db2be2bc64dddedc3fbbaac",
+    "eval/artifacts/2026-10-02T20-37-33-540Z-full-finish-live/report.json": "66211402a1905c84ea83bf0aee915392cf82e281745922a9ace7242fbbb4b4d4",
+    "eval/artifacts/2026-10-02T20-37-33-540Z-full-finish-live/ai-recovery/report.json": "df9a6b1f40f50074a9da21bf84cbd65df226abf196a044d987135461ced1a4d4",
+    "eval/artifacts/2026-10-02T20-37-33-540Z-full-finish-live/strict-replay.json": "f04bca4dc58f926f28070385bc05ce7a473f780629ecff1cb3a5f172b583e0d8"
+  },
+  "limitations": [
+    "Synthetic AI-authored relevance and answer labels; not blind human gold.",
+    "Expanded test primary source families separated before live scores; semantic topics can still overlap. Test n=12; comparisons n=6; descriptive only.",
+    "781 top-ten retrieval candidates remain unjudged (provisional zero gain), so metrics are not exhaustive retrieval gold.",
+    "63 model judgments are structurally valid but not independently semantically re-adjudicated; 23 failed model judgments received disclosed AI repairs.",
+    "Paragraph-level conjunction scoring differs from old free-form claim units. Strict pass requires perfect correctness, citation grounding and no forbidden claim.",
+    "No-vault tasks asking about private notes cannot earn note-grounding credit; zero strict passes is not a general-knowledge model-quality result.",
+    "Robustness forbidden-trigger checks do not prove general attack immunity.",
+    "Original errors, source recordings, failed repeated trial and all incurred grading costs remain preserved."
+  ]
+}

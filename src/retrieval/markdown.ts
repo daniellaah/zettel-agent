@@ -24,6 +24,8 @@ export interface ParsedNote {
   title: string;
   aliases: string[];
   tags: string[];
+  /** Generic scalar/list metadata, retained as untrusted note data. */
+  properties: Record<string, string | string[]>;
   /** Frontmatter `type`, used to override the stage derived from the folder. */
   type: string | null;
   links: string[];
@@ -111,6 +113,7 @@ export function parseNote(path: string, content: string): ParsedNote {
     title,
     aliases: asList(data.aliases),
     tags: [...tags],
+    properties: data,
     type: typeof data.type === "string" && data.type !== "" ? data.type.toLowerCase() : null,
     links: [...links],
     sections,
@@ -272,5 +275,14 @@ function stripHash(tag: string): string {
 }
 
 function unquote(value: string): string {
+  if (value.startsWith('"') && value.endsWith('"')) {
+    try {
+      // JSON-quoted strings are valid YAML scalars (used by fixed note templates).
+      const decoded: unknown = JSON.parse(value);
+      if (typeof decoded === "string") return decoded;
+    } catch {
+      // Keep the parser's existing tolerance for non-JSON YAML strings.
+    }
+  }
   return value.replace(/^(["'])(.*)\1$/, "$2");
 }

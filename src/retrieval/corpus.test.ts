@@ -29,9 +29,7 @@ describe("Corpus", () => {
 
   it("filters search by stage, folder and tag prefix", () => {
     const corpus = makeCorpus();
-    expect(corpus.search("idea", { stages: ["fleeting"] }).map((h) => h.path)).toEqual([
-      "Z/Fleeting/raw.md",
-    ]);
+    expect(corpus.search("idea", { stages: ["fleeting"] })).toEqual([]);
     expect(corpus.search("idea", { folder: "Z/Permanent" }).map((h) => h.path)).toEqual([
       "Z/Permanent/Atomic notes.md",
     ]);
@@ -51,8 +49,13 @@ describe("Corpus", () => {
 
   it("skips re-indexing unchanged content", () => {
     const corpus = makeCorpus();
-    const before = corpus.get("Z/Fleeting/raw.md");
-    expect(corpus.upsert("Z/Fleeting/raw.md", "one more idea")).toBe(before);
+    const before = corpus.get("Z/Permanent/Linking.md");
+    expect(
+      corpus.upsert(
+        "Z/Permanent/Linking.md",
+        "---\ntags: [method/linking]\n---\n# Linking\n\nLinks need a reason.",
+      ),
+    ).toBe(before);
   });
 
   it("moves a note on rename", () => {
@@ -60,5 +63,46 @@ describe("Corpus", () => {
     corpus.rename("Z/Fleeting/raw.md", "Z/Permanent/raw.md", "one more idea");
     expect(corpus.get("Z/Fleeting/raw.md")).toBeUndefined();
     expect(corpus.stage("Z/Permanent/raw.md")).toBe("permanent");
+  });
+
+  it("excludes captures from storage, resolution and the link graph", () => {
+    const corpus = makeCorpus();
+    corpus.upsert("Z/Fleeting/raw.md", "OnlyCaptureTerm [[Linking]]");
+    corpus.upsert("Z/Permanent/Atomic notes.md", "See [[raw]]");
+    expect(corpus.size).toBe(3);
+    expect(corpus.paths()).not.toContain("Z/Fleeting/raw.md");
+    expect(corpus.get("Z/Fleeting/raw.md")).toBeUndefined();
+    expect(corpus.resolve("raw")).toBeNull();
+    expect(corpus.search("OnlyCaptureTerm")).toEqual([]);
+    expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toEqual([]);
+  });
+
+  it("uses frontmatter overrides when deciding whether to exclude a note", () => {
+    const corpus = makeCorpus();
+    corpus.upsert("Z/Permanent/raw.md", "---\ntype: fleeting\n---\nOnlyCaptureTerm");
+    expect(corpus.get("Z/Permanent/raw.md")).toBeUndefined();
+    expect(corpus.get("Z/Fleeting/idea.md")).toBeDefined();
+    expect(corpus.search("OnlyCaptureTerm")).toEqual([]);
+  });
+
+  it("removes stale search entries and graph edges when a note becomes fleeting", () => {
+    const corpus = makeCorpus();
+    expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toHaveLength(1);
+    corpus.upsert("Z/Permanent/Atomic notes.md", "---\ntype: fleeting\n---\n[[Linking]]");
+    expect(corpus.get("Z/Permanent/Atomic notes.md")).toBeUndefined();
+    expect(corpus.search("atomic")).toEqual([]);
+    expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toEqual([]);
+    corpus.upsert("Z/Permanent/Atomic notes.md", "---\ntype: permanent\n---\nAtomic [[Linking]]");
+    expect(corpus.search("atomic")).toHaveLength(1);
+    expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toHaveLength(1);
+  });
+
+  it("excludes an indexed note after it moves into the fleeting folder", () => {
+    const corpus = makeCorpus();
+    corpus.rename("Z/Permanent/Atomic notes.md", "Z/Fleeting/raw.md", "Atomic [[Linking]]");
+    expect(corpus.resolve("Atomic notes")).toBeNull();
+    expect(corpus.resolve("raw")).toBeNull();
+    expect(corpus.search("atomic")).toEqual([]);
+    expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toEqual([]);
   });
 });

@@ -5,4 +5,6 @@ package-lock.json
 fixtures/
 e2e/page/
 e2e/reports/
+eval/artifacts/
+.env.eval.local
 fixtures/recordings/

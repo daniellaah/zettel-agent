@@ -1,0 +1,605 @@
+{
+  "schema": 1,
+  "corpusId": "learning-v1-790b1b2bb6c7",
+  "review": "author-reviewed; owner-review-pending",
+  "items": [
+    {
+      "id": "a01",
+      "family": "qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Does using four-bit base weights mean all QLoRA matrix operations run in four-bit arithmetic?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "storage": {
+          "path": "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+        },
+        "precision": {
+          "path": "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md",
+          "basis": "permanent-inference",
+          "excerpt": "QLoRA separates compact weight storage from the higher-precision operations used after dequantization. Describing it only as four-bit training hides that distinction. Adapter parameters, matrix computation, activations, and optimizer state have their own representations. The relevant precision contract is component-specific, which matters when explaining both the memory savings and the numerical work actually performed."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "storage-compute",
+          "text": "No. Low-bit base-weight storage and higher-precision computation are different components.",
+          "supportSets": [["storage"], ["precision"]]
+        },
+        {
+          "id": "usual-types",
+          "text": "The literature note describes NF4 storage and BFloat16 computation, with trainable LoRA adapters.",
+          "supportSets": [["storage"]]
+        }
+      ],
+      "forbidden": [
+        "Claims that every tensor or matrix operation uses four bits.",
+        "Describes NF4 as universally optimal for arbitrary tensor distributions."
+      ],
+      "graphChecks": [],
+      "notes": "Either record supports the main distinction; exact numerical formats require the literature evidence."
+    },
+    {
+      "id": "a02",
+      "family": "logq-sampler",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why is an arbitrary item-popularity statistic insufficient for choosing the LogQ correction?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "loss": {
+          "path": "02-Zettelkasten/Literature/In-batch negatives and sampling correction in neural retrieval.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper encodes queries and items with separate neural networks and scores a pair through their embedding inner product. Training approximates a full-corpus softmax using the items present in a minibatch as alternatives for each query. Rewards can weight the observed positive examples.\n\nBecause batch items follow a skewed interaction distribution, popular items appear disproportionately as negatives. The authors subtract the logarithm of an item's estimated batch sampling probability from its training logit. The corrected logits define the batch loss. The probability refers to how the training batch is sampled, and the method does not require a fixed item vocabulary."
+        },
+        "sampler": {
+          "path": "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md",
+          "basis": "permanent-inference",
+          "excerpt": "A sampling correction compensates for the distribution that generated the alternatives in the training loss. For interaction-sampled batches, that distribution reflects which items appear in those batches. Substituting a different popularity statistic can therefore correct the wrong sampling process.\n\nBefore applying LogQ, specify the negative sampler, the event whose probability is being estimated, and how repeated items are handled. [[Streaming frequency estimates can drift through hash collisions]] describes one source of error in estimating that probability."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "probability",
+          "text": "The correction must describe the distribution that actually generated alternatives in the batch loss.",
+          "supportSets": [["loss"], ["sampler"]]
+        },
+        {
+          "id": "training-role",
+          "text": "For interaction-sampled batches the literature note subtracts log estimated batch sampling probability from training logits.",
+          "supportSets": [["loss"]]
+        }
+      ],
+      "forbidden": [
+        "Invents a required serving-score correction absent from these notes.",
+        "Says any global popularity estimate is interchangeable with batch sampling probability."
+      ],
+      "graphChecks": [],
+      "notes": "Keep the supported training-loss statement separate from an unsupported serving prescription."
+    },
+    {
+      "id": "a03",
+      "family": "flash-numerical",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How can FlashAttention be exact without guaranteeing bitwise identical outputs to a full-matrix implementation?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "algorithm": {
+          "path": "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "FlashAttention loads blocks of queries, keys, and values into fast on-chip memory and combines their attention contributions without storing the full score or probability matrices in high-bandwidth memory. It maintains row maxima and normalization sums, rescales earlier contributions when the maxima change, and updates the output. The paper proves that this procedure returns the same attention expression as the full matrix computation."
+        },
+        "qualification": {
+          "path": "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md",
+          "basis": "permanent-inference",
+          "excerpt": "A blockwise algorithm can compute the same mathematical attention expression while changing reduction order and intermediate rounding. Exactness in this sense concerns the absence of an attention approximation, not a promise of bitwise identity across implementations. Numerical verification should use tolerances appropriate to dtype and operation order."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "expression",
+          "text": "The tiled method accumulates the same mathematical attention expression without storing the full attention matrix.",
+          "supportSets": [["algorithm"]]
+        },
+        {
+          "id": "rounding",
+          "text": "Different reduction order and intermediate rounding need not preserve bitwise identity; the permanent note recommends numerical tolerances.",
+          "supportSets": [["qualification"]]
+        }
+      ],
+      "forbidden": [
+        "Calls FlashAttention an approximation that drops attention interactions.",
+        "Attributes the permanent note numerical qualification as a quoted claim from the literature note."
+      ],
+      "graphChecks": [],
+      "notes": "The mathematical result is literature evidence; the verification qualification is explicitly permanent-note reasoning."
+    },
+    {
+      "id": "a04",
+      "family": "tfx-parity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "If preprocessing is exported with the TFX model, what training-serving discrepancies can still require investigation?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "export": {
+          "path": "02-Zettelkasten/Literature/Exported feature transformations in TFX.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "TFX implements feature transformations such as categorical value-to-integer mappings for training and serving. These mappings allow weights or embeddings to be looked up by feature value and can restrict IDs to selected values from large vocabularies. The paper emphasizes consistent transformation logic across training and inference. It exports the transformations as part of the trained model to prevent this form of training-serving discrepancy."
+        },
+        "skew": {
+          "path": "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The guide distinguishes performance differences between training and holdout data, holdout and next-day data, and next-day and live data. The first comparison concerns generalization, while the second may reveal time-sensitive features. Applying the same model to the same example in training and serving should give the same result. A discrepancy in that identical-example comparison is described as a likely engineering error."
+        },
+        "limits": {
+          "path": "02-Zettelkasten/Permanent/Exporting preprocessing reduces one source of skew without proving full parity.md",
+          "basis": "permanent-inference",
+          "excerpt": "Sharing transformation logic aligns an important part of training and inference. It does not establish that upstream inputs, timestamps, defaults, or runtime behavior also agree. An identical-example comparison remains useful because the complete path to a prediction includes more than the exported transformation itself."
+        },
+        "check": {
+          "path": "02-Zettelkasten/Permanent/Identical-example score checks isolate an engineering boundary.md",
+          "basis": "permanent-inference",
+          "excerpt": "A fixed model should compute the same score for the same example across training and serving environments, subject to explicit numerical tolerances. This check isolates implementation consistency from distribution change. Passing it does not establish that live examples resemble training data. It does establish a useful boundary for investigation: score disagreement on identical inputs points toward the execution or feature-processing path."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "narrow-benefit",
+          "text": "Shared exported transformations address inconsistent transformation logic, not every part of the prediction path.",
+          "supportSets": [["export"], ["limits"]]
+        },
+        {
+          "id": "remaining",
+          "text": "Upstream inputs, timestamps, defaults, runtime behavior or temporal distribution change can remain relevant.",
+          "supportSets": [["limits"], ["skew"]]
+        },
+        {
+          "id": "diagnostic",
+          "text": "Compare a fixed model on the same example across training and serving to isolate engineering mismatch; parity does not prove live-distribution similarity.",
+          "supportSets": [["check"], ["skew", "limits"]]
+        }
+      ],
+      "forbidden": [
+        "Claims exporting transformations proves complete parity.",
+        "Treats every offline-to-online gap as a feature-computation bug."
+      ],
+      "graphChecks": [],
+      "notes": "The diagnostic point requires the check note, or the combination of skew comparisons and the parity-limits synthesis."
+    },
+    {
+      "id": "a05",
+      "family": "idle-lateness",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Why does fixing a blocked Flink watermark by marking a source idle also require a late-data policy?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "minimum": {
+          "path": "02-Zettelkasten/Literature/Input watermark minima and idle sources in Flink.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Parallel source partitions can generate watermarks independently. An operator with several inputs advances its event time according to the minimum input watermark. The documentation explains that a partition without events may stop advancing its watermark and hold back active partitions. A watermark strategy can detect such idleness and mark that input idle so it no longer blocks the minimum in the same way."
+        },
+        "late": {
+          "path": "02-Zettelkasten/Literature/Allowed lateness and repeated window firing in Flink.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "For event-time windows, Flink can retain state after the watermark passes the window end for a configured allowed-lateness interval. Late elements within that interval are added to the window and can cause another firing under the event-time trigger. After the interval expires, the window state is removed and further late elements are dropped under the default handling. The documented allowed-lateness default is zero."
+        },
+        "tradeoff": {
+          "path": "02-Zettelkasten/Permanent/Ignoring an idle input trades a blocking risk for a lateness assumption.md",
+          "basis": "permanent-inference",
+          "excerpt": "Marking a partition idle lets active inputs advance event time. If that partition later resumes with old timestamps, those records can meet a downstream clock that has already advanced. Idleness handling should therefore be chosen together with the late-data policy, rather than viewed only as a throughput adjustment."
+        },
+        "progress": {
+          "path": "02-Zettelkasten/Permanent/A watermark is a progress assertion rather than proof that no late data exists.md",
+          "basis": "permanent-inference",
+          "excerpt": "Advancing a watermark enables a computation to proceed under a lateness policy. It does not physically prevent delayed records from arriving afterward. Correct interpretation of an emitted window result therefore includes the watermark-generation assumptions and the operator's policy for accepting, revising, or discarding later evidence."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "block",
+          "text": "An operator advances with the minimum input watermark; an idle input can otherwise hold it back.",
+          "supportSets": [["minimum"]]
+        },
+        {
+          "id": "resume",
+          "text": "Ignoring the idle input can let downstream event time advance before that input resumes with old timestamps.",
+          "supportSets": [["tradeoff"]]
+        },
+        {
+          "id": "policy",
+          "text": "Watermarks do not physically prevent late arrivals; retained state and allowed lateness determine acceptance, refiring or default dropping after expiry.",
+          "supportSets": [
+            ["late", "progress"],
+            ["late", "tradeoff"]
+          ]
+        }
+      ],
+      "forbidden": [
+        "Claims marking an input idle guarantees no later old events.",
+        "Says all late events are accepted indefinitely."
+      ],
+      "graphChecks": [],
+      "notes": "Both the mechanism and its consequence are required, without assuming an owner Flink configuration."
+    },
+    {
+      "id": "a06",
+      "family": "paged-lifecycles",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "How do QLoRA paged optimizers differ from vLLM PagedAttention, despite the shared memory-management terminology?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "optimizer": {
+          "path": "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "QLoRA uses unified memory for optimizer states to address transient GPU memory spikes, including those associated with long sequences and gradient checkpointing. The system can move state to CPU memory under pressure and return it when the optimizer update needs it. The paper presents this mechanism alongside low-bit weight storage and double quantization as a separate contribution to the fine-tuning memory design."
+        },
+        "cache": {
+          "path": "02-Zettelkasten/Literature/PagedAttention and logical KV-cache blocks.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "PagedAttention divides a request's key-value cache into fixed-size token blocks that can occupy non-contiguous physical memory. A mapping connects logical sequence blocks to physical cache blocks. Allocating blocks as needed avoids reserving a contiguous maximum-length region for every request. Equal-size blocks remove external fragmentation, while unused slots can remain in a partially filled final block. The paper implements this design within the vLLM serving engine."
+        },
+        "comparison": {
+          "path": "02-Zettelkasten/Permanent/Paged optimizer states and paged KV caches solve different lifecycles.md",
+          "basis": "permanent-inference",
+          "excerpt": "QLoRA paging manages training optimizer state under transient GPU pressure, while PagedAttention organizes the growing attention cache during serving. Both use memory-management ideas, but the stored tensors and workloads differ. The common word paged should not suggest interchangeable implementations or benefits. Explaining the tensor lifecycle makes clear which memory problem each technique addresses."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "training",
+          "text": "QLoRA paging addresses optimizer-state pressure during training; the literature record describes CPU/GPU state movement.",
+          "supportSets": [["optimizer"]]
+        },
+        {
+          "id": "serving",
+          "text": "PagedAttention allocates logical and physical KV-cache blocks for requests during serving.",
+          "supportSets": [["cache"]]
+        },
+        {
+          "id": "boundary",
+          "text": "The mechanisms manage different tensors and lifecycles and should not be treated as interchangeable.",
+          "supportSets": [["comparison"], ["optimizer", "cache"]]
+        }
+      ],
+      "forbidden": [
+        "Equates optimizer-state paging with KV-cache paging.",
+        "Says PagedAttention eliminates every unused cache slot."
+      ],
+      "graphChecks": [],
+      "notes": "Comparison can be supported by a standalone synthesis or the two jointly required literature records."
+    },
+    {
+      "id": "a07",
+      "family": "context-continuity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "After a context reset, why is merely having stored task notes insufficient to ensure the next decision uses the right information?",
+      "kind": "follow-up",
+      "answerability": "answerable",
+      "history": [
+        "How do compaction and structured task notes differ in the way they preserve information across long tasks?"
+      ],
+      "activeNote": null,
+      "evidence": {
+        "persistence": {
+          "path": "02-Zettelkasten/Literature/Structured notes outside the agent context window.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "Structured note-taking stores information outside the current context window and brings those records back into context later. The article describes agents maintaining task progress, critical dependencies, and strategic notes across long sequences of tool calls. Its examples include a task list or a dedicated notes file. After a context reset, an agent can read the stored records and continue work using information that would otherwise have left its active context."
+        },
+        "retrieval": {
+          "path": "02-Zettelkasten/Permanent/Persistent memory requires a retrieval decision as well as storage.md",
+          "basis": "permanent-inference",
+          "excerpt": "Writing information outside the current context preserves it, but it does not ensure that a later decision will use it. The system must select and reintroduce the relevant record when needed. Memory quality consequently involves both what is saved and how it is retrieved. This connects long-task continuity to ordinary evidence selection rather than treating persistence as sufficient by itself."
+        },
+        "loss": {
+          "path": "02-Zettelkasten/Permanent/Compaction is a lossy state transition that needs continuity checks.md",
+          "basis": "permanent-inference",
+          "excerpt": "A summary replaces part of the previous task state and can omit constraints whose importance emerges later. Continuing successfully therefore depends on preserving decisions, unresolved issues, and evidence needed for the next steps. Compaction quality should be judged by continuity of task behavior, not just compression ratio or readability. Persistent notes can supplement the summary when precise details must remain recoverable."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "selection",
+          "text": "Saved records must be selected and reintroduced when relevant; storage alone does not ensure use.",
+          "supportSets": [["retrieval"]]
+        },
+        {
+          "id": "continuity",
+          "text": "Preserve and recover decisions, unresolved issues and necessary evidence; evaluate continuity rather than compression ratio alone.",
+          "supportSets": [["loss"]]
+        }
+      ],
+      "forbidden": [
+        "Claims every saved record is automatically available in the next model context.",
+        "Claims compaction guarantees lossless preservation."
+      ],
+      "graphChecks": [],
+      "notes": "At live evaluation time run the history question first, then this follow-up in the same conversation; reset between independent trials."
+    },
+    {
+      "id": "a08",
+      "family": "hnsw-lifecycle",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Which literature notes support the open permanent note, and how do they support its distinction between construction and query tuning?",
+      "kind": "provenance",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+      "evidence": {
+        "source_construction": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "metadata",
+          "excerpt": "[[HNSW construction parameters and neighbor selection]]"
+        },
+        "source_hierarchy": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "metadata",
+          "excerpt": "[[Hierarchical search and insertion in HNSW]]"
+        },
+        "construction": {
+          "path": "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "HNSW separates the breadth of insertion search from that of query search. During construction, efConstruction controls the candidate search used to establish connections. M controls the number of selected neighbors, subject to layer-specific limits.\n\nThe paper compares simply choosing the closest neighbors with a heuristic that also considers distances among candidate neighbors. The heuristic creates connections in different directions and is particularly useful in clustered data, where purely local neighbors can trap search at cluster boundaries. Construction choices therefore affect the connectivity available to later queries, rather than merely increasing the amount of insertion work."
+        },
+        "hierarchy": {
+          "path": "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "HNSW stores vectors in a hierarchy of proximity graphs. Each inserted vector receives a randomly selected maximum level with an exponentially decreasing level distribution. Insertion searches from upper layers downward and connects the new vector to selected neighbors on its eligible layers.\n\nQuery search first performs greedy traversal on upper layers, using a small candidate set to find an entry point near the query. The bottom layer performs a broader search with a dynamic set of promising candidates. The final nearest candidates are returned from this ground-layer search. Upper and lower layers therefore use different search breadths."
+        },
+        "thought": {
+          "path": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md",
+          "basis": "permanent-inference",
+          "excerpt": "Query breadth controls how extensively HNSW explores an existing graph. Construction determines which edges are available to explore. These controls operate at different points in the lifecycle, so a graph with poor connectivity cannot be understood solely through its query parameter.\n\nTune insertion breadth, neighbor limits and query breadth with separate measurements of build cost, memory and recall. The distinction parallels [[Increasing IVF search breadth addresses pruning rather than quantization]]: a search-time control does not alter every source of approximation."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "provenance",
+          "text": "Its source metadata links to the construction-parameters record and the hierarchical-search record.",
+          "supportSets": [["source_construction", "source_hierarchy"]]
+        },
+        {
+          "id": "construction",
+          "text": "efConstruction and neighbor selection determine connections available in the graph.",
+          "supportSets": [["construction"]]
+        },
+        {
+          "id": "query",
+          "text": "Query breadth explores the existing graph, so it cannot be described as the same control as creating edges.",
+          "supportSets": [["thought"], ["construction", "hierarchy"]]
+        }
+      ],
+      "forbidden": [
+        "Lists IVF or quantization notes as this permanent note direct literature sources.",
+        "Invents a missing direct source link."
+      ],
+      "graphChecks": [
+        {
+          "to": "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md",
+          "relation": "outlink",
+          "from": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md"
+        },
+        {
+          "to": "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md",
+          "relation": "outlink",
+          "from": "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md"
+        }
+      ],
+      "notes": "Read source metadata as provenance, then literature bodies as claim evidence. No particular tool order is prescribed."
+    },
+    {
+      "id": "a09",
+      "family": "retrieval-support-link",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Would a direct link between the open note and \"Citation presence is weaker than citation support\" help? Explain the relationship and keep it a suggestion.",
+      "kind": "link-suggestion",
+      "answerability": "answerable",
+      "history": [],
+      "activeNote": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+      "evidence": {
+        "matches": {
+          "path": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+          "basis": "permanent-inference",
+          "excerpt": "Different query embeddings can match different parts of a document with high similarity. Those local matches need not jointly express the proposition an answer would cite. Retrieval scores help choose evidence to inspect, while checking whether the passage supports a generated claim remains a separate operation."
+        },
+        "citations": {
+          "path": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "basis": "permanent-inference",
+          "excerpt": "A citation marker shows that an answer refers to a source, but only comparing the claim with that source establishes whether the reference supports it. Correctness and support can also diverge: a true statement may cite the wrong passage. Evaluating these dimensions separately makes grounded-answer quality more precise and prevents a high citation count from substituting for evidence verification."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "retrieval",
+          "text": "Local token similarities help choose passages but do not establish a coherent supporting proposition.",
+          "supportSets": [["matches"]]
+        },
+        {
+          "id": "support",
+          "text": "Citation markers, factual truth and actual passage support are distinct.",
+          "supportSets": [["citations"]]
+        },
+        {
+          "id": "relationship",
+          "text": "A defensible link connects evidence selection to claim verification; explain that relationship as a proposed synthesis.",
+          "supportSets": [["matches", "citations"]]
+        }
+      ],
+      "forbidden": [
+        "Claims to have created or modified a link.",
+        "Treats the proposed connection as an already stated claim of the original paper."
+      ],
+      "graphChecks": [
+        {
+          "from": "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md",
+          "to": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "relation": "no-direct-link"
+        }
+      ],
+      "notes": "These permanent notes have no existing direct link in either direction. A justified proposal or a reasoned decision against adding a redundant link is acceptable."
+    },
+    {
+      "id": "a10",
+      "family": "citation-support",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "If the answer is factually correct and has valid citation IDs, what still needs checking?",
+      "kind": "follow-up",
+      "answerability": "answerable",
+      "history": [
+        "What do these notes say about evaluating answer correctness separately from citations?"
+      ],
+      "activeNote": null,
+      "evidence": {
+        "presence": {
+          "path": "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md",
+          "basis": "permanent-inference",
+          "excerpt": "A citation marker shows that an answer refers to a source, but only comparing the claim with that source establishes whether the reference supports it. Correctness and support can also diverge: a true statement may cite the wrong passage. Evaluating these dimensions separately makes grounded-answer quality more precise and prevents a high citation count from substituting for evidence verification."
+        },
+        "alce": {
+          "path": "02-Zettelkasten/Literature/Answer correctness and citation coverage in ALCE.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ALCE evaluates generated answers and their citations as separate dimensions. Correctness measures vary with dataset answer format, including exact-match answer recall and entailment-based claim recall. Citation recall checks whether generated statements are supported by the passages they cite. The paper uses a natural-language-inference model for automated support judgments, rather than treating the presence of a citation marker as sufficient evidence of support."
+        },
+        "joint": {
+          "path": "02-Zettelkasten/Literature/Irrelevant citations and joint passage support in ALCE.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "ALCE's citation precision identifies citations that do not contribute support to a generated statement. Its procedure considers whether a cited passage supports the statement alone or whether removing it leaves the other cited passages sufficient. This accommodates statements requiring combined evidence from several passages. The paper presents precision alongside citation recall so that a fully cited answer can still be assessed for unnecessary or irrelevant references."
+        },
+        "set": {
+          "path": "02-Zettelkasten/Permanent/Joint support requires evaluating the cited set rather than isolated passages.md",
+          "basis": "permanent-inference",
+          "excerpt": "Some statements require evidence distributed across several passages. Demanding that every citation independently establish the complete claim can wrongly reject useful partial support. Conversely, adding irrelevant references can inflate apparent coverage. A citation assessment should examine whether the set supports the statement and whether each member contributes, reflecting the distinction between coverage and precision."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "support",
+          "text": "Check whether the attached passages actually support each claim; ID validity and factual truth are insufficient.",
+          "supportSets": [["presence"], ["alce"]]
+        },
+        {
+          "id": "joint",
+          "text": "For multiple citations assess their joint support and whether individual references are irrelevant or unnecessary.",
+          "supportSets": [["joint"], ["set"]]
+        }
+      ],
+      "forbidden": [
+        "Treats ledger membership as an entailment judgment.",
+        "Requires each passage alone to support a claim that legitimately needs a jointly supporting set."
+      ],
+      "graphChecks": [],
+      "notes": "Run the setup question before the follow-up; this tests evidence use rather than merely citation syntax."
+    },
+    {
+      "id": "a11",
+      "family": "owner-speculative-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "What draft lookahead should I deploy for lowest latency, and do these notes contain measurements from my service that determine it?",
+      "kind": "partial",
+      "answerability": "partial",
+      "history": [],
+      "activeNote": null,
+      "evidence": {
+        "model": {
+          "path": "02-Zettelkasten/Literature/Acceptance cost and lookahead in speculative speedup.md",
+          "basis": "literature-paraphrase",
+          "excerpt": "The paper models tokens produced per speculative iteration using an average acceptance probability and the draft lookahead length. Its expected-token calculation assumes independent, identically distributed acceptance probabilities. The walltime analysis also assumes enough computation for concurrent target evaluations without increased target latency and includes the draft cost. Lookahead selection trades additional draft work against the diminishing expected number of accepted tokens."
+        },
+        "optimum": {
+          "path": "02-Zettelkasten/Permanent/Speculative lookahead has a workload-dependent optimum.md",
+          "basis": "permanent-inference",
+          "excerpt": "A longer draft block gives more opportunities to accept tokens, but later proposals are useful only if the earlier prefix survives. Their expected contribution diminishes while draft cost continues accumulating. Lookahead should be selected using acceptance behavior and actual execution costs for the workload, including the effect of batching on those costs."
+        }
+      },
+      "keyPoints": [
+        {
+          "id": "tradeoff",
+          "text": "Lookahead trades draft work against expected accepted tokens; acceptance, draft cost and target execution conditions affect latency.",
+          "supportSets": [["model"], ["optimum"]]
+        },
+        {
+          "id": "missing",
+          "text": "The frozen notes do not record an owner service latency experiment, so no measured deployment optimum can be stated.",
+          "supportSets": []
+        }
+      ],
+      "forbidden": [
+        "Invents a numeric lookahead or owner latency result.",
+        "Presents a paper speedup as an owner production measurement.",
+        "Refuses to explain the supported tradeoff merely because the owner measurement is absent."
+      ],
+      "graphChecks": [],
+      "notes": "A useful answer explains the documented tradeoff and clearly separates it from the missing service measurement. No evidence group is attached to the absence claim; it is a corpus-level annotation."
+    },
+    {
+      "id": "a12",
+      "family": "owner-sasrec-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "question": "Do these notes contain a measured online CTR improvement from my SASRec deployment?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "history": [],
+      "activeNote": null,
+      "evidence": {},
+      "keyPoints": [
+        {
+          "id": "absence",
+          "text": "No such owner deployment result is recorded in the frozen corpus; do not infer whether a deployment actually occurred.",
+          "supportSets": []
+        },
+        {
+          "id": "boundary",
+          "text": "Paper-level sampled ranking metrics cannot be substituted for an owner online CTR measurement.",
+          "supportSets": []
+        }
+      ],
+      "forbidden": [
+        "Invents an uplift percentage or a claim that the owner ran an experiment.",
+        "Uses paper Hit Rate or NDCG as proof of owner CTR improvement."
+      ],
+      "graphChecks": [],
+      "notes": "No positive citation is required for the absence statement. Citing a protocol note to explain its narrower scope is allowed if it is not represented as owner-result evidence."
+    }
+  ]
+}

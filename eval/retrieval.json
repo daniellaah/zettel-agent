@@ -1,0 +1,2513 @@
+{
+  "schema": 1,
+  "corpusId": "learning-v1-790b1b2bb6c7",
+  "review": "author-reviewed; owner-review-pending",
+  "items": [
+    {
+      "id": "r01",
+      "family": "qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Does four-bit QLoRA weight storage imply four-bit matrix computation?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Double quantization of blockwise scaling constants.md": {
+          "grade": 0,
+          "rationale": "This record concerns Double quantization of blockwise scaling constants; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Frozen weights and low-rank updates in LoRA.md": {
+          "grade": 0,
+          "rationale": "This record concerns Frozen weights and low-rank updates in LoRA; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/LoRA merging and adapter storage.md": {
+          "grade": 0,
+          "rationale": "This record concerns LoRA merging and adapter storage; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Paged optimizer states for training memory spikes; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Product quantization and asymmetric distance computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Product quantization and asymmetric distance computation; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md": {
+          "grade": 2,
+          "rationale": "Directly distinguishes NF4 storage from BFloat16 matrix computation.",
+          "excerpts": [
+            "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record concerns A coefficient association does not establish a treatment effect; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Adapter merging trades runtime flexibility for a combined weight representation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Adapter merging trades runtime flexibility for a combined weight representation; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Compact vector codes trade storage for distance fidelity.md": {
+          "grade": 0,
+          "rationale": "This record concerns Compact vector codes trade storage for distance fidelity; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Cosine normalization does not recover lost word order.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cosine normalization does not recover lost word order; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md": {
+          "grade": 2,
+          "rationale": "Explicitly separates storage precision from computation and other tensor representations.",
+          "excerpts": [
+            "QLoRA separates compact weight storage from the higher-precision operations used after dequantization. Describing it only as four-bit training hides that distinction. Adapter parameters, matrix computation, activations, and optimizer state have their own representations. The relevant precision contract is component-specific, which matters when explaining both the memory savings and the numerical work actually performed."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Linear attention workspace does not imply linear attention arithmetic.md": {
+          "grade": 0,
+          "rationale": "This record concerns Linear attention workspace does not imply linear attention arithmetic; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/LoRA constrains the update rank rather than the base-weight rank.md": {
+          "grade": 0,
+          "rationale": "This record concerns LoRA constrains the update rank rather than the base-weight rank; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Parameter-efficient training still needs the base model computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Parameter-efficient training still needs the base model computation; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Per-user recall gives users equal weight rather than interactions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Per-user recall gives users equal weight rather than interactions; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Persistent memory requires a retrieval decision as well as storage.md": {
+          "grade": 0,
+          "rationale": "This record concerns Persistent memory requires a retrieval decision as well as storage; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sequence order must enter the representation computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sequence order must enter the representation computation; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sparse prediction cost follows active features rather than vocabulary size.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sparse prediction cost follows active features rather than vocabulary size; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Training memory includes saved computation states.md": {
+          "grade": 0,
+          "rationale": "This record concerns Training memory includes saved computation states; it does not provide a needed answer component for the distinction between four-bit QLoRA storage and matrix-computation precision.",
+          "excerpts": []
+        }
+      },
+      "notes": "Optimizer paging and scale quantization are adjacent memory topics, not answers to the arithmetic distinction."
+    },
+    {
+      "id": "r02",
+      "family": "swing-overlap",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Why does a user pair with a broad shared click history contribute less to Swing item similarity?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Adjusted cosine for user rating scales.md": {
+          "grade": 0,
+          "rationale": "This record concerns Adjusted cosine for user rating scales; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Batching and memory tiling in GPU similarity search.md": {
+          "grade": 0,
+          "rationale": "This record concerns Batching and memory tiling in GPU similarity search; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Inverted-file pruning in Faiss similarity search.md": {
+          "grade": 0,
+          "rationale": "This record concerns Inverted-file pruning in Faiss similarity search; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Item-neighborhood prediction in item-based collaborative filtering.md": {
+          "grade": 0,
+          "rationale": "This record concerns Item-neighborhood prediction in item-based collaborative filtering; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Observed and unobserved item comparisons in BPR.md": {
+          "grade": 0,
+          "rationale": "This record concerns Observed and unobserved item comparisons in BPR; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Precomputed item neighborhoods for scalable prediction.md": {
+          "grade": 0,
+          "rationale": "This record concerns Precomputed item neighborhoods for scalable prediction; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Shared interaction evidence under sparse observations.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared interaction evidence under sparse observations; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Shared item embeddings and asymmetric transitions in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared item embeddings and asymmetric transitions in SASRec; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Swing construction cost and parallelization.md": {
+          "grade": 0,
+          "rationale": "This record concerns Swing construction cost and parallelization; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Temporal labels and user weighting in YouTube retrieval.md": {
+          "grade": 0,
+          "rationale": "This record concerns Temporal labels and user weighting in YouTube retrieval; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/User-pair evidence in Swing similarity.md": {
+          "grade": 2,
+          "rationale": "States the shared-item-count denominator and decreasing user weights.",
+          "excerpts": [
+            "Swing computes item similarity from pairs of users who clicked both items. For each contributing user pair, the score is divided by a smoothing term plus the number of items shared by those users. The paper uses this structure to distinguish support from multiple users from an isolated click connection. It further multiplies contributions by user weights that decrease with the number of items each user has clicked."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A cached neighborhood separates similarity construction from prediction.md": {
+          "grade": 0,
+          "rationale": "This record concerns A cached neighborhood separates similarity construction from prediction; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A pairwise preference objective does not calibrate click probabilities.md": {
+          "grade": 0,
+          "rationale": "This record concerns A pairwise preference objective does not calibrate click probabilities; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Broad overlap reduces the specificity of a user-pair signal.md": {
+          "grade": 2,
+          "rationale": "Explains why larger shared history reduces the specificity and contribution of a user pair.",
+          "excerpts": [
+            "Two users who share many clicked items provide less specific evidence for any one item pair than users whose overlap is narrow. Swing represents that distinction by reducing each contribution as shared history grows. The score consequently depends on the surrounding behavior graph, not just the number of users who clicked the two target items."
+          ]
+        },
+        "02-Zettelkasten/Permanent/KV-cache sharing follows shared prefixes until continuations diverge.md": {
+          "grade": 0,
+          "rationale": "This record concerns KV-cache sharing follows shared prefixes until continuations diverge; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Latent factor sharing can estimate a pair that was never observed.md": {
+          "grade": 0,
+          "rationale": "This record concerns Latent factor sharing can estimate a pair that was never observed; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Neighborhood similarity and learned interaction coefficients are different quantities.md": {
+          "grade": 0,
+          "rationale": "This record concerns Neighborhood similarity and learned interaction coefficients are different quantities; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Repeated co-click support is evidence rather than a causal explanation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Repeated co-click support is evidence rather than a causal explanation; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Shared embeddings do not force symmetric recommendation scores.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared embeddings do not force symmetric recommendation scores; it does not provide a needed answer component for the shared-history denominator in Swing user-pair contributions.",
+          "excerpts": []
+        }
+      },
+      "notes": "The query asks about shared history, not only individual users with many clicks."
+    },
+    {
+      "id": "r03",
+      "family": "colbert-aggregation",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "In ColBERT MaxSim, are maxima summed over query tokens or document tokens?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Acceptance cost and lookahead in speculative speedup.md": {
+          "grade": 0,
+          "rationale": "This record concerns Acceptance cost and lookahead in speculative speedup; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md": {
+          "grade": 0,
+          "rationale": "This record concerns Blockwise softmax accumulation in FlashAttention; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Contextual token matching with ColBERT MaxSim.md": {
+          "grade": 2,
+          "rationale": "States one maximum per query embedding and summation over query embeddings.",
+          "excerpts": [
+            "ColBERT encodes queries and documents independently into sets of contextual token embeddings. For every query embedding, its late interaction takes the highest similarity to a document embedding and sums these maxima over the query embeddings. The paper describes cosine similarity and also evaluates squared L2 distance. Independent encoding allows document representations to be computed offline while retaining token-level matching at query time."
+          ]
+        },
+        "02-Zettelkasten/Literature/Cosine normalization for document vectors.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cosine normalization for document vectors; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Document frequency and tf-idf weighting.md": {
+          "grade": 0,
+          "rationale": "This record concerns Document frequency and tf-idf weighting; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Label-aware training and ANN serving in MIND.md": {
+          "grade": 0,
+          "rationale": "This record concerns Label-aware training and ANN serving in MIND; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Latent documents and joint training in RAG.md": {
+          "grade": 0,
+          "rationale": "This record concerns Latent documents and joint training in RAG; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Masked query augmentation in ColBERT.md": {
+          "grade": 0,
+          "rationale": "This record concerns Masked query augmentation in ColBERT; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Term saturation and length scaling in BM25.md": {
+          "grade": 0,
+          "rationale": "This record concerns Term saturation and length scaling in BM25; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Token-index filtering and document refinement in ColBERT.md": {
+          "grade": 0,
+          "rationale": "This record concerns Token-index filtering and document refinement in ColBERT; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A masked query embedding is a learned matching signal rather than an explicit added term.md": {
+          "grade": 0,
+          "rationale": "This record concerns A masked query embedding is a learned matching signal rather than an explicit added term; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Candidate filtering can exclude a document with a competitive aggregate score.md": {
+          "grade": 0,
+          "rationale": "This record concerns Candidate filtering can exclude a document with a competitive aggregate score; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Collection changes can alter lexical scores for unchanged documents.md": {
+          "grade": 0,
+          "rationale": "This record concerns Collection changes can alter lexical scores for unchanged documents; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Document rarity and repeated occurrences measure different evidence.md": {
+          "grade": 0,
+          "rationale": "This record concerns Document rarity and repeated occurrences measure different evidence; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal query weighting can conceal uneven task difficulty.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal query weighting can conceal uneven task difficulty; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md": {
+          "grade": 0,
+          "rationale": "This record concerns HNSW query tuning cannot replace construction quality; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Independent document encoding limits where query-specific interaction can occur.md": {
+          "grade": 0,
+          "rationale": "This record concerns Independent document encoding limits where query-specific interaction can occur; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Latent-document marginalization is more specific than prompt concatenation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Latent-document marginalization is more specific than prompt concatenation; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/MaxSim scoring is asymmetric between query and document.md": {
+          "grade": 2,
+          "rationale": "Explains the query-directed summation and its asymmetry.",
+          "excerpts": [
+            "Summing one maximum for each query embedding treats query coverage as the aggregation direction. Exchanging the query and document changes the set over which terms are summed, so the document score need not be symmetric even if the underlying vector similarity is. A similarity metric for individual vectors does not determine symmetry of the full retrieval function."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md": {
+          "grade": 0,
+          "rationale": "This record concerns Strong token matches do not establish a coherent supporting claim; it does not provide a needed answer component for the query-token direction of the ColBERT MaxSim summation.",
+          "excerpts": []
+        }
+      },
+      "notes": "High retrieval similarity alone does not answer a citation-support question."
+    },
+    {
+      "id": "r04",
+      "family": "logq-sampler",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which probability must LogQ estimate for interaction-sampled minibatch negatives?",
+      "kind": "lookup",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/In-batch negatives and sampling correction in neural retrieval.md": {
+          "grade": 2,
+          "rationale": "Identifies estimated batch sampling probability and its training-loss role.",
+          "excerpts": [
+            "The paper encodes queries and items with separate neural networks and scores a pair through their embedding inner product. Training approximates a full-corpus softmax using the items present in a minibatch as alternatives for each query. Rewards can weight the observed positive examples.\n\nBecause batch items follow a skewed interaction distribution, popular items appear disproportionately as negatives. The authors subtract the logarithm of an item's estimated batch sampling probability from its training logit. The corrected logits define the batch loss. The probability refers to how the training batch is sampled, and the method does not require a fixed item vocabulary."
+          ]
+        },
+        "02-Zettelkasten/Literature/Pairwise interaction parameters in factorization machines.md": {
+          "grade": 0,
+          "rationale": "This record concerns Pairwise interaction parameters in factorization machines; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled binary next-item training in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampled binary next-item training in SASRec; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled candidate evaluation in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampled candidate evaluation in SASRec; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Shared interaction evidence under sparse observations.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared interaction evidence under sparse observations; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Streaming estimation of item sampling probabilities.md": {
+          "grade": 1,
+          "rationale": "Describes how the relevant probability is estimated.",
+          "excerpts": [
+            "The frequency estimator tracks the gap in global training steps between successive appearances of an item. A moving average estimates the mean gap, and its reciprocal estimates the item's batch sampling probability. Hash arrays store the latest occurrence and estimated gap without allocating a permanent entry for every item identifier.\n\nHash collisions combine appearances of different items and can overestimate frequency. The improved estimator maintains several independent hashings and uses the largest estimated gap. The global-step representation supports distributed parameter-server updates, while the moving average allows the estimate to adapt as the stream changes."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A logistic coefficient describes an odds change rather than a probability increment.md": {
+          "grade": 0,
+          "rationale": "This record concerns A logistic coefficient describes an odds change rather than a probability increment; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A monotone probability mapping preserves ranking while changing score interpretation.md": {
+          "grade": 0,
+          "rationale": "This record concerns A monotone probability mapping preserves ranking while changing score interpretation; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A resampling unit should preserve the dependence relevant to the estimate.md": {
+          "grade": 0,
+          "rationale": "This record concerns A resampling unit should preserve the dependence relevant to the estimate; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A softmax probability depends on its competing classes.md": {
+          "grade": 0,
+          "rationale": "This record concerns A softmax probability depends on its competing classes; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal output distributions do not promise the same sampled token sequence.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal output distributions do not promise the same sampled token sequence; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fast interaction evaluation does not remove the interaction model.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fast interaction evaluation does not remove the interaction model; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Hard negatives define the distinctions a retriever learns to make.md": {
+          "grade": 0,
+          "rationale": "This record concerns Hard negatives define the distinctions a retriever learns to make; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Latent factor sharing can estimate a pair that was never observed.md": {
+          "grade": 0,
+          "rationale": "This record concerns Latent factor sharing can estimate a pair that was never observed; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Neighborhood similarity and learned interaction coefficients are different quantities.md": {
+          "grade": 0,
+          "rationale": "This record concerns Neighborhood similarity and learned interaction coefficients are different quantities; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Removing the critic shifts GRPO cost toward sampled comparisons.md": {
+          "grade": 0,
+          "rationale": "This record concerns Removing the critic shifts GRPO cost toward sampled comparisons; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sampled candidate metrics describe the sampled ranking problem.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampled candidate metrics describe the sampled ranking problem; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md": {
+          "grade": 2,
+          "rationale": "Requires the distribution that generated training alternatives, rather than an arbitrary popularity statistic.",
+          "excerpts": [
+            "A sampling correction compensates for the distribution that generated the alternatives in the training loss. For interaction-sampled batches, that distribution reflects which items appear in those batches. Substituting a different popularity statistic can therefore correct the wrong sampling process.\n\nBefore applying LogQ, specify the negative sampler, the event whose probability is being estimated, and how repeated items are handled. [[Streaming frequency estimates can drift through hash collisions]] describes one source of error in estimating that probability."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Sharing negatives changes the training compute pattern.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sharing negatives changes the training compute pattern; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Streaming frequency estimates can drift through hash collisions.md": {
+          "grade": 1,
+          "rationale": "Explains an estimation error for the probability used by the correction.",
+          "excerpts": [
+            "A hash bucket can receive appearances from several item identifiers. Treating its update gap as the recurrence gap of one item makes that item appear more frequent than it really is. A correction based on the resulting probability then inherits an estimation error from the storage scheme.\n\nMultiple independent hashings reduce this collision effect but do not remove every source of uncertainty. The estimator's approximation should remain visible when interpreting [[Sampling correction must describe the actual negative sampler]]."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Watch-time-weighted logistic scores need an explicit probability assumption.md": {
+          "grade": 0,
+          "rationale": "This record concerns Watch-time-weighted logistic scores need an explicit probability assumption; it does not provide a needed answer component for the actual batch sampling event whose probability LogQ corrects.",
+          "excerpts": []
+        }
+      },
+      "notes": "Do not infer a specific serving-score correction that these notes do not state."
+    },
+    {
+      "id": "r05",
+      "family": "flash-numerical",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "If an attention implementation is mathematically exact, must it produce bit-for-bit identical floating-point results?",
+      "kind": "paraphrase",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Attention sharpness experiments in MIND.md": {
+          "grade": 0,
+          "rationale": "This record concerns Attention sharpness experiments in MIND; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Autoregressive information flow through attention masks.md": {
+          "grade": 0,
+          "rationale": "This record concerns Autoregressive information flow through attention masks; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Batching and memory tiling in GPU similarity search.md": {
+          "grade": 0,
+          "rationale": "This record concerns Batching and memory tiling in GPU similarity search; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md": {
+          "grade": 1,
+          "rationale": "Supports mathematical equivalence of blockwise and full attention, without promising bitwise equality.",
+          "excerpts": [
+            "FlashAttention loads blocks of queries, keys, and values into fast on-chip memory and combines their attention contributions without storing the full score or probability matrices in high-bandwidth memory. It maintains row maxima and normalization sums, rescales earlier contributions when the maxima change, and updates the output. The paper proves that this procedure returns the same attention expression as the full matrix computation."
+          ]
+        },
+        "02-Zettelkasten/Literature/Projected subspaces in multi-head attention.md": {
+          "grade": 0,
+          "rationale": "This record concerns Projected subspaces in multi-head attention; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Scaled dot-product attention.md": {
+          "grade": 0,
+          "rationale": "This record concerns Scaled dot-product attention; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A permanent note must make its necessary context explicit.md": {
+          "grade": 0,
+          "rationale": "This record concerns A permanent note must make its necessary context explicit; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A recovery point couples input positions with operator state.md": {
+          "grade": 0,
+          "rationale": "This record concerns A recovery point couples input positions with operator state; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Early stopping selects a point on the optimization trajectory.md": {
+          "grade": 0,
+          "rationale": "This record concerns Early stopping selects a point on the optimization trajectory; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md": {
+          "grade": 2,
+          "rationale": "Distinguishes exact mathematical attention from bitwise floating-point identity.",
+          "excerpts": [
+            "A blockwise algorithm can compute the same mathematical attention expression while changing reduction order and intermediate rounding. Exactness in this sense concerns the absence of an attention approximation, not a promise of bitwise identity across implementations. Numerical verification should use tolerances appropriate to dtype and operation order."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md": {
+          "grade": 0,
+          "rationale": "This record concerns Four-bit weight storage does not mean four-bit arithmetic everywhere; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record concerns GPU search throughput must be interpreted with its batch size; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Identical-example score checks isolate an engineering boundary.md": {
+          "grade": 0,
+          "rationale": "This record concerns Identical-example score checks isolate an engineering boundary; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Linear attention workspace does not imply linear attention arithmetic.md": {
+          "grade": 0,
+          "rationale": "This record concerns Linear attention workspace does not imply linear attention arithmetic; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Optimizer state is part of an exact training continuation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Optimizer state is part of an exact training continuation; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Overlapping tools create an additional selection problem.md": {
+          "grade": 0,
+          "rationale": "This record concerns Overlapping tools create an additional selection problem; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Prediction context must end before the event being predicted.md": {
+          "grade": 0,
+          "rationale": "This record concerns Prediction context must end before the event being predicted; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Preprocessing must respect the held-out fold boundary.md": {
+          "grade": 0,
+          "rationale": "This record concerns Preprocessing must respect the held-out fold boundary; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampling correction must describe the actual negative sampler; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sequence order must enter the representation computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sequence order must enter the representation computation; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Visual augmentation results require a new justification in recommendation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Visual augmentation results require a new justification in recommendation; it does not provide a needed answer component for mathematical attention equivalence versus bitwise floating-point identity.",
+          "excerpts": []
+        }
+      },
+      "notes": "The floating-point qualification is a permanent-note inference, not an extra claim inserted into the literature note."
+    },
+    {
+      "id": "r06",
+      "family": "fold-preprocessing",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Should standardization statistics be fitted once on all examples before running cross-validation?",
+      "kind": "paraphrase",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Compaction for long-running agent tasks.md": {
+          "grade": 0,
+          "rationale": "This record concerns Compaction for long-running agent tasks; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Learned default directions for sparse tree inputs.md": {
+          "grade": 0,
+          "rationale": "This record concerns Learned default directions for sparse tree inputs; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Predictor scaling before ridge regression.md": {
+          "grade": 1,
+          "rationale": "Explains the data-dependent scaling operation whose fitting boundary is at issue.",
+          "excerpts": [
+            "Multiplying a predictor by a constant changes its least-squares coefficient inversely while preserving the fitted contribution. Ridge regression does not have this property because its penalty depends on coefficient magnitudes. The book recommends scaling predictors to have unit standard deviation before ridge fitting so that measurement units do not determine the relative shrinkage. The transformation places the predictors on a common scale."
+          ]
+        },
+        "02-Zettelkasten/Literature/Rotating held-out folds in cross-validation.md": {
+          "grade": 1,
+          "rationale": "Provides the held-out fold construction.",
+          "excerpts": [
+            "K-fold cross-validation randomly divides observations into approximately equal groups. Each group becomes the validation set once, while the method is fit on the remaining groups. The fold errors are averaged to estimate test error. The book identifies leave-one-out validation as the case with one fold per observation and describes five or ten folds as common choices that reduce the number of model fits."
+          ]
+        },
+        "02-Zettelkasten/Literature/Schema-based data validation in TFX.md": {
+          "grade": 0,
+          "rationale": "This record concerns Schema-based data validation in TFX; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Softmax classification and cross-entropy gradients.md": {
+          "grade": 0,
+          "rationale": "This record concerns Softmax classification and cross-entropy gradients; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Validation-based early stopping.md": {
+          "grade": 0,
+          "rationale": "This record concerns Validation-based early stopping; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A resampling unit should preserve the dependence relevant to the estimate.md": {
+          "grade": 0,
+          "rationale": "This record concerns A resampling unit should preserve the dependence relevant to the estimate; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A schema anomaly identifies a contract disagreement before its cause.md": {
+          "grade": 0,
+          "rationale": "This record concerns A schema anomaly identifies a contract disagreement before its cause; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md": {
+          "grade": 0,
+          "rationale": "This record concerns A score function does not specify its learning objective; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A success claim should be checked against the resulting state.md": {
+          "grade": 0,
+          "rationale": "This record concerns A success claim should be checked against the resulting state; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A validation set is part of the model-selection procedure.md": {
+          "grade": 0,
+          "rationale": "This record concerns A validation set is part of the model-selection procedure; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An experiment needs a measurable hypothesis before a significance test.md": {
+          "grade": 0,
+          "rationale": "This record concerns An experiment needs a measurable hypothesis before a significance test; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An observation should be able to change the next action.md": {
+          "grade": 0,
+          "rationale": "This record concerns An observation should be able to change the next action; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Cross-entropy supplies a directional error for every class logit.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cross-entropy supplies a directional error for every class logit; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Cross-validation evaluates repeated fits rather than one fixed artifact.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cross-validation evaluates repeated fits rather than one fixed artifact; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Prediction context must end before the event being predicted.md": {
+          "grade": 0,
+          "rationale": "This record concerns Prediction context must end before the event being predicted; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Preprocessing must respect the held-out fold boundary.md": {
+          "grade": 2,
+          "rationale": "Explicitly requires learning scaling parameters within each training fold.",
+          "excerpts": [
+            "Scaling statistics estimated from the full dataset let validation observations influence the fitted transformation. To preserve the held-out comparison, each training fold should determine its own preprocessing parameters before transforming that fold's validation examples. The evaluated object is the entire learning pipeline, including data-dependent transformations."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Sample-ratio mismatch challenges the comparison before the outcome.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sample-ratio mismatch challenges the comparison before the outcome; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Teacher-generated supervision transfers outputs without reproducing the teacher pipeline.md": {
+          "grade": 0,
+          "rationale": "This record concerns Teacher-generated supervision transfers outputs without reproducing the teacher pipeline; it does not provide a needed answer component for fitting scaling statistics within the training fold rather than on all examples.",
+          "excerpts": []
+        }
+      },
+      "notes": "The fold-specific preprocessing conclusion is a synthesis; the two literature notes give its premises."
+    },
+    {
+      "id": "r07",
+      "family": "candidate-coverage",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Can a perfect second-stage ranker recover a relevant item omitted by the first-stage retriever?",
+      "kind": "paraphrase",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Candidate generation and ranking at YouTube.md": {
+          "grade": 1,
+          "rationale": "Describes the candidate-generation and ranking stage separation.",
+          "excerpts": [
+            "YouTube separates recommendation into candidate generation and ranking. Candidate generation uses user history and context to select hundreds of videos from a much larger collection. Ranking evaluates this smaller set with richer features and a presentation-specific objective before choosing the displayed results. The architecture also permits candidates from other retrieval sources. The ranking features include which sources nominated a video and the scores those sources assigned.\n\nThe authors use offline measures to guide development but rely on live A/B experiments to determine effectiveness. They report that offline and online results do not always move together. The two stages therefore serve distinct computational and prediction roles within the same recommendation process."
+          ]
+        },
+        "02-Zettelkasten/Literature/Causal next-item supervision in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Causal next-item supervision in SASRec; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Item-neighborhood prediction in item-based collaborative filtering.md": {
+          "grade": 0,
+          "rationale": "This record concerns Item-neighborhood prediction in item-based collaborative filtering; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Observed and unobserved item comparisons in BPR.md": {
+          "grade": 0,
+          "rationale": "This record concerns Observed and unobserved item comparisons in BPR; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Precomputed item neighborhoods for scalable prediction.md": {
+          "grade": 0,
+          "rationale": "This record concerns Precomputed item neighborhoods for scalable prediction; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled binary next-item training in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampled binary next-item training in SASRec; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Second-order leaf optimization in XGBoost.md": {
+          "grade": 0,
+          "rationale": "This record concerns Second-order leaf optimization in XGBoost; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Shared item embeddings and asymmetric transitions in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared item embeddings and asymmetric transitions in SASRec; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Streaming estimation of item sampling probabilities.md": {
+          "grade": 0,
+          "rationale": "This record concerns Streaming estimation of item sampling probabilities; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A resampling unit should preserve the dependence relevant to the estimate.md": {
+          "grade": 0,
+          "rationale": "This record concerns A resampling unit should preserve the dependence relevant to the estimate; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A retrieval deployment includes the model and its item index.md": {
+          "grade": 0,
+          "rationale": "This record concerns A retrieval deployment includes the model and its item index; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A reusable item index requires a factorized scoring function.md": {
+          "grade": 0,
+          "rationale": "This record concerns A reusable item index requires a factorized scoring function; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/ANN approximation adds a separate source of retrieval loss.md": {
+          "grade": 1,
+          "rationale": "Explains approximation as one mechanism that can exclude a relevant candidate.",
+          "excerpts": [
+            "A retrieval model defines scores over a corpus, while an approximate index searches for high-scoring items without necessarily reproducing exhaustive search. Failure to return an item can therefore arise from either the learned scoring function or the approximation used to search it.\n\nCompare approximate results with exact results under the same fixed embeddings to isolate index loss. Relevance judgments against user outcomes evaluate a different boundary. Both affect [[Candidate coverage limits what a ranker can recover]], but require different remedies."
+          ]
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Candidate aggregation is a separate serving decision.md": {
+          "grade": 1,
+          "rationale": "Explicitly states that selection policies remain constrained by the combined candidate pool.",
+          "excerpts": [
+            "Multiple searches produce a candidate pool, while aggregation determines which candidates become the final list. Keeping these decisions separate makes it possible to vary list-level objectives without retraining the interest extractor. The pool still constrains the result. This extends [[Candidate coverage limits what a ranker can recover]] to multi-interest retrieval: selection policies depend on what all the searches jointly return."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Candidate coverage limits what a ranker can recover.md": {
+          "grade": 2,
+          "rationale": "Explicitly says a ranker cannot select an item outside its candidate set.",
+          "excerpts": [
+            "A ranker can improve the ordering only of candidates supplied to it. If retrieval excludes a relevant item, even a perfect scoring function in the ranking stage cannot select that item. Candidate coverage therefore places an upper bound on what downstream ranking can achieve.\n\nThis makes stage-specific diagnosis useful: first check whether useful items entered the candidate set, then examine their ordering. [[ANN approximation adds a separate source of retrieval loss]] identifies another boundary within the retrieval stage itself."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Candidate filtering can exclude a document with a competitive aggregate score.md": {
+          "grade": 1,
+          "rationale": "Explains that refinement only sees nominated candidates.",
+          "excerpts": [
+            "A document with several moderately strong query-token matches can score well after aggregation without containing a token among any small initial nearest-neighbor list. The refinement stage only sees nominated documents. Choosing token-level candidate depth therefore affects coverage under the aggregate document score, independently of the exactness of final scoring."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Candidate-source features preserve useful evidence for ranking.md": {
+          "grade": 0,
+          "rationale": "This record concerns Candidate-source features preserve useful evidence for ranking; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Cosine normalization does not recover lost word order.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cosine normalization does not recover lost word order; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Hard negatives define the distinctions a retriever learns to make.md": {
+          "grade": 0,
+          "rationale": "This record concerns Hard negatives define the distinctions a retriever learns to make; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Passage preparation defines what the retriever can return.md": {
+          "grade": 1,
+          "rationale": "Shows a related availability boundary: discarded evidence cannot be recovered downstream.",
+          "excerpts": [
+            "Splitting documents into passages determines the granularity of indexed evidence, and removing non-prose content determines which answers remain available at all. These are substantive retrieval decisions rather than neutral file conversion. A downstream model cannot recover a table discarded before indexing through better passage ranking. This is another form of [[Candidate coverage limits what a ranker can recover]]."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Retriever updates and index updates are coupled choices.md": {
+          "grade": 0,
+          "rationale": "This record concerns Retriever updates and index updates are coupled choices; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Retry success and reliable first delivery answer different product questions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Retry success and reliable first delivery answer different product questions; it does not provide a needed answer component for the downstream selection limit imposed by a first-stage candidate set.",
+          "excerpts": []
+        }
+      },
+      "notes": "Ranking quality and candidate coverage have different evaluation boundaries."
+    },
+    {
+      "id": "r08",
+      "family": "bootstrap-information",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Does drawing the same observation repeatedly in a bootstrap sample create new independent evidence?",
+      "kind": "paraphrase",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Bootstrap resampling for estimator variability.md": {
+          "grade": 1,
+          "rationale": "States sampling with replacement and repeated or absent observations.",
+          "excerpts": [
+            "The bootstrap approximates repeated sampling from a population by repeatedly sampling observations from the available dataset. Each bootstrap sample has the original sample size and is drawn with replacement, so an observation may occur several times or be absent. The estimator is recomputed on each sample. The book uses the standard deviation of these estimates to approximate the estimator standard error."
+          ]
+        },
+        "02-Zettelkasten/Literature/Sample-ratio mismatch in experiment monitoring.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sample-ratio mismatch in experiment monitoring; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Simple models and independent infrastructure tests.md": {
+          "grade": 0,
+          "rationale": "This record concerns Simple models and independent infrastructure tests; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record concerns A coefficient association does not establish a treatment effect; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A long context window does not guarantee uniform evidence access.md": {
+          "grade": 0,
+          "rationale": "This record concerns A long context window does not guarantee uniform evidence access; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A readable trajectory is diagnostic evidence rather than a correctness proof.md": {
+          "grade": 0,
+          "rationale": "This record concerns A readable trajectory is diagnostic evidence rather than a correctness proof; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A reference solution is evidence of solvability rather than the only valid output.md": {
+          "grade": 0,
+          "rationale": "This record concerns A reference solution is evidence of solvability rather than the only valid output; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md": {
+          "grade": 0,
+          "rationale": "This record concerns A score function does not specify its learning objective; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An observation should be able to change the next action.md": {
+          "grade": 0,
+          "rationale": "This record concerns An observation should be able to change the next action; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Bootstrap duplicates represent resampling rather than additional evidence.md": {
+          "grade": 2,
+          "rationale": "Explicitly distinguishes reweighting existing observations from new population information.",
+          "excerpts": [
+            "Repeated rows in a bootstrap sample change the weight of existing observations. They do not add newly observed information to the original dataset. Increasing the number of bootstrap repetitions can stabilize an estimate of variability, but cannot supply population patterns missing from the observations being resampled."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Dropout subnetworks share evidence through their parameters.md": {
+          "grade": 0,
+          "rationale": "This record concerns Dropout subnetworks share evidence through their parameters; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal output distributions do not promise the same sampled token sequence.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal output distributions do not promise the same sampled token sequence; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Independent document encoding limits where query-specific interaction can occur.md": {
+          "grade": 0,
+          "rationale": "This record concerns Independent document encoding limits where query-specific interaction can occur; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Overlapping tools create an additional selection problem.md": {
+          "grade": 0,
+          "rationale": "This record concerns Overlapping tools create an additional selection problem; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Ranking comparisons require the same candidate protocol.md": {
+          "grade": 0,
+          "rationale": "This record concerns Ranking comparisons require the same candidate protocol; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sample-ratio mismatch challenges the comparison before the outcome.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sample-ratio mismatch challenges the comparison before the outcome; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Target-aware training can support target-independent retrieval.md": {
+          "grade": 0,
+          "rationale": "This record concerns Target-aware training can support target-independent retrieval; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Two views of one example do not provide two independent observations.md": {
+          "grade": 1,
+          "rationale": "Uses bootstrap repetitions as an explicit analogy for reuse rather than newly collected independent observations.",
+          "excerpts": [
+            "Augmented views share their source example, just as bootstrap repetitions reuse source observations. A larger number of constructed views can create more training comparisons without adding an equal number of independently collected examples. Splits and uncertainty claims should preserve the relationship to those underlying examples rather than counting every transformation as independent evidence."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Visual augmentation results require a new justification in recommendation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Visual augmentation results require a new justification in recommendation; it does not provide a needed answer component for bootstrap observation reuse versus collecting independent evidence.",
+          "excerpts": []
+        }
+      },
+      "notes": "Do not confuse more resampling repetitions with collecting more original observations."
+    },
+    {
+      "id": "r09",
+      "family": "context-continuity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "How can compaction and external task notes preserve progress without guaranteeing that needed details will be used later?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Compaction for long-running agent tasks.md": {
+          "grade": 1,
+          "rationale": "States summary continuity and the risk of aggressive compression.",
+          "excerpts": [
+            "Compaction summarizes a conversation nearing the context-window limit and starts a new context with that summary. The article describes preserving architectural decisions, unresolved bugs, and implementation details while discarding redundant messages or tool results. It warns that aggressive compression can lose subtle information needed later. Its suggested tuning process first emphasizes recall of relevant details and then removes material that does not contribute useful context."
+          ]
+        },
+        "02-Zettelkasten/Literature/Fleeting notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fleeting notes; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Interleaved reasoning and external actions in ReAct.md": {
+          "grade": 0,
+          "rationale": "This record concerns Interleaved reasoning and external actions in ReAct; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Literature notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Literature notes; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Permanent notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Permanent notes; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Structured notes outside the agent context window.md": {
+          "grade": 1,
+          "rationale": "States external storage and later reintroduction of task records.",
+          "excerpts": [
+            "Structured note-taking stores information outside the current context window and brings those records back into context later. The article describes agents maintaining task progress, critical dependencies, and strategic notes across long sequences of tool calls. Its examples include a task list or a dedicated notes file. After a context reset, an agent can read the stored records and continue work using information that would otherwise have left its active context."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A repository task includes its code revision and execution conditions.md": {
+          "grade": 0,
+          "rationale": "This record concerns A repository task includes its code revision and execution conditions; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A resampling unit should preserve the dependence relevant to the estimate.md": {
+          "grade": 0,
+          "rationale": "This record concerns A resampling unit should preserve the dependence relevant to the estimate; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A shared temperature changes training probabilities without changing score order.md": {
+          "grade": 0,
+          "rationale": "This record concerns A shared temperature changes training probabilities without changing score order; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A split criterion inherits the loss and regularization used to derive it.md": {
+          "grade": 0,
+          "rationale": "This record concerns A split criterion inherits the loss and regularization used to derive it; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A training projection can differ from the representation used at serving.md": {
+          "grade": 0,
+          "rationale": "This record concerns A training projection can differ from the representation used at serving; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A watermark is a progress assertion rather than proof that no late data exists.md": {
+          "grade": 0,
+          "rationale": "This record concerns A watermark is a progress assertion rather than proof that no late data exists; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Candidate-source features preserve useful evidence for ranking.md": {
+          "grade": 0,
+          "rationale": "This record concerns Candidate-source features preserve useful evidence for ranking; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Compaction is a lossy state transition that needs continuity checks.md": {
+          "grade": 1,
+          "rationale": "Combines compaction loss, task continuity, and persistent notes as a supplement.",
+          "excerpts": [
+            "A summary replaces part of the previous task state and can omit constraints whose importance emerges later. Continuing successfully therefore depends on preserving decisions, unresolved issues, and evidence needed for the next steps. Compaction quality should be judged by continuity of task behavior, not just compression ratio or readability. Persistent notes can supplement the summary when precise details must remain recoverable."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Equal query weighting can conceal uneven task difficulty.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal query weighting can conceal uneven task difficulty; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fixed subtasks can use explicit intermediate acceptance checks.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fixed subtasks can use explicit intermediate acceptance checks; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Multiple retrieval vectors preserve distinct matching directions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Multiple retrieval vectors preserve distinct matching directions; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Persistent memory requires a retrieval decision as well as storage.md": {
+          "grade": 1,
+          "rationale": "Explains why saved details must be selected and reintroduced.",
+          "excerpts": [
+            "Writing information outside the current context preserves it, but it does not ensure that a later decision will use it. The system must select and reintroduce the relevant record when needed. Memory quality consequently involves both what is saved and how it is retrieved. This connects long-task continuity to ordinary evidence selection rather than treating persistence as sufficient by itself."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Teacher-generated supervision transfers outputs without reproducing the teacher pipeline.md": {
+          "grade": 0,
+          "rationale": "This record concerns Teacher-generated supervision transfers outputs without reproducing the teacher pipeline; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Test feedback can leak through human decisions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Test feedback can leak through human decisions; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Verifiable rewards depend on the task and checker boundary.md": {
+          "grade": 0,
+          "rationale": "This record concerns Verifiable rewards depend on the task and checker boundary; it does not provide a needed answer component for lossy compaction together with recovery and use of externally stored task details.",
+          "excerpts": []
+        }
+      },
+      "notes": "Grade 2 means a coherent standalone answer; grade 1 supplies one needed part."
+    },
+    {
+      "id": "r10",
+      "family": "tfx-parity",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Does exporting preprocessing with a TFX model establish complete training-serving parity?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Automated model promotion checks in TFX.md": {
+          "grade": 0,
+          "rationale": "This record concerns Automated model promotion checks in TFX; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Exported feature transformations in TFX.md": {
+          "grade": 1,
+          "rationale": "Explains the discrepancy addressed by exporting feature mappings.",
+          "excerpts": [
+            "TFX implements feature transformations such as categorical value-to-integer mappings for training and serving. These mappings allow weights or embeddings to be looked up by feature value and can restrict IDs to selected values from large vocabularies. The paper emphasizes consistent transformation logic across training and inference. It exports the transformations as part of the trained model to prevent this form of training-serving discrepancy."
+          ]
+        },
+        "02-Zettelkasten/Literature/Label-aware training and ANN serving in MIND.md": {
+          "grade": 0,
+          "rationale": "This record concerns Label-aware training and ANN serving in MIND; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Schema-based data validation in TFX.md": {
+          "grade": 0,
+          "rationale": "This record concerns Schema-based data validation in TFX; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sequential training and indexed serving in neural retrieval.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sequential training and indexed serving in neural retrieval; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Simple models and independent infrastructure tests.md": {
+          "grade": 1,
+          "rationale": "Supports identical-example training/serving comparisons as an independent integration check.",
+          "excerpts": [
+            "The guide recommends starting with a simple model while establishing reliable training examples, meaningful targets, and serving integration. Simple features make it easier to verify that training and serving receive the intended values. It also recommends testing data ingestion and model export independently of learning, including comparing scores from the training and serving environments for a fixed model and the same example."
+          ]
+        },
+        "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md": {
+          "grade": 1,
+          "rationale": "Explains generalization, temporal change, and identical-example engineering comparisons.",
+          "excerpts": [
+            "The guide distinguishes performance differences between training and holdout data, holdout and next-day data, and next-day and live data. The first comparison concerns generalization, while the second may reveal time-sensitive features. Applying the same model to the same example in training and serving should give the same result. A discrepancy in that identical-example comparison is described as a likely engineering error."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record concerns A coefficient association does not establish a treatment effect; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A learned interest slot does not supply its own semantic label.md": {
+          "grade": 0,
+          "rationale": "This record concerns A learned interest slot does not supply its own semantic label; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A long context window does not guarantee uniform evidence access.md": {
+          "grade": 0,
+          "rationale": "This record concerns A long context window does not guarantee uniform evidence access; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A pairwise preference objective does not calibrate click probabilities.md": {
+          "grade": 0,
+          "rationale": "This record concerns A pairwise preference objective does not calibrate click probabilities; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A training projection can differ from the representation used at serving.md": {
+          "grade": 0,
+          "rationale": "This record concerns A training projection can differ from the representation used at serving; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Candidate aggregation is a separate serving decision.md": {
+          "grade": 0,
+          "rationale": "This record concerns Candidate aggregation is a separate serving decision; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Exporting preprocessing reduces one source of skew without proving full parity.md": {
+          "grade": 2,
+          "rationale": "Directly rejects full parity from shared transformations and retains an identical-example check.",
+          "excerpts": [
+            "Sharing transformation logic aligns an important part of training and inference. It does not establish that upstream inputs, timestamps, defaults, or runtime behavior also agree. An identical-example comparison remains useful because the complete path to a prediction includes more than the exported transformation itself."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Fast interaction evaluation does not remove the interaction model.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fast interaction evaluation does not remove the interaction model; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Identical-example score checks isolate an engineering boundary.md": {
+          "grade": 1,
+          "rationale": "Explains what a same-example check does and does not establish.",
+          "excerpts": [
+            "A fixed model should compute the same score for the same example across training and serving environments, subject to explicit numerical tolerances. This check isolates implementation consistency from distribution change. Passing it does not establish that live examples resemble training data. It does establish a useful boundary for investigation: score disagreement on identical inputs points toward the execution or feature-processing path."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Model promotion needs serving evidence as well as quality evidence.md": {
+          "grade": 0,
+          "rationale": "This record concerns Model promotion needs serving evidence as well as quality evidence; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Parameter-efficient training still needs the base model computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Parameter-efficient training still needs the base model computation; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Preprocessing must respect the held-out fold boundary.md": {
+          "grade": 0,
+          "rationale": "This record concerns Preprocessing must respect the held-out fold boundary; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md": {
+          "grade": 0,
+          "rationale": "This record concerns Strong token matches do not establish a coherent supporting claim; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Target-aware training can support target-independent retrieval.md": {
+          "grade": 0,
+          "rationale": "This record concerns Target-aware training can support target-independent retrieval; it does not provide a needed answer component for the limits of exported TFX transformations as a claim of full training-serving parity.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Training-serving skew has several distinct causes.md": {
+          "grade": 1,
+          "rationale": "Distinguishes engineering skew from generalization and distribution changes.",
+          "excerpts": [
+            "A generalization gap, temporal distribution change, and inconsistent feature computation can all produce poorer live performance. They require different remedies. Regularization may address one gap while leaving an engineering mismatch untouched. Diagnosing skew therefore starts by specifying which data and execution environments are being compared, rather than treating every offline-to-online discrepancy as evidence that the model needs more capacity."
+          ]
+        }
+      },
+      "notes": "A consistent mapping is a narrower claim than agreement across every input and runtime condition."
+    },
+    {
+      "id": "r11",
+      "family": "idle-lateness",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Why must marking a Flink input idle be considered together with the late-event policy?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Allowed lateness and repeated window firing in Flink.md": {
+          "grade": 1,
+          "rationale": "Explains acceptance, refiring, state expiry, and default late dropping.",
+          "excerpts": [
+            "For event-time windows, Flink can retain state after the watermark passes the window end for a configured allowed-lateness interval. Late elements within that interval are added to the window and can cause another firing under the event-time trigger. After the interval expires, the window state is removed and further late elements are dropped under the default handling. The documented allowed-lateness default is zero."
+          ]
+        },
+        "02-Zettelkasten/Literature/Checkpoint state and source replay in Flink.md": {
+          "grade": 0,
+          "rationale": "This record concerns Checkpoint state and source replay in Flink; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Event-time and processing-time window semantics in Flink.md": {
+          "grade": 0,
+          "rationale": "This record concerns Event-time and processing-time window semantics in Flink; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Input watermark minima and idle sources in Flink.md": {
+          "grade": 1,
+          "rationale": "Explains minimum-input watermark and excluding an idle input.",
+          "excerpts": [
+            "Parallel source partitions can generate watermarks independently. An operator with several inputs advances its event time according to the minimum input watermark. The documentation explains that a partition without events may stop advancing its watermark and hold back active partitions. A watermark strategy can detect such idleness and mark that input idle so it no longer blocks the minimum in the same way."
+          ]
+        },
+        "02-Zettelkasten/Literature/Keyed state partitioning and redistribution in Flink.md": {
+          "grade": 0,
+          "rationale": "This record concerns Keyed state partitioning and redistribution in Flink; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Prediction tasks and input design for factorization machines.md": {
+          "grade": 0,
+          "rationale": "This record concerns Prediction tasks and input design for factorization machines; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A permanent note must make its necessary context explicit.md": {
+          "grade": 0,
+          "rationale": "This record concerns A permanent note must make its necessary context explicit; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A recovery point couples input positions with operator state.md": {
+          "grade": 0,
+          "rationale": "This record concerns A recovery point couples input positions with operator state; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A watermark is a progress assertion rather than proof that no late data exists.md": {
+          "grade": 1,
+          "rationale": "Explains why advancement does not prevent late arrivals.",
+          "excerpts": [
+            "Advancing a watermark enables a computation to proceed under a lateness policy. It does not physically prevent delayed records from arriving afterward. Correct interpretation of an emitted window result therefore includes the watermark-generation assumptions and the operator's policy for accepting, revising, or discarding later evidence."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Agent autonomy belongs to the orchestration policy.md": {
+          "grade": 0,
+          "rationale": "This record concerns Agent autonomy belongs to the orchestration policy; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An agent benchmark evaluates the harness together with the model.md": {
+          "grade": 0,
+          "rationale": "This record concerns An agent benchmark evaluates the harness together with the model; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Event freshness and processing delay describe different times.md": {
+          "grade": 0,
+          "rationale": "This record concerns Event freshness and processing delay describe different times; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record concerns GPU search throughput must be interpreted with its batch size; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Ignoring an idle input trades a blocking risk for a lateness assumption.md": {
+          "grade": 2,
+          "rationale": "Combines advancement after idleness with old timestamps when an input resumes.",
+          "excerpts": [
+            "Marking a partition idle lets active inputs advance event time. If that partition later resumes with old timestamps, those records can meet a downstream clock that has already advanced. Idleness handling should therefore be chosen together with the late-data policy, rather than viewed only as a throughput adjustment."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Late window updates require consumers to recognize revisions.md": {
+          "grade": 1,
+          "rationale": "Explains a downstream consequence of accepting late data and repeated firing.",
+          "excerpts": [
+            "A second firing for the same logical window can revise an earlier aggregate. A downstream consumer that treats every firing as a new independent total can double-count evidence. The output contract needs a way to associate updates with their window and apply replacement or other explicitly defined revision semantics."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Observed clicks partly reflect the policy that exposed items.md": {
+          "grade": 0,
+          "rationale": "This record concerns Observed clicks partly reflect the policy that exposed items; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Prediction context must end before the event being predicted.md": {
+          "grade": 0,
+          "rationale": "This record concerns Prediction context must end before the event being predicted; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Preprocessing must respect the held-out fold boundary.md": {
+          "grade": 0,
+          "rationale": "This record concerns Preprocessing must respect the held-out fold boundary; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sampling correction must describe the actual negative sampler.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sampling correction must describe the actual negative sampler; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sequence order must enter the representation computation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sequence order must enter the representation computation; it does not provide a needed answer component for the connection between idle-input watermark advancement and late-event handling.",
+          "excerpts": []
+        }
+      },
+      "notes": "Avoid treating watermarks as proof that all records have physically arrived."
+    },
+    {
+      "id": "r12",
+      "family": "ivf-quantization",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Does probing more IVF lists also eliminate the distance approximation introduced by product quantization?",
+      "kind": "synthesis",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Dependencies introduced by correction cascades.md": {
+          "grade": 0,
+          "rationale": "This record concerns Dependencies introduced by correction cascades; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Double quantization of blockwise scaling constants.md": {
+          "grade": 0,
+          "rationale": "This record concerns Double quantization of blockwise scaling constants; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Inverted-file pruning in Faiss similarity search.md": {
+          "grade": 1,
+          "rationale": "Explains selected lists and quantized within-list representations.",
+          "excerpts": [
+            "The Faiss paper describes IVFADC as a two-level quantization scheme for nearest-neighbor search. A coarse quantizer assigns database vectors to inverted lists. A finer quantizer represents the residual left after subtracting the coarse representative.\n\nFor a query, the system selects a subset of coarse representatives and scans their associated lists. Distances are estimated using the quantized representations rather than the original database vectors. This restricts the search to selected regions and avoids examining every stored vector. The number of scanned lists controls the extent of that restricted search."
+          ]
+        },
+        "02-Zettelkasten/Literature/Product quantization and asymmetric distance computation.md": {
+          "grade": 1,
+          "rationale": "Explains compressed codes and approximate distances.",
+          "excerpts": [
+            "Product quantization divides a vector into subvectors and quantizes each part with its own codebook. Concatenating the subvector codes produces a compact representation whose possible combinations greatly exceed the size of the individual codebooks.\n\nFaiss uses query-dependent lookup tables to estimate distances to these codes. The query remains uncompressed while database residuals are quantized, which gives the computation its asymmetric form. Summing table entries avoids reconstructing every full database vector during scanning. The resulting distances remain estimates of distances to the original vectors."
+          ]
+        },
+        "02-Zettelkasten/Literature/Scaled dot-product attention.md": {
+          "grade": 0,
+          "rationale": "This record concerns Scaled dot-product attention; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record concerns A coefficient association does not establish a treatment effect; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A pairwise preference objective does not calibrate click probabilities.md": {
+          "grade": 0,
+          "rationale": "This record concerns A pairwise preference objective does not calibrate click probabilities; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md": {
+          "grade": 0,
+          "rationale": "This record concerns A score function does not specify its learning objective; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/ANN approximation adds a separate source of retrieval loss.md": {
+          "grade": 0,
+          "rationale": "This record concerns ANN approximation adds a separate source of retrieval loss; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Compact vector codes trade storage for distance fidelity.md": {
+          "grade": 0,
+          "rationale": "This record concerns Compact vector codes trade storage for distance fidelity; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md": {
+          "grade": 0,
+          "rationale": "This record concerns Exact attention equivalence does not require identical floating-point execution; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fast interaction evaluation does not remove the interaction model.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fast interaction evaluation does not remove the interaction model; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fewer serial target calls can require more total arithmetic.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fewer serial target calls can require more total arithmetic; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md": {
+          "grade": 0,
+          "rationale": "This record concerns HNSW query tuning cannot replace construction quality; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Increasing IVF search breadth addresses pruning rather than quantization.md": {
+          "grade": 2,
+          "rationale": "Separates candidate pruning from quantized distance estimates.",
+          "excerpts": [
+            "Searching more inverted lists exposes a query to more candidate vectors and can recover items excluded by coarse partition pruning. It does not, by itself, replace the compressed representations used to estimate distances within those lists.\n\nIVFADC thus has two distinct approximation mechanisms: deciding where to search and estimating the scores of visited vectors. Diagnose them separately before choosing between broader probing, better codes or an exact reranking step. [[ANN approximation adds a separate source of retrieval loss]] supplies the broader evaluation boundary."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Latent-document marginalization is more specific than prompt concatenation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Latent-document marginalization is more specific than prompt concatenation; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/More trees cannot fully compensate for highly correlated predictions.md": {
+          "grade": 0,
+          "rationale": "This record concerns More trees cannot fully compensate for highly correlated predictions; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Quantization metadata belongs in the memory budget.md": {
+          "grade": 0,
+          "rationale": "This record concerns Quantization metadata belongs in the memory budget; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Retry success and reliable first delivery answer different product questions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Retry success and reliable first delivery answer different product questions; it does not provide a needed answer component for IVF candidate pruning versus product-quantized distance estimation.",
+          "excerpts": []
+        }
+      },
+      "notes": "Broader probing can expose more candidates without replacing their compressed distance representations."
+    },
+    {
+      "id": "r13",
+      "family": "dpo-reference",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Is DPO reference-free just because it does not train a separate reward network?",
+      "kind": "distinction",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/BM25 and reference-file contexts in SWE-bench.md": {
+          "grade": 0,
+          "rationale": "This record concerns BM25 and reference-file contexts in SWE-bench; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Pairwise updates and offline data in DPO.md": {
+          "grade": 1,
+          "rationale": "Describes fixed-reference optimization and choosing a suitable reference.",
+          "excerpts": [
+            "The paper describes DPO updates as increasing the likelihood of preferred responses relative to dispreferred responses, with a weight depending on how incorrectly the implicit reward orders the pair. Its pipeline constructs or reuses an offline preference dataset and optimizes against a fixed reference policy. When the dataset's original supervised model is unavailable, the paper describes fitting a reference to preferred responses to mitigate a distribution mismatch."
+          ]
+        },
+        "02-Zettelkasten/Literature/Reference-relative preference optimization in DPO.md": {
+          "grade": 2,
+          "rationale": "Explicitly derives policy-to-reference ratios without a separate reward model.",
+          "excerpts": [
+            "DPO derives a policy objective from KL-regularized reward maximization and a preference model. Rewriting rewards in terms of policy-to-reference probability ratios makes a prompt-dependent partition function cancel in pairwise preference comparisons. The resulting loss directly trains the policy on preferred and dispreferred responses without fitting a separate reward model or running an RL optimization loop. The derivation relies on the assumed preference model and reference policy."
+          ]
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record concerns A coefficient association does not establish a treatment effect; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A learned interest slot does not supply its own semantic label.md": {
+          "grade": 0,
+          "rationale": "This record concerns A learned interest slot does not supply its own semantic label; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A long context window does not guarantee uniform evidence access.md": {
+          "grade": 0,
+          "rationale": "This record concerns A long context window does not guarantee uniform evidence access; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A pairwise preference objective does not calibrate click probabilities.md": {
+          "grade": 0,
+          "rationale": "This record concerns A pairwise preference objective does not calibrate click probabilities; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md": {
+          "grade": 0,
+          "rationale": "This record concerns A score function does not specify its learning objective; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md": {
+          "grade": 0,
+          "rationale": "This record concerns BM25 frequency saturation limits the reward for repetition; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Cosine normalization does not recover lost word order.md": {
+          "grade": 0,
+          "rationale": "This record concerns Cosine normalization does not recover lost word order; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/DPO removes an explicit reward model while retaining a preference model.md": {
+          "grade": 1,
+          "rationale": "Explains preference-model assumptions and reward-network removal, but does not itself name the reference policy.",
+          "excerpts": [
+            "Direct policy optimization avoids separately fitting and deploying a learned reward network inside an RL loop. It still relies on assumptions connecting observed pairwise preferences with an underlying ordering. Those assumptions shape the objective and its interpretation. Simpler optimization machinery therefore does not make the preference labels assumption-free or guarantee that they capture every desired behavior."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Exact attention equivalence does not require identical floating-point execution.md": {
+          "grade": 0,
+          "rationale": "This record concerns Exact attention equivalence does not require identical floating-point execution; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fast interaction evaluation does not remove the interaction model.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fast interaction evaluation does not remove the interaction model; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md": {
+          "grade": 0,
+          "rationale": "This record concerns Four-bit weight storage does not mean four-bit arithmetic everywhere; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Group-relative feedback requires meaningful reward variation.md": {
+          "grade": 0,
+          "rationale": "This record concerns Group-relative feedback requires meaningful reward variation; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Linear attention workspace does not imply linear attention arithmetic.md": {
+          "grade": 0,
+          "rationale": "This record concerns Linear attention workspace does not imply linear attention arithmetic; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Optimizing a smooth ranking surrogate does not reproduce every ranking metric.md": {
+          "grade": 0,
+          "rationale": "This record concerns Optimizing a smooth ranking surrogate does not reproduce every ranking metric; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Retrieval coverage and evidence use need separate measurements.md": {
+          "grade": 0,
+          "rationale": "This record concerns Retrieval coverage and evidence use need separate measurements; it does not provide a needed answer component for the continuing role of a DPO reference policy despite reward-network removal.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/The DPO reference defines relative change rather than absolute preference.md": {
+          "grade": 2,
+          "rationale": "Explains why the reference remains part of the learning problem.",
+          "excerpts": [
+            "DPO compares preferred and dispreferred responses through their probability ratios relative to a reference policy. Changing the reference changes those ratios even when the trainable policy is fixed. The reference is consequently part of the learning problem, not incidental bookkeeping. Preference-training reports should identify it alongside the dataset and regularization coefficient before comparing update behavior."
+          ]
+        }
+      },
+      "notes": "Avoid substituting reward-model-free for reference-policy-free."
+    },
+    {
+      "id": "r14",
+      "family": "hnsw-lifecycle",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Can increasing HNSW query search breadth substitute for the graph connections selected during construction?",
+      "kind": "distinction",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Backpropagation through a computational graph.md": {
+          "grade": 0,
+          "rationale": "This record concerns Backpropagation through a computational graph; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Batching and memory tiling in GPU similarity search.md": {
+          "grade": 0,
+          "rationale": "This record concerns Batching and memory tiling in GPU similarity search; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Dynamic routing and target-selected training in ComiRec.md": {
+          "grade": 0,
+          "rationale": "This record concerns Dynamic routing and target-selected training in ComiRec; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/HNSW complexity assumptions and graph memory.md": {
+          "grade": 0,
+          "rationale": "This record concerns HNSW complexity assumptions and graph memory; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/HNSW construction parameters and neighbor selection.md": {
+          "grade": 2,
+          "rationale": "Explains construction controls and the connectivity available to later queries.",
+          "excerpts": [
+            "HNSW separates the breadth of insertion search from that of query search. During construction, efConstruction controls the candidate search used to establish connections. M controls the number of selected neighbors, subject to layer-specific limits.\n\nThe paper compares simply choosing the closest neighbors with a heuristic that also considers distances among candidate neighbors. The heuristic creates connections in different directions and is particularly useful in clustered data, where purely local neighbors can trap search at cluster boundaries. Construction choices therefore affect the connectivity available to later queries, rather than merely increasing the amount of insertion work."
+          ]
+        },
+        "02-Zettelkasten/Literature/Hierarchical search and insertion in HNSW.md": {
+          "grade": 1,
+          "rationale": "Explains the insertion and query-search lifecycle.",
+          "excerpts": [
+            "HNSW stores vectors in a hierarchy of proximity graphs. Each inserted vector receives a randomly selected maximum level with an exponentially decreasing level distribution. Insertion searches from upper layers downward and connects the new vector to selected neighbors on its eligible layers.\n\nQuery search first performs greedy traversal on upper layers, using a small candidate set to find an entry point near the query. The bottom layer performs a broader search with a dynamic set of promising candidates. The final nearest candidates are returned from this ground-layer search. Upper and lower layers therefore use different search breadths."
+          ]
+        },
+        "02-Zettelkasten/Literature/Inverted-file pruning in Faiss similarity search.md": {
+          "grade": 0,
+          "rationale": "This record concerns Inverted-file pruning in Faiss similarity search; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Issue and pull-request construction of SWE-bench tasks.md": {
+          "grade": 0,
+          "rationale": "This record concerns Issue and pull-request construction of SWE-bench tasks; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Masked query augmentation in ColBERT.md": {
+          "grade": 0,
+          "rationale": "This record concerns Masked query augmentation in ColBERT; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Swing construction cost and parallelization.md": {
+          "grade": 0,
+          "rationale": "This record concerns Swing construction cost and parallelization; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A cached neighborhood separates similarity construction from prediction.md": {
+          "grade": 0,
+          "rationale": "This record concerns A cached neighborhood separates similarity construction from prediction; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A masked query embedding is a learned matching signal rather than an explicit added term.md": {
+          "grade": 0,
+          "rationale": "This record concerns A masked query embedding is a learned matching signal rather than an explicit added term; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal query weighting can conceal uneven task difficulty.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal query weighting can conceal uneven task difficulty; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Feature construction determines which interactions an FM can express.md": {
+          "grade": 0,
+          "rationale": "This record concerns Feature construction determines which interactions an FM can express; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record concerns GPU search throughput must be interpreted with its batch size; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/HNSW logarithmic scaling is a qualified performance claim.md": {
+          "grade": 0,
+          "rationale": "This record concerns HNSW logarithmic scaling is a qualified performance claim; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/HNSW query tuning cannot replace construction quality.md": {
+          "grade": 2,
+          "rationale": "Directly distinguishes exploring existing edges from constructing them.",
+          "excerpts": [
+            "Query breadth controls how extensively HNSW explores an existing graph. Construction determines which edges are available to explore. These controls operate at different points in the lifecycle, so a graph with poor connectivity cannot be understood solely through its query parameter.\n\nTune insertion breadth, neighbor limits and query breadth with separate measurements of build cost, memory and recall. The distinction parallels [[Increasing IVF search breadth addresses pruning rather than quantization]]: a search-time control does not alter every source of approximation."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Increasing IVF search breadth addresses pruning rather than quantization.md": {
+          "grade": 0,
+          "rationale": "This record concerns Increasing IVF search breadth addresses pruning rather than quantization; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Independent document encoding limits where query-specific interaction can occur.md": {
+          "grade": 0,
+          "rationale": "This record concerns Independent document encoding limits where query-specific interaction can occur; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Stronger structural evidence can increase offline graph cost.md": {
+          "grade": 0,
+          "rationale": "This record concerns Stronger structural evidence can increase offline graph cost; it does not provide a needed answer component for HNSW construction connectivity versus exploring the existing graph at query time.",
+          "excerpts": []
+        }
+      },
+      "notes": "This is about construction versus query controls, not an unconditional logarithmic guarantee."
+    },
+    {
+      "id": "r15",
+      "family": "citation-support",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Is an answer grounded merely because it is factually correct and contains citation markers?",
+      "kind": "distinction",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Answer correctness and citation coverage in ALCE.md": {
+          "grade": 2,
+          "rationale": "Evaluates answer correctness and passage-supported claims separately.",
+          "excerpts": [
+            "ALCE evaluates generated answers and their citations as separate dimensions. Correctness measures vary with dataset answer format, including exact-match answer recall and entailment-based claim recall. Citation recall checks whether generated statements are supported by the passages they cite. The paper uses a natural-language-inference model for automated support judgments, rather than treating the presence of a citation marker as sufficient evidence of support."
+          ]
+        },
+        "02-Zettelkasten/Literature/Backpropagation through a computational graph.md": {
+          "grade": 0,
+          "rationale": "This record concerns Backpropagation through a computational graph; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Evidence position in long-context question answering.md": {
+          "grade": 0,
+          "rationale": "This record concerns Evidence position in long-context question answering; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Fleeting notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Fleeting notes; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Irrelevant citations and joint passage support in ALCE.md": {
+          "grade": 1,
+          "rationale": "Explains irrelevant references and jointly supporting sets.",
+          "excerpts": [
+            "ALCE's citation precision identifies citations that do not contribute support to a generated statement. Its procedure considers whether a cited passage supports the statement alone or whether removing it leaves the other cited passages sufficient. This accommodates statements requiring combined evidence from several passages. The paper presents precision alongside citation recall so that a fully cited answer can still be assessed for unnecessary or irrelevant references."
+          ]
+        },
+        "02-Zettelkasten/Literature/Literature notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Literature notes; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Normalized temperature-scaled contrastive loss in SimCLR.md": {
+          "grade": 0,
+          "rationale": "This record concerns Normalized temperature-scaled contrastive loss in SimCLR; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Permanent notes.md": {
+          "grade": 0,
+          "rationale": "This record concerns Permanent notes; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Rule-based accuracy and format rewards in R1-Zero.md": {
+          "grade": 0,
+          "rationale": "This record concerns Rule-based accuracy and format rewards in R1-Zero; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A readable trajectory is diagnostic evidence rather than a correctness proof.md": {
+          "grade": 0,
+          "rationale": "This record concerns A readable trajectory is diagnostic evidence rather than a correctness proof; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A schema anomaly identifies a contract disagreement before its cause.md": {
+          "grade": 0,
+          "rationale": "This record concerns A schema anomaly identifies a contract disagreement before its cause; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record concerns An unobserved interaction does not identify a disliked item; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Citation presence is weaker than citation support.md": {
+          "grade": 2,
+          "rationale": "Explicitly separates true statements, citation markers, and supporting passages.",
+          "excerpts": [
+            "A citation marker shows that an answer refers to a source, but only comparing the claim with that source establishes whether the reference supports it. Correctness and support can also diverge: a true statement may cite the wrong passage. Evaluating these dimensions separately makes grounded-answer quality more precise and prevents a high citation count from substituting for evidence verification."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Joint support requires evaluating the cited set rather than isolated passages.md": {
+          "grade": 1,
+          "rationale": "Explains set-level support and necessity of each citation.",
+          "excerpts": [
+            "Some statements require evidence distributed across several passages. Demanding that every citation independently establish the complete claim can wrongly reject useful partial support. Conversely, adding irrelevant references can inflate apparent coverage. A citation assessment should examine whether the set supports the statement and whether each member contributes, reflecting the distinction between coverage and precision."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Offline preference optimization inherits the coverage of its response pairs.md": {
+          "grade": 0,
+          "rationale": "This record concerns Offline preference optimization inherits the coverage of its response pairs; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Outcome rewards do not directly supervise every reasoning step.md": {
+          "grade": 0,
+          "rationale": "This record concerns Outcome rewards do not directly supervise every reasoning step; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Retrieval coverage and evidence use need separate measurements.md": {
+          "grade": 1,
+          "rationale": "Shows that fluency or correctness can occur without support from retrieved evidence.",
+          "excerpts": [
+            "An answer passage can be retrieved and placed in context while the generator still fails to use it. Conversely, a fluent answer can arise without support from the retrieved evidence. End-to-end correctness alone does not locate either failure. Measuring candidate coverage and evidence-conditioned generation separately makes the diagnosis more specific and connects retrieval quality to the eventual answer behavior."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Retry success and reliable first delivery answer different product questions.md": {
+          "grade": 0,
+          "rationale": "This record concerns Retry success and reliable first delivery answer different product questions; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sample-ratio mismatch challenges the comparison before the outcome.md": {
+          "grade": 0,
+          "rationale": "This record concerns Sample-ratio mismatch challenges the comparison before the outcome; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md": {
+          "grade": 1,
+          "rationale": "Explains why retrieved local token matches cannot replace claim support verification.",
+          "excerpts": [
+            "Different query embeddings can match different parts of a document with high similarity. Those local matches need not jointly express the proposition an answer would cite. Retrieval scores help choose evidence to inspect, while checking whether the passage supports a generated claim remains a separate operation."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Thinking-token limits and final-answer limits control different stages.md": {
+          "grade": 0,
+          "rationale": "This record concerns Thinking-token limits and final-answer limits control different stages; it does not provide a needed answer component for claim support beyond factual correctness and citation-marker presence.",
+          "excerpts": []
+        }
+      },
+      "notes": "Presence, correctness, and support must not be collapsed into one measure."
+    },
+    {
+      "id": "r16",
+      "family": "paged-lifecycles",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Do QLoRA paged optimizers and vLLM PagedAttention manage the same tensors and workload?",
+      "kind": "distinction",
+      "answerability": "answerable",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md": {
+          "grade": 1,
+          "rationale": "States unified-memory movement of optimizer state under training pressure.",
+          "excerpts": [
+            "QLoRA uses unified memory for optimizer states to address transient GPU memory spikes, including those associated with long sequences and gradient checkpointing. The system can move state to CPU memory under pressure and return it when the optimizer update needs it. The paper presents this mechanism alongside low-bit weight storage and double quantization as a separate contribution to the fine-tuning memory design."
+          ]
+        },
+        "02-Zettelkasten/Literature/PagedAttention and logical KV-cache blocks.md": {
+          "grade": 1,
+          "rationale": "States request KV-cache block allocation during serving.",
+          "excerpts": [
+            "PagedAttention divides a request's key-value cache into fixed-size token blocks that can occupy non-contiguous physical memory. A mapping connects logical sequence blocks to physical cache blocks. Allocating blocks as needed avoids reserving a contiguous maximum-length region for every request. Equal-size blocks remove external fragmentation, while unused slots can remain in a partially filled final block. The paper implements this design within the vLLM serving engine."
+          ]
+        },
+        "02-Zettelkasten/Literature/Shared prefixes and copy-on-write in vLLM.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared prefixes and copy-on-write in vLLM; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md": {
+          "grade": 0,
+          "rationale": "This record concerns Storage and computation precision in QLoRA; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A hot key can remain a bottleneck after adding stream workers.md": {
+          "grade": 0,
+          "rationale": "This record concerns A hot key can remain a bottleneck after adding stream workers; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An acceleration claim needs the resource and baseline to be named.md": {
+          "grade": 0,
+          "rationale": "This record concerns An acceleration claim needs the resource and baseline to be named; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal output distributions do not promise the same sampled token sequence.md": {
+          "grade": 0,
+          "rationale": "This record concerns Equal output distributions do not promise the same sampled token sequence; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Four-bit weight storage does not mean four-bit arithmetic everywhere.md": {
+          "grade": 0,
+          "rationale": "This record concerns Four-bit weight storage does not mean four-bit arithmetic everywhere; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record concerns GPU search throughput must be interpreted with its batch size; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/HNSW logarithmic scaling is a qualified performance claim.md": {
+          "grade": 0,
+          "rationale": "This record concerns HNSW logarithmic scaling is a qualified performance claim; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Outcome rewards do not directly supervise every reasoning step.md": {
+          "grade": 0,
+          "rationale": "This record concerns Outcome rewards do not directly supervise every reasoning step; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Paged optimizer states and paged KV caches solve different lifecycles.md": {
+          "grade": 2,
+          "rationale": "Directly contrasts training optimizer state and serving attention cache.",
+          "excerpts": [
+            "QLoRA paging manages training optimizer state under transient GPU pressure, while PagedAttention organizes the growing attention cache during serving. Both use memory-management ideas, but the stored tensors and workloads differ. The common word paged should not suggest interchangeable implementations or benefits. Explaining the tensor lifecycle makes clear which memory problem each technique addresses."
+          ]
+        },
+        "02-Zettelkasten/Permanent/Quantization metadata belongs in the memory budget.md": {
+          "grade": 0,
+          "rationale": "This record concerns Quantization metadata belongs in the memory budget; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Ranking comparisons require the same candidate protocol.md": {
+          "grade": 0,
+          "rationale": "This record concerns Ranking comparisons require the same candidate protocol; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Recomputation can improve speed when memory traffic is the bottleneck.md": {
+          "grade": 0,
+          "rationale": "This record concerns Recomputation can improve speed when memory traffic is the bottleneck; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Removing the critic shifts GRPO cost toward sampled comparisons.md": {
+          "grade": 0,
+          "rationale": "This record concerns Removing the critic shifts GRPO cost toward sampled comparisons; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Shared embeddings do not force symmetric recommendation scores.md": {
+          "grade": 0,
+          "rationale": "This record concerns Shared embeddings do not force symmetric recommendation scores; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Speculative lookahead has a workload-dependent optimum.md": {
+          "grade": 0,
+          "rationale": "This record concerns Speculative lookahead has a workload-dependent optimum; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md": {
+          "grade": 0,
+          "rationale": "This record concerns Strong token matches do not establish a coherent supporting claim; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Two views of one example do not provide two independent observations.md": {
+          "grade": 0,
+          "rationale": "This record concerns Two views of one example do not provide two independent observations; it does not provide a needed answer component for training optimizer tensors versus serving KV-cache tensors.",
+          "excerpts": []
+        }
+      },
+      "notes": "The shared word paged does not establish interchangeable implementations."
+    },
+    {
+      "id": "r17",
+      "family": "owner-speculative-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which draft lookahead was measured to give the lowest latency in our production service?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Acceptance cost and lookahead in speculative speedup.md": {
+          "grade": 0,
+          "rationale": "This record discusses Acceptance cost and lookahead in speculative speedup, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Automated model promotion checks in TFX.md": {
+          "grade": 0,
+          "rationale": "This record discusses Automated model promotion checks in TFX, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Backward recomputation in FlashAttention.md": {
+          "grade": 0,
+          "rationale": "This record discusses Backward recomputation in FlashAttention, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Draft proposal verification in speculative decoding.md": {
+          "grade": 0,
+          "rationale": "This record discusses Draft proposal verification in speculative decoding, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Residual resampling after a speculative rejection.md": {
+          "grade": 0,
+          "rationale": "This record discusses Residual resampling after a speculative rejection, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md": {
+          "grade": 0,
+          "rationale": "This record discusses Training-serving skew comparisons in Rules of ML, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Undeclared consumers of model predictions.md": {
+          "grade": 0,
+          "rationale": "This record discusses Undeclared consumers of model predictions, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A better draft model is one that agrees with the target distribution.md": {
+          "grade": 0,
+          "rationale": "This record discusses A better draft model is one that agrees with the target distribution, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An acceleration claim needs the resource and baseline to be named.md": {
+          "grade": 0,
+          "rationale": "This record discusses An acceleration claim needs the resource and baseline to be named, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An unobserved interaction does not identify a disliked item.md": {
+          "grade": 0,
+          "rationale": "This record discusses An unobserved interaction does not identify a disliked item, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md": {
+          "grade": 0,
+          "rationale": "This record discusses BM25 frequency saturation limits the reward for repetition, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Event freshness and processing delay describe different times.md": {
+          "grade": 0,
+          "rationale": "This record discusses Event freshness and processing delay describe different times, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record discusses GPU search throughput must be interpreted with its batch size, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/More trees cannot fully compensate for highly correlated predictions.md": {
+          "grade": 0,
+          "rationale": "This record discusses More trees cannot fully compensate for highly correlated predictions, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Recomputation can improve speed when memory traffic is the bottleneck.md": {
+          "grade": 0,
+          "rationale": "This record discusses Recomputation can improve speed when memory traffic is the bottleneck, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Residual correction is essential to distribution-preserving draft acceptance.md": {
+          "grade": 0,
+          "rationale": "This record discusses Residual correction is essential to distribution-preserving draft acceptance, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Schema validity and predictive usefulness are separate checks.md": {
+          "grade": 0,
+          "rationale": "This record discusses Schema validity and predictive usefulness are separate checks, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sequence order must enter the representation computation.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sequence order must enter the representation computation, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Speculative lookahead has a workload-dependent optimum.md": {
+          "grade": 0,
+          "rationale": "This record discusses Speculative lookahead has a workload-dependent optimum, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/The interest count is a capacity setting rather than a measured preference count.md": {
+          "grade": 0,
+          "rationale": "This record discusses The interest count is a capacity setting rather than a measured preference count, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        }
+      },
+      "notes": "The corpus discusses workload-dependent lookahead but contains no owner production experiment or measured optimum. Lexical matches are lures, not evidence for a measured value."
+    },
+    {
+      "id": "r18",
+      "family": "owner-sasrec-measurement",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Do these notes record the online CTR uplift from my SASRec deployment?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Automated model promotion checks in TFX.md": {
+          "grade": 0,
+          "rationale": "This record discusses Automated model promotion checks in TFX, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Candidate generation and ranking at YouTube.md": {
+          "grade": 0,
+          "rationale": "This record discusses Candidate generation and ranking at YouTube, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Causal next-item supervision in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Causal next-item supervision in SASRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Fleeting notes.md": {
+          "grade": 0,
+          "rationale": "This record discusses Fleeting notes, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Literature notes.md": {
+          "grade": 0,
+          "rationale": "This record discusses Literature notes, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/LoRA merging and adapter storage.md": {
+          "grade": 0,
+          "rationale": "This record discusses LoRA merging and adapter storage, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Permanent notes.md": {
+          "grade": 0,
+          "rationale": "This record discusses Permanent notes, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled binary next-item training in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sampled binary next-item training in SASRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled candidate evaluation in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sampled candidate evaluation in SASRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Shared item embeddings and asymmetric transitions in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Shared item embeddings and asymmetric transitions in SASRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Structured notes outside the agent context window.md": {
+          "grade": 0,
+          "rationale": "This record discusses Structured notes outside the agent context window, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A coefficient association does not establish a treatment effect.md": {
+          "grade": 0,
+          "rationale": "This record discusses A coefficient association does not establish a treatment effect, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A retrieval deployment includes the model and its item index.md": {
+          "grade": 0,
+          "rationale": "This record discusses A retrieval deployment includes the model and its item index, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An aggregate uplift can conceal a transient novelty effect.md": {
+          "grade": 0,
+          "rationale": "This record discusses An aggregate uplift can conceal a transient novelty effect, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal output distributions do not promise the same sampled token sequence.md": {
+          "grade": 0,
+          "rationale": "This record discusses Equal output distributions do not promise the same sampled token sequence, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Outcome rewards do not directly supervise every reasoning step.md": {
+          "grade": 0,
+          "rationale": "This record discusses Outcome rewards do not directly supervise every reasoning step, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Shared embeddings do not force symmetric recommendation scores.md": {
+          "grade": 0,
+          "rationale": "This record discusses Shared embeddings do not force symmetric recommendation scores, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sparse selection and coefficient shrinkage solve different deployment needs.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sparse selection and coefficient shrinkage solve different deployment needs, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Strong token matches do not establish a coherent supporting claim.md": {
+          "grade": 0,
+          "rationale": "This record discusses Strong token matches do not establish a coherent supporting claim, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Two views of one example do not provide two independent observations.md": {
+          "grade": 0,
+          "rationale": "This record discusses Two views of one example do not provide two independent observations, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        }
+      },
+      "notes": "The corpus contains paper-level evaluation protocols, not owner deployment outcomes. Do not substitute paper Hit Rate or NDCG for owner online CTR."
+    },
+    {
+      "id": "r19",
+      "family": "owner-bpr-configuration",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "What learning rate did I choose for my own BPR production training run?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Capacity and generalization in supervised learning.md": {
+          "grade": 0,
+          "rationale": "This record discusses Capacity and generalization in supervised learning, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Cold-start training and supervised data in DeepSeek-R1.md": {
+          "grade": 0,
+          "rationale": "This record discusses Cold-start training and supervised data in DeepSeek-R1, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Dropout as shared-subnetwork training.md": {
+          "grade": 0,
+          "rationale": "This record discusses Dropout as shared-subnetwork training, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Dynamic routing and target-selected training in ComiRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Dynamic routing and target-selected training in ComiRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Label-aware training and ANN serving in MIND.md": {
+          "grade": 0,
+          "rationale": "This record discusses Label-aware training and ANN serving in MIND, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Latent documents and joint training in RAG.md": {
+          "grade": 0,
+          "rationale": "This record discusses Latent documents and joint training in RAG, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Observed and unobserved item comparisons in BPR.md": {
+          "grade": 0,
+          "rationale": "This record discusses Observed and unobserved item comparisons in BPR, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Pairwise logistic likelihood and priors in BPR.md": {
+          "grade": 0,
+          "rationale": "This record discusses Pairwise logistic likelihood and priors in BPR, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sampled binary next-item training in SASRec.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sampled binary next-item training in SASRec, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sequential training and indexed serving in neural retrieval.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sequential training and indexed serving in neural retrieval, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Training-serving skew comparisons in Rules of ML.md": {
+          "grade": 0,
+          "rationale": "This record discusses Training-serving skew comparisons in Rules of ML, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A learned interest slot does not supply its own semantic label.md": {
+          "grade": 0,
+          "rationale": "This record discusses A learned interest slot does not supply its own semantic label, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A score function does not specify its learning objective.md": {
+          "grade": 0,
+          "rationale": "This record discusses A score function does not specify its learning objective, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A scorer operationalizes success and can introduce its own errors.md": {
+          "grade": 0,
+          "rationale": "This record discusses A scorer operationalizes success and can introduce its own errors, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Equal user sampling changes whose errors dominate training.md": {
+          "grade": 0,
+          "rationale": "This record discusses Equal user sampling changes whose errors dominate training, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Hard interest assignment concentrates a target learning signal.md": {
+          "grade": 0,
+          "rationale": "This record discusses Hard interest assignment concentrates a target learning signal, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Optimizer state is part of an exact training continuation.md": {
+          "grade": 0,
+          "rationale": "This record discusses Optimizer state is part of an exact training continuation, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Target-aware training can support target-independent retrieval.md": {
+          "grade": 0,
+          "rationale": "This record discusses Target-aware training can support target-independent retrieval, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Teacher-generated supervision transfers outputs without reproducing the teacher pipeline.md": {
+          "grade": 0,
+          "rationale": "This record discusses Teacher-generated supervision transfers outputs without reproducing the teacher pipeline, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Training memory includes saved computation states.md": {
+          "grade": 0,
+          "rationale": "This record discusses Training memory includes saved computation states, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        }
+      },
+      "notes": "No owner run configuration is recorded. Generic LearnBPR sampling and paper training details do not establish an owner-selected learning rate."
+    },
+    {
+      "id": "r20",
+      "family": "owner-grpo-hardware",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which GPU model and cluster size did I use for my GRPO training experiment?",
+      "kind": "no-answer",
+      "answerability": "no-answer",
+      "pool": {
+        "depth": 20,
+        "modes": ["words", "bigrams", "both"]
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Batching and memory tiling in GPU similarity search.md": {
+          "grade": 0,
+          "rationale": "This record discusses Batching and memory tiling in GPU similarity search, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Experiment hypotheses and metric roles.md": {
+          "grade": 0,
+          "rationale": "This record discusses Experiment hypotheses and metric roles, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Group-relative advantages in GRPO.md": {
+          "grade": 0,
+          "rationale": "This record discusses Group-relative advantages in GRPO, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Latent documents and joint training in RAG.md": {
+          "grade": 0,
+          "rationale": "This record discusses Latent documents and joint training in RAG, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Paged optimizer states for training memory spikes.md": {
+          "grade": 0,
+          "rationale": "This record discusses Paged optimizer states for training memory spikes, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Repeated monitoring and early experiment decisions.md": {
+          "grade": 0,
+          "rationale": "This record discusses Repeated monitoring and early experiment decisions, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Repeated test-set use and model selection.md": {
+          "grade": 0,
+          "rationale": "This record discusses Repeated test-set use and model selection, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Sample-ratio mismatch in experiment monitoring.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sample-ratio mismatch in experiment monitoring, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Literature/Stable segments for experiment analysis.md": {
+          "grade": 0,
+          "rationale": "This record discusses Stable segments for experiment analysis, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/A training projection can differ from the representation used at serving.md": {
+          "grade": 0,
+          "rationale": "This record discusses A training projection can differ from the representation used at serving, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/An experiment needs a measurable hypothesis before a significance test.md": {
+          "grade": 0,
+          "rationale": "This record discusses An experiment needs a measurable hypothesis before a significance test, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Fixed subtasks can use explicit intermediate acceptance checks.md": {
+          "grade": 0,
+          "rationale": "This record discusses Fixed subtasks can use explicit intermediate acceptance checks, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/GPU search throughput must be interpreted with its batch size.md": {
+          "grade": 0,
+          "rationale": "This record discusses GPU search throughput must be interpreted with its batch size, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Parameter-efficient training still needs the base model computation.md": {
+          "grade": 0,
+          "rationale": "This record discusses Parameter-efficient training still needs the base model computation, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/R1-Zero and R1 represent different training interventions.md": {
+          "grade": 0,
+          "rationale": "This record discusses R1-Zero and R1 represent different training interventions, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Removing the critic shifts GRPO cost toward sampled comparisons.md": {
+          "grade": 0,
+          "rationale": "This record discusses Removing the critic shifts GRPO cost toward sampled comparisons, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Retrieval coverage and evidence use need separate measurements.md": {
+          "grade": 0,
+          "rationale": "This record discusses Retrieval coverage and evidence use need separate measurements, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sharing negatives changes the training compute pattern.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sharing negatives changes the training compute pattern, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Sparse prediction cost follows active features rather than vocabulary size.md": {
+          "grade": 0,
+          "rationale": "This record discusses Sparse prediction cost follows active features rather than vocabulary size, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        },
+        "02-Zettelkasten/Permanent/Tool output size and evidence usefulness are separate quantities.md": {
+          "grade": 0,
+          "rationale": "This record discusses Tool output size and evidence usefulness are separate quantities, but supplies no owner-specific measured result, selected run configuration, or hardware inventory requested by this question.",
+          "excerpts": []
+        }
+      },
+      "notes": "No owner hardware inventory or experiment is recorded. Group-relative advantages and algorithmic cost are not hardware provenance."
+    }
+  ]
+}

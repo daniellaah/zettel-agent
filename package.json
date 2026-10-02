@@ -18,8 +18,18 @@
     "test": "vitest run",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run test",
     "eval": "vitest run --config vitest.eval.config.ts",
+    "eval:agent": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.agent-eval.config.ts",
+    "eval:calibrate": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.calibration.config.ts",
+    "eval:regrade": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.regrade.config.ts",
     "e2e": "vitest run --config vitest.e2e.config.ts",
-    "e2e:save-recordings": "node scripts/save-recordings.mjs"
+    "e2e:save-recordings": "node scripts/save-recordings.mjs",
+    "eval:full": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.full-eval.config.ts",
+    "eval:build": "vitest run --config vitest.expanded-build.config.ts",
+    "eval:continue": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.continue-eval.config.ts",
+    "eval:indexed": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.indexed-eval.config.ts",
+    "eval:finish": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.finish-eval.config.ts",
+    "eval:ai-recover": "vitest run --config vitest.ai-recover.config.ts",
+    "eval:full-replay": "vitest run --config vitest.full-replay.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

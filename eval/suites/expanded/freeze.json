@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "frozenAt": "2026-10-02T19:51:15.661Z",
+  "corpusHash": "790b1b2bb6c70b4cb0db6e4fdd9a3db21a1839a1c13bb3be473d6e0558b737c0",
+  "reviewerKind": "ai",
+  "humanReviews": 0,
+  "hashes": {
+    "answers.json": "4794ddc115020661d240b227f6ce6c84b292826216daf04e8f62aed8889a3a53",
+    "retrieval.json": "cf2f4f1276960c2c5bda7724a8dcdf630a5657d6b1351d923c3d208a356228f9",
+    "seeds.json": "15323b786fc4971bac4016a34b215cb0b135c80aba4d9edc6d853a2427402b0f"
+  },
+  "splits": {
+    "retrieval": {
+      "dev": 96,
+      "test": 24
+    },
+    "answers": {
+      "dev": 48,
+      "test": 12
+    }
+  },
+  "testPolicy": "Primary source families isolated from development; freeze precedes live scores. Synthetic AI-authored labels, not blind human gold. Never tune on test outcomes.",
+  "formattingNote": "Pre-score formatting normalized to repository printWidth=100; semantic labels unchanged."
+}
