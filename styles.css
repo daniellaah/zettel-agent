@@ -1,33 +1,172 @@
 /* Zettel Agent — all colors come from Obsidian theme variables so light, dark
    and community themes work without overrides. Class prefix: za- */
 
+/* The pane sits beside the editor and is read like one, so it shares the editor's
+   surface instead of the sidebar's. */
 .za-view {
   padding: 0;
+  background: var(--background-primary);
 }
 
 .za-chat {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 0;
+  container-type: inline-size;
+  /* Side gutter: content stays a readable width when the pane is wide. */
+  --za-gutter: max(var(--size-4-3), calc((100cqw - 46rem) / 2));
+  /* Accent washes, mixed from the theme's own accent so every theme stays coherent. */
+  --za-tint: color-mix(in srgb, var(--interactive-accent) 10%, transparent);
+  --za-tint-strong: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
 }
 
 .za-header {
   display: flex;
   align-items: center;
   gap: var(--size-4-2);
-  padding: var(--size-4-2) var(--size-4-3);
-  border-bottom: 1px solid var(--background-modifier-border);
+  position: relative;
+  padding: var(--size-4-2) var(--size-4-3) 0;
+  flex-wrap: wrap;
+}
+
+.za-header-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-m);
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  --icon-size: 16px;
 }
 
 .za-header-title {
   font-weight: var(--font-semibold);
 }
 
+/* The model sits in a pill; the spacer after it pushes the buttons to the right. */
 .za-header-model {
-  flex: 1;
-  color: var(--text-faint);
+  min-width: 3em;
+  margin-right: auto;
+  padding: 1px var(--size-4-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: var(--radius-l);
+  background: var(--background-secondary);
+  color: var(--text-muted);
   font-size: var(--font-ui-smaller);
   font-family: var(--font-monospace);
+}
+
+/* New note menu, and the same three choices as cards in the empty state. The buttons
+   only open the creation dialog; nothing is written until that form is submitted. */
+/* Anchored to the header's right edge, so it stays inside a narrow pane. */
+.za-note-menu-anchor {
+  display: inline-flex;
+}
+
+.za-note-menu {
+  position: absolute;
+  top: calc(100% + var(--size-4-1));
+  right: var(--size-4-3);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+  width: max-content;
+  max-width: calc(100cqw - 2 * var(--size-4-3));
+  padding: var(--size-4-1);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+}
+
+.za-chat .za-note-menu button,
+.za-chat .za-create button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: var(--size-4-2);
+  height: auto;
+  padding: var(--size-4-2) var(--size-4-3);
+  border-radius: var(--radius-s);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-normal);
+  text-align: left;
+  white-space: normal;
+  line-height: var(--line-height-tight);
+  cursor: pointer;
+}
+
+.za-chat .za-note-menu button:hover {
+  background: var(--background-modifier-hover);
+}
+
+.za-note-icon {
+  grid-row: span 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-m);
+  background: var(--za-tint);
+  color: var(--text-accent);
+  --icon-size: var(--icon-s);
+}
+
+.za-note-label {
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+}
+
+.za-note-hint {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.za-create {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--size-4-2);
+}
+
+.za-chat .za-create button {
+  grid-template-columns: 1fr;
+  align-content: start;
+  justify-items: start;
+  row-gap: var(--size-4-1);
+  padding: var(--size-4-3);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.za-create .za-note-icon {
+  grid-row: auto;
+  margin-bottom: var(--size-4-1);
+}
+
+.za-chat .za-create button:hover {
+  border-color: var(--interactive-accent);
+  background: var(--za-tint);
+}
+
+.za-section-label {
+  margin: var(--size-4-4) 0 var(--size-4-2);
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
 }
 
 .za-mode-badge {
@@ -42,14 +181,41 @@
   background: var(--color-red);
 }
 
-.za-transcript {
+.za-transcript-wrap {
+  position: relative;
   flex: 1;
-  overflow-y: auto;
-  padding: var(--size-4-3);
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--size-4-3);
+}
+
+.za-transcript {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--size-4-4) var(--za-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-4);
   user-select: text;
+}
+
+/* Jump to latest: offered only after the reader has scrolled away from the end. */
+.za-chat .za-jump {
+  position: absolute;
+  left: 50%;
+  bottom: var(--size-4-2);
+  transform: translateX(-50%);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 50%;
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  color: var(--text-muted);
+}
+
+.za-chat .za-jump:hover {
+  background: var(--background-secondary);
+  color: var(--text-normal);
 }
 
 .za-empty {
@@ -59,33 +225,102 @@
   color: var(--text-muted);
 }
 
+.za-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-l);
+  background: var(--za-tint);
+  color: var(--text-accent);
+  --icon-size: 26px;
+}
+
+.za-empty p.za-empty-title,
+.za-empty p.za-empty-help {
+  margin: var(--size-4-2) 0 0;
+}
+
+.za-empty p.za-empty-title {
+  margin-top: var(--size-4-3);
+  color: var(--text-normal);
+  font-size: var(--font-ui-large);
+  font-weight: var(--font-semibold);
+}
+
+.za-empty p.za-section-label {
+  margin: var(--size-4-6) 0 var(--size-4-2);
+}
+
 .za-starters {
   display: flex;
   flex-direction: column;
   gap: var(--size-4-2);
-  margin-top: var(--size-4-3);
 }
 
-.za-starters button {
+.za-chat .za-starters button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-4-2);
   height: auto;
   padding: var(--size-4-2) var(--size-4-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+  box-shadow: none;
+  color: var(--text-normal);
   white-space: normal;
   text-align: left;
   font-size: var(--font-ui-small);
+  line-height: var(--line-height-tight);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.za-chat .za-starters button:hover {
+  border-color: var(--interactive-accent);
+  background: var(--za-tint);
+}
+
+.za-starter-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--text-faint);
+  --icon-size: var(--icon-xs);
+}
+
+.za-starters button:hover .za-starter-icon {
+  color: var(--text-accent);
 }
 
 .za-message {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   line-height: var(--line-height-normal);
+  animation: za-rise 160ms ease-out;
+}
+
+@keyframes za-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 .za-message-user {
   align-self: flex-end;
   max-width: 85%;
   padding: var(--size-4-2) var(--size-4-3);
-  border-radius: var(--radius-m);
-  background: var(--background-secondary-alt);
+  border-radius: var(--radius-l) var(--radius-l) var(--radius-s) var(--radius-l);
+  background: var(--za-tint-strong);
+}
+
+.za-message-user .za-chip {
+  background: var(--background-primary);
 }
 
 .za-message-assistant {
@@ -103,6 +338,33 @@
   margin-bottom: 0;
 }
 
+/* Note-sized headings shout in a side pane; keep the hierarchy, lower the volume. */
+.za-markdown h1 {
+  font-size: 1.3em;
+}
+
+.za-markdown h2 {
+  font-size: 1.15em;
+}
+
+.za-markdown h3,
+.za-markdown h4,
+.za-markdown h5,
+.za-markdown h6 {
+  font-size: 1em;
+}
+
+.za-markdown :is(h1, h2, h3, h4, h5, h6) {
+  margin: 1em 0 0.4em;
+  line-height: var(--line-height-tight);
+}
+
+/* A preamble inside the research trace is part of the trace, not an answer. */
+.za-research-body .za-markdown {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
 /* Citation chips: [E3] rendered as a small numbered button that opens the note. */
 .za-cite {
   display: inline-flex;
@@ -111,10 +373,11 @@
   min-width: 1.35em;
   margin: 0 0.1em;
   padding: 0 0.35em;
-  border-radius: var(--radius-s);
-  background: var(--background-modifier-hover);
+  border-radius: var(--radius-l);
+  background: var(--za-tint-strong);
   color: var(--text-accent);
   font-size: 0.75em;
+  font-weight: var(--font-medium);
   font-variant-numeric: tabular-nums;
   vertical-align: 0.15em;
   box-shadow: none;
@@ -157,6 +420,7 @@
   --icon-size: var(--icon-xs);
 }
 
+.za-research.is-running .za-research-label,
 .za-tool.is-running .za-tool-summary {
   animation: za-pulse 1.2s ease-in-out infinite;
 }
@@ -205,15 +469,19 @@
 }
 
 .za-note {
+  padding-left: var(--size-4-2);
+  border-left: 2px solid var(--background-modifier-border);
   font-size: var(--font-ui-small);
   color: var(--text-muted);
 }
 
 .za-note-warning {
+  border-left-color: var(--text-warning);
   color: var(--text-warning);
 }
 
 .za-note-error {
+  border-left-color: var(--text-error);
   color: var(--text-error);
 }
 
@@ -232,9 +500,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .za-message,
+  .za-research.is-running .za-research-label,
   .za-tool.is-running .za-tool-summary,
   .za-working span {
     animation: none;
+  }
+
+  .za-chat .za-starters button,
+  .za-chat .za-create button,
+  .za-composer-box,
+  .za-disclosure-icon {
+    transition: none;
   }
 }
 
@@ -242,15 +519,71 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  gap: var(--size-4-1);
+  padding: 0 var(--za-gutter) var(--size-4-2);
+}
+
+/* One field: context chips, the question and the send button share a border and a
+   focus ring, so the whole box reads as the place to type. */
+.za-composer-box {
+  display: flex;
+  flex-direction: column;
   gap: var(--size-4-2);
-  padding: var(--size-4-2) var(--size-4-3) var(--size-4-3);
-  border-top: 1px solid var(--background-modifier-border);
+  padding: var(--size-4-2);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-l);
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  cursor: text;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.za-composer-box:hover {
+  border-color: var(--background-modifier-border-hover);
+}
+
+.za-composer-box:focus-within {
+  border-color: var(--interactive-accent);
+  box-shadow:
+    0 0 0 3px var(--za-tint-strong),
+    var(--shadow-s);
 }
 
 .za-composer-row {
   display: flex;
   align-items: flex-end;
   gap: var(--size-4-2);
+}
+
+.za-chat .za-send {
+  border-radius: 50%;
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  opacity: 1;
+}
+
+.za-chat .za-send:hover:not(:disabled) {
+  background: var(--interactive-accent-hover);
+  color: var(--text-on-accent);
+}
+
+.za-chat .za-send:disabled {
+  background: var(--background-modifier-border);
+  color: var(--text-faint);
+  opacity: 1;
+}
+
+.za-chat .za-stop {
+  background: var(--text-normal);
+  color: var(--background-primary);
+  --icon-size: var(--icon-xs);
+}
+
+.za-chat .za-stop:hover:not(:disabled) {
+  background: var(--text-muted);
+  color: var(--background-primary);
 }
 
 /* Attachment chips: attached context, and one-click suggestions (open note, selection). */
@@ -277,24 +610,32 @@
   box-shadow: none;
 }
 
-.za-chip-suggestion {
+.za-chat .za-chip-suggestion {
   background: transparent;
   border: 1px dashed var(--background-modifier-border);
   color: var(--text-muted);
   cursor: pointer;
 }
 
-.za-chip-suggestion:hover {
+.za-chat .za-chip-suggestion:hover {
   color: var(--text-normal);
   border-color: var(--interactive-accent);
 }
 
 .za-chip-icon {
   display: inline-flex;
+  flex-shrink: 0;
   --icon-size: var(--icon-xs);
 }
 
-.za-chip-remove {
+.za-chip-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.za-chat .za-chip-remove {
+  flex-shrink: 0;
   height: auto;
   padding: 0 2px;
   background: transparent;
@@ -311,8 +652,8 @@
 .za-mentions {
   position: absolute;
   bottom: 100%;
-  left: var(--size-4-3);
-  right: var(--size-4-3);
+  left: var(--za-gutter);
+  right: var(--za-gutter);
   z-index: 10;
   margin: 0 0 var(--size-4-1);
   padding: var(--size-4-1);
@@ -378,11 +719,26 @@
   border-radius: var(--radius-s);
 }
 
+.za-history-list li:hover,
 .za-history-list li.is-current {
   background: var(--background-modifier-hover);
 }
 
-.za-history-open {
+/* Delete stays out of the way until its row is pointed at or reached by keyboard. */
+.za-history-list li .za-icon-button {
+  opacity: 0;
+}
+
+.za-history-list li:hover .za-icon-button,
+.za-history-list li:focus-within .za-icon-button {
+  opacity: 1;
+}
+
+.za-history:focus {
+  outline: none;
+}
+
+.za-chat .za-history-open {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -392,6 +748,7 @@
   background: transparent;
   box-shadow: none;
   text-align: left;
+  line-height: var(--line-height-tight);
   cursor: pointer;
   overflow: hidden;
 }
@@ -408,11 +765,23 @@
   font-size: var(--font-ui-smaller);
 }
 
-.za-composer-input {
+.za-chat .za-composer-input,
+.za-chat .za-composer-input:hover,
+.za-chat .za-composer-input:focus,
+.za-chat .za-composer-input:active {
   flex: 1;
-  resize: none;
+  min-width: 0;
+  width: 100%;
+  min-height: 28px;
   max-height: 40vh;
+  padding: var(--size-2-2) var(--size-2-3);
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  resize: none;
   font-size: var(--font-ui-medium);
+  line-height: var(--line-height-tight);
 }
 
 .za-icon-button:disabled {
@@ -420,15 +789,439 @@
   cursor: default;
 }
 
-/* Fixed-template note creation, invoked only from user commands. */
-.za-create-note .setting-item-control input[type="text"] {
+/* Compact, theme-native setup and research controls. */
+.za-scope {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+  padding: var(--size-4-1) var(--size-4-3) var(--size-4-2);
+  border-bottom: 1px solid var(--background-modifier-border);
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.za-scope > :first-child {
+  display: inline-flex;
+  --icon-size: var(--icon-xs);
+}
+
+.za-scope-folder {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.za-setup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--size-4-2);
+  margin: var(--size-4-2) var(--size-4-3) 0;
+  padding: var(--size-4-2);
+  background: var(--za-tint);
+  border: 1px solid var(--za-tint-strong);
+  border-radius: var(--radius-m);
+  font-size: var(--font-ui-small);
+}
+
+.za-chat .za-setup button {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.za-chat .za-setup button:hover {
+  background: var(--interactive-accent-hover);
+}
+
+.za-setup > span {
+  flex: 1 1 12em;
+}
+
+.za-empty-help,
+.za-composer-hint,
+.za-context-label {
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+}
+
+.za-context-label {
+  align-self: center;
+}
+
+.za-composer-hint {
+  padding: 0 var(--size-4-1);
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.5;
+}
+
+.za-icon-button {
+  min-width: 28px;
+  min-height: 28px;
+  flex-shrink: 0;
+}
+
+.za-icon-button > span:first-child {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Answer actions: quiet until pointed at, so the answer stays the loudest thing. */
+.za-chat .za-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--size-4-1);
+  height: auto;
+  padding: var(--size-4-1) var(--size-4-2);
+  border-radius: var(--radius-s);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  cursor: pointer;
+  --icon-size: var(--icon-xs);
+}
+
+.za-chat .za-action-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.za-chat .za-action-button.is-done {
+  color: var(--text-success);
+}
+
+.za-message-footer {
+  flex-wrap: wrap;
+}
+
+.za-research {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+
+.za-research .za-tool-input,
+.za-research .za-thinking-text {
+  background: var(--background-primary);
+}
+
+.za-research > summary,
+.za-settings-advanced > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+  padding: var(--size-4-2);
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.za-research > summary {
+  list-style: none;
+  border-radius: var(--radius-m);
+}
+
+.za-research > summary:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+.za-research > summary::-webkit-details-marker {
+  display: none;
+}
+
+.za-disclosure-icon {
+  display: inline-flex;
+  transition: transform 120ms ease;
+  --icon-size: var(--icon-xs);
+}
+
+.za-research[open] .za-disclosure-icon,
+.za-settings-advanced[open] .za-disclosure-icon {
+  transform: rotate(90deg);
+}
+
+.za-research-count {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.za-research-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  padding: var(--size-4-2);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+.za-chat .za-send:focus-visible {
+  outline-offset: 3px;
+}
+
+.za-chat button:focus-visible,
+.za-chat summary:focus-visible,
+.za-cite:focus-visible,
+.za-settings summary:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
+}
+
+.za-settings-intro {
+  padding: 0 var(--size-4-4);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  line-height: var(--line-height-normal);
+}
+
+.za-settings-advanced {
+  margin-top: var(--size-4-6);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+}
+
+.za-settings-advanced > summary {
+  font-weight: var(--font-semibold);
+}
+
+.za-settings-advanced-body {
+  padding: 0 var(--size-4-3) var(--size-4-3);
+}
+
+@container (max-width: 360px) {
+  /* The buttons need the room; the model is still shown in Settings. */
+  .za-header-model {
+    display: none;
+  }
+
+  .za-header {
+    flex-wrap: nowrap;
+    gap: var(--size-4-1);
+  }
+
+  .za-header-title {
+    margin-right: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .za-create {
+    grid-template-columns: 1fr;
+  }
+
+  .za-chat .za-create button {
+    grid-template-columns: auto 1fr;
+    padding: var(--size-4-2) var(--size-4-3);
+  }
+
+  .za-create .za-note-icon {
+    grid-row: span 2;
+    margin-bottom: 0;
+  }
+
+  .za-usage {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  /* Still read to assistive technology through aria-describedby. */
+  .za-composer-hint {
+    display: none;
+  }
+}
+
+/* Fixed-template note creation: opened by user commands and the New note buttons. */
+.za-create-note-modal {
+  width: min(520px, 92vw);
+  --za-tint: color-mix(in srgb, var(--interactive-accent) 10%, transparent);
+  --za-tint-strong: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
+}
+
+.za-create-note-modal .modal-title {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+}
+
+.za-create-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-m);
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+  --icon-size: 16px;
+}
+
+.za-create-note form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-4);
+}
+
+/* Note type: three equal segments, the selected one raised. */
+.za-kind-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--size-2-1);
+  padding: var(--size-2-1);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+
+.za-create-note .za-kind-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--size-4-2);
+  height: auto;
+  padding: var(--size-4-2);
+  border-radius: var(--radius-s);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+}
+
+.za-create-note .za-kind-tab:hover {
+  color: var(--text-normal);
+}
+
+.za-create-note .za-kind-tab.is-selected {
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  color: var(--text-normal);
+}
+
+.za-kind-icon {
+  display: inline-flex;
+  --icon-size: var(--icon-s);
+}
+
+.za-kind-tab.is-selected .za-kind-icon {
+  color: var(--text-accent);
+}
+
+.za-kind-guidance {
+  margin: 0;
+  padding: var(--size-4-2) var(--size-4-3);
+  border-radius: var(--radius-m);
+  background: var(--za-tint);
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  line-height: var(--line-height-tight);
+}
+
+.za-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-1);
+  min-width: 0;
+}
+
+.za-field-label {
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+}
+
+.za-create-note .za-field input[type="text"] {
   width: 100%;
 }
 
-.za-create-note .setting-item-control {
-  flex: 1;
+.za-create-note .za-field-title input[type="text"] {
+  height: auto;
+  padding: var(--size-4-2) var(--size-4-3);
+  font-size: var(--font-ui-medium);
 }
 
-.za-create-destination {
+.za-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-3);
+  padding: var(--size-4-3);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+}
+
+.za-field-group-label {
+  margin: 0;
+  font-weight: var(--font-semibold);
+}
+
+.za-field-group-hint {
+  margin: calc(-1 * var(--size-4-2)) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
   overflow-wrap: anywhere;
+}
+
+.za-field-pair {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--size-4-3);
+}
+
+.za-source-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-4-3);
+  padding: var(--size-4-3);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+}
+
+.za-source-toggle .za-field-group-hint {
+  margin: var(--size-2-1) 0 0;
+}
+
+.za-create-error {
+  margin: 0;
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+}
+
+.za-create-error:empty {
+  display: none;
+}
+
+.za-create-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-2);
+  padding-top: var(--size-4-3);
+  border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Where the note will go, shown beside the button that puts it there. */
+.za-create-destination {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--size-4-1);
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+}
+
+.za-create-destination-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  --icon-size: var(--icon-xs);
+}
+
+.za-create-note button:focus-visible {
+  outline: 2px solid var(--interactive-accent);
+  outline-offset: 2px;
 }

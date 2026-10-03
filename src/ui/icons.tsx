@@ -16,19 +16,27 @@ export function IconButton(props: {
   onClick: () => void;
   disabled?: boolean;
   className?: string;
+  text?: string;
+  expanded?: boolean;
+  controls?: string;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (ref.current) setIcon(ref.current, props.icon);
   }, [props.icon]);
   return (
     <button
-      ref={ref}
       type="button"
-      className={`clickable-icon za-icon-button ${props.className ?? ""}`}
+      className={`${props.text ? "za-action-button" : "clickable-icon"} za-icon-button ${props.className ?? ""}`}
       aria-label={props.label}
+      title={props.label}
+      aria-expanded={props.expanded}
+      aria-controls={props.controls}
       onClick={props.onClick}
       disabled={props.disabled ?? false}
-    />
+    >
+      <span ref={ref} aria-hidden="true" />
+      {props.text && <span>{props.text}</span>}
+    </button>
   );
 }

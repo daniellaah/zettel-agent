@@ -59,6 +59,19 @@ The nine UI smoke scenarios now refer to the 318-note technical learning corpus.
 
 ## Free Agentic RAG checks
 
+`ui-polish.e2e.ts` is also free. It checks setup guidance, basic/advanced settings,
+final-answer copying, collapsed research and limit disclosure, keyboard citation
+and history navigation, storage-error presentation and narrow dark-theme layout.
+Settings can open in a separate Obsidian window; screenshots identify that window
+using a marker set only on the verified fixture's active settings document. The
+test never calls paid APIs, changes note files or writes its temporary settings.
+Timestamped screenshots and checks go to the ignored `artifacts/ui-polish/` folder.
+
+```bash
+npm run e2e -- e2e/plugin.e2e.ts e2e/ui-polish.e2e.ts \
+  e2e/release-safety.e2e.ts e2e/answer-review.e2e.ts
+```
+
 The targeted command below uses scripted answer providers and genuine local Ollama embeddings, with no paid model APIs. It restarts Obsidian against the fixture vault and restores normal startup. It does not execute live-provider or note-creation tests.
 
 ```bash

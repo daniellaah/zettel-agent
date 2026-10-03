@@ -1,5 +1,5 @@
 import { Component, Keymap, MarkdownRenderer } from "obsidian";
-import { memo, useEffect, useRef, useState, type MouseEvent } from "react";
+import { memo, useEffect, useRef, useState, type MouseEvent, type KeyboardEvent } from "react";
 
 import { safeExternalLink } from "./link-safety";
 import { citationIdOf, citationsToHtml } from "./citation-markup";
@@ -74,12 +74,24 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     }
   };
 
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const target = event.target as HTMLElement;
+    const chip = target.closest<HTMLElement>(".za-cite");
+    const id = chip ? citationIdOf(chip) : null;
+    if (!id) return;
+    event.preventDefault();
+    event.stopPropagation();
+    host.openEvidence(id, event.metaKey || event.ctrlKey);
+  };
+
   return (
     <div
       ref={ref}
       className="za-markdown markdown-rendered"
       onClickCapture={onClick}
       onAuxClickCapture={onClick}
+      onKeyDownCapture={onKeyDown}
     />
   );
 });
@@ -111,6 +123,11 @@ function describeCitations(root: HTMLElement, host: ChatHost): void {
     const description = host.describeEvidence(id);
     chip.title = description ?? `${id}: not among the evidence retrieved`;
     chip.setAttribute("role", "link");
+    chip.tabIndex = 0;
+    chip.setAttribute(
+      "aria-label",
+      description ? `Open source: ${description}` : `${id}: source not retrieved`,
+    );
     if (!description) chip.classList.add("za-cite-unknown");
   }
 }

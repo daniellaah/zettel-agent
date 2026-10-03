@@ -12,6 +12,7 @@ import {
 import { ChatSession } from "../session/chat-session";
 import { resolveSettings, type PluginSettings } from "../settings";
 import { ChatView, VIEW_TYPE_CHAT } from "./ChatView";
+import { BRAND_ICON, registerBrandIcon } from "./brand-icon";
 import { registerNoteCommands } from "./CreateNoteModal";
 import { SettingsTab } from "./SettingsTab";
 import { FileConversationStore } from "../vault/conversations";
@@ -27,16 +28,34 @@ export default class ZettelAgentPlugin extends Plugin {
   session!: ChatSession;
   recordings!: RecordingStore;
   conversations!: FileConversationStore;
+  researchIndexed = false;
+  readonly configurationListeners = new Set<() => void>();
+
+  notifyConfiguration(): void {
+    for (const listener of this.configurationListeners) listener();
+  }
 
   /** Rebuild the index after the Zettelkasten folder setting stops changing. */
-  readonly scheduleRebuild = debounce(() => void this.vaultCorpus.rebuild(), 800, true);
+  readonly scheduleRebuild = debounce(
+    () => {
+      this.researchIndexed = false;
+      this.notifyConfiguration();
+      void this.vaultCorpus.rebuild();
+    },
+    800,
+    true,
+  );
 
   override async onload(): Promise<void> {
     this.settings = resolveSettings(await this.loadData());
     this.vaultCorpus = new VaultCorpus(
       this.app,
       () => this.settings,
-      () => this.localEmbeddings.schedule(),
+      () => {
+        this.researchIndexed = true;
+        this.localEmbeddings.schedule();
+        this.notifyConfiguration();
+      },
     );
     this.localEmbeddings = new LocalEmbeddings(
       this.app,
@@ -61,7 +80,8 @@ export default class ZettelAgentPlugin extends Plugin {
     });
 
     this.registerView(VIEW_TYPE_CHAT, (leaf) => new ChatView(leaf, this));
-    this.addRibbonIcon("messages-square", "Open Zettelkasten chat", () => {
+    registerBrandIcon();
+    this.addRibbonIcon(BRAND_ICON, "Open Zettelkasten chat", () => {
       void this.activateChatView();
     });
     this.addCommand({
@@ -84,6 +104,7 @@ export default class ZettelAgentPlugin extends Plugin {
   }
 
   async saveSettings(): Promise<void> {
+    this.notifyConfiguration();
     await this.saveData(this.settings);
   }
 

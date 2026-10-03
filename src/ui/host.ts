@@ -4,6 +4,8 @@ import { createContext, useContext } from "react";
 import type { ConversationSummary } from "../session/conversation-index";
 import type { RecordingMode } from "../settings";
 import type { NoteOption } from "./mentions";
+import type { NoteKind } from "./note-template";
+import type { ChatConfiguration } from "./presentation";
 
 /** What the React tree needs from Obsidian, provided by the ChatView. */
 export interface ChatHost {
@@ -13,6 +15,9 @@ export interface ChatHost {
   model(): string;
   providerLabel(): string;
   recordingMode(): RecordingMode;
+  configuration(): ChatConfiguration;
+  onConfigurationChange(callback: () => void): () => void;
+  openSettings(): void;
   /** Questions that can be replayed offline for the current provider and model. */
   recordedQuestions(): Promise<string[]>;
   /** "Title › Heading" for an evidence id, or null if unknown. */
@@ -25,6 +30,11 @@ export interface ChatHost {
   /** Inserts at the cursor of the most recent note editor; false if there is none. */
   insertAtCursor(text: string): boolean;
   notify(message: string): void;
+  /**
+   * Opens the fixed-template creation dialog; the note is created only when the user
+   * submits it. Call from a button's click handler only, never from model output.
+   */
+  openNoteDialog(kind: NoteKind): void;
 
   /** The Zettelkasten note open in the most recent editor, if any. */
   activeNote(): { path: string; title: string } | null;

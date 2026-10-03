@@ -6,7 +6,9 @@ import { linkTarget } from "../agent/evidence";
 import { PROVIDERS } from "../agent/providers/catalog";
 import type ZettelAgentPlugin from "../main";
 import { evidenceTarget } from "./evidence-target";
+import { BRAND_ICON } from "./brand-icon";
 import { ChatApp } from "./ChatApp";
+import { CreateNoteModal } from "./CreateNoteModal";
 import { HostContext, type ChatHost } from "./host";
 
 export const VIEW_TYPE_CHAT = "zettel-agent-chat";
@@ -30,7 +32,7 @@ export class ChatView extends ItemView {
   }
 
   override getIcon(): string {
-    return "messages-square";
+    return BRAND_ICON;
   }
 
   /** The last text selected in a note's reading view (clicking the chat clears the DOM's). */
@@ -88,6 +90,39 @@ export class ChatView extends ItemView {
       model: () => plugin.settings.models[plugin.settings.provider],
       providerLabel: () => PROVIDERS[plugin.settings.provider].label,
       recordingMode: () => plugin.settings.recordingMode,
+      configuration: () => {
+        const { provider, models, apiKeySecretIds, recordingMode, zettelkastenRoot } =
+          plugin.settings;
+        const secretId = apiKeySecretIds[provider];
+        return {
+          model: models[provider],
+          provider: PROVIDERS[provider].label,
+          mode: recordingMode,
+          hasKey:
+            recordingMode !== "replay" && !!secretId && !!app.secretStorage.getSecret(secretId),
+          folder: zettelkastenRoot || "Whole vault",
+          notes: plugin.vaultCorpus.current.paths().length,
+          indexed: plugin.researchIndexed,
+        };
+      },
+      onConfigurationChange: (callback) => {
+        plugin.configurationListeners.add(callback);
+        // Keys may also be changed in Obsidian's separate secret manager.
+        window.addEventListener("focus", callback);
+        const layout = app.workspace.on("layout-change", callback);
+        return () => {
+          plugin.configurationListeners.delete(callback);
+          window.removeEventListener("focus", callback);
+          app.workspace.offref(layout);
+        };
+      },
+      openSettings: () => {
+        const setting = (
+          app as typeof app & { setting: { open(): void; openTabById(id: string): void } }
+        ).setting;
+        setting.open();
+        setting.openTabById(plugin.manifest.id);
+      },
       recordedQuestions: () =>
         plugin.recordings.questions(
           plugin.settings.provider,
@@ -142,6 +177,7 @@ export class ChatView extends ItemView {
         return true;
       },
       notify: (message) => new Notice(message),
+      openNoteDialog: (kind) => new CreateNoteModal(app, plugin.settings, kind).open(),
 
       activeNote: () => {
         const file = recentEditor()?.file;

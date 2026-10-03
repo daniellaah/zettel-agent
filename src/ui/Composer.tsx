@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import type { Attachment } from "../session/chat-session";
 import { useHost } from "./host";
@@ -28,6 +28,8 @@ export function Composer(props: {
   const [activeNote, setActiveNote] = useState(() => host.activeNote());
   const [selection, setSelection] = useState<ReturnType<typeof host.selection>>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const mentionsId = useId();
+  const hintId = useId();
 
   useEffect(() => host.onActiveNoteChange(() => setActiveNote(host.activeNote())), [host]);
   // Offer a selection as soon as it is made; reading it again on focus is the fallback.
@@ -35,6 +37,13 @@ export function Composer(props: {
   useEffect(() => {
     if (!props.running) inputRef.current?.focus();
   }, [props.running]);
+  // Grow with the draft, from one line up to the CSS max-height, then scroll.
+  useLayoutEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.style.height = "auto";
+    input.style.height = `${input.scrollHeight}px`;
+  }, [draft]);
 
   const options: NoteOption[] = mention ? matchNotes(host.noteOptions(), mention.query) : [];
   const attached = (path: string, kind: Attachment["kind"]) =>
@@ -112,38 +121,12 @@ export function Composer(props: {
 
   return (
     <div className="za-composer">
-      {(attachments.length > 0 || suggestions.length > 0) && (
-        <div className="za-attachments">
-          {attachments.map((attachment) => (
-            <AttachmentChip
-              key={`${attachment.kind}:${attachment.path}`}
-              attachment={attachment}
-              onRemove={() => setAttachments((current) => current.filter((a) => a !== attachment))}
-            />
-          ))}
-          {suggestions.map((suggestion) => (
-            <button
-              key={`suggest:${suggestion.kind}:${suggestion.path}`}
-              type="button"
-              className="za-chip za-chip-suggestion"
-              title={
-                suggestion.kind === "note"
-                  ? "Attach the note you have open"
-                  : "Attach the text selected in the editor"
-              }
-              onClick={() => attach(suggestion)}
-            >
-              <Icon icon="plus" className="za-chip-icon" />
-              <span className="za-chip-label">{chipLabel(suggestion)}</span>
-            </button>
-          ))}
-        </div>
-      )}
       {mention && options.length > 0 && (
-        <ul className="za-mentions" role="listbox" aria-label="Attach a note">
+        <ul id={mentionsId} className="za-mentions" role="listbox" aria-label="Attach a note">
           {options.map((option, index) => (
             <li
               key={option.path}
+              id={`${mentionsId}-${index}`}
               role="option"
               aria-selected={index === highlighted}
               className={index === highlighted ? "is-selected" : ""}
@@ -158,31 +141,90 @@ export function Composer(props: {
           ))}
         </ul>
       )}
-      <div className="za-composer-row">
-        <textarea
-          ref={inputRef}
-          className="za-composer-input"
-          value={draft}
-          placeholder="Ask your Zettelkasten…  (@ to attach a note, Enter to send)"
-          rows={3}
-          onChange={(event) => {
-            setDraft(event.target.value);
-            updateMention(event.target.value, event.target.selectionStart);
-          }}
-          onFocus={() => setSelection(host.selection())}
-          onKeyDown={onKeyDown}
-          onBlur={() => setMention(null)}
-        />
-        {props.running ? (
-          <IconButton icon="square" label="Stop (Esc)" onClick={props.onStop} />
-        ) : (
-          <IconButton
-            icon="arrow-up"
-            label="Send"
-            onClick={submit}
-            disabled={draft.trim() === ""}
-          />
+      {/* Clicking anywhere in the box, not only on the text, starts typing. */}
+      <div
+        className="za-composer-box"
+        onMouseDown={(event) => {
+          if (event.target === event.currentTarget) {
+            event.preventDefault();
+            inputRef.current?.focus();
+          }
+        }}
+      >
+        {(attachments.length > 0 || suggestions.length > 0) && (
+          <div className="za-attachments">
+            <span className="za-context-label">
+              {attachments.length ? "Context" : "Add context"}
+            </span>
+            {attachments.map((attachment) => (
+              <AttachmentChip
+                key={`${attachment.kind}:${attachment.path}`}
+                attachment={attachment}
+                onRemove={() =>
+                  setAttachments((current) => current.filter((a) => a !== attachment))
+                }
+              />
+            ))}
+            {suggestions.map((suggestion) => (
+              <button
+                key={`suggest:${suggestion.kind}:${suggestion.path}`}
+                type="button"
+                className="za-chip za-chip-suggestion"
+                title={
+                  suggestion.kind === "note"
+                    ? "Attach the note you have open"
+                    : "Attach the text selected in the editor"
+                }
+                onClick={() => attach(suggestion)}
+              >
+                <Icon icon="plus" className="za-chip-icon" />
+                <span className="za-chip-label">{chipLabel(suggestion)}</span>
+              </button>
+            ))}
+          </div>
         )}
+        <div className="za-composer-row">
+          <textarea
+            ref={inputRef}
+            className="za-composer-input"
+            aria-label="Ask your Zettelkasten"
+            aria-describedby={hintId}
+            aria-autocomplete="list"
+            aria-controls={mention && options.length > 0 ? mentionsId : undefined}
+            aria-activedescendant={
+              mention && options.length > 0 ? `${mentionsId}-${highlighted}` : undefined
+            }
+            value={draft}
+            placeholder="Ask about your notes…"
+            rows={1}
+            onChange={(event) => {
+              setDraft(event.target.value);
+              updateMention(event.target.value, event.target.selectionStart);
+            }}
+            onFocus={() => setSelection(host.selection())}
+            onKeyDown={onKeyDown}
+            onBlur={() => setMention(null)}
+          />
+          {props.running ? (
+            <IconButton
+              icon="square"
+              label="Stop (Esc)"
+              className="za-send za-stop"
+              onClick={props.onStop}
+            />
+          ) : (
+            <IconButton
+              icon="arrow-up"
+              label="Send"
+              className="za-send"
+              onClick={submit}
+              disabled={draft.trim() === ""}
+            />
+          )}
+        </div>
+      </div>
+      <div id={hintId} className="za-composer-hint">
+        {props.running ? "Esc to stop" : "Enter to send · Shift+Enter for a new line · @ to attach"}
       </div>
     </div>
   );
@@ -204,7 +246,7 @@ export function AttachmentChip(props: { attachment: Attachment; onRemove?: () =>
         <button
           type="button"
           className="za-chip-remove"
-          aria-label="Remove"
+          aria-label={`Remove ${attachment.title}`}
           onClick={props.onRemove}
         >
           ×

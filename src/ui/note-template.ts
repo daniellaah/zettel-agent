@@ -3,6 +3,25 @@ import type { PluginSettings } from "../settings";
 export const NOTE_KINDS = ["fleeting", "literature", "permanent"] as const;
 export type NoteKind = (typeof NOTE_KINDS)[number];
 
+export const NOTE_LABELS: Record<NoteKind, string> = {
+  fleeting: "Fleeting",
+  literature: "Literature",
+  permanent: "Permanent",
+};
+
+/** Obsidian (Lucide) icon names. */
+export const NOTE_ICONS: Record<NoteKind, string> = {
+  fleeting: "feather",
+  literature: "book-open",
+  permanent: "lightbulb",
+};
+
+export const NOTE_HINTS: Record<NoteKind, string> = {
+  fleeting: "Capture a quick thought",
+  literature: "Paraphrase a source",
+  permanent: "Develop one idea",
+};
+
 export interface NoteDraft {
   kind: NoteKind;
   title: string;

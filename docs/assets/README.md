@@ -17,3 +17,14 @@ actual DeepSeek Flash answer, BM25 search/read steps and the frozen QLoRA source
 note on macOS / Obsidian 1.13.7. No secret, settings page or personal note is visible.
 It illustrates basic UI/evidence behavior, not a quality guarantee. The scripted
 screenshot remains separately labeled and unchanged by the live capture.
+
+`fixture-ui-polished.png` is a new, unedited CDP screenshot of the current UI,
+captured on 2026-10-03 after the setup/settings/research-display changes. It loads
+the saved real response and evidence from scenario 1 of the same original live
+run into the fixture session, opens its existing QLoRA note, and displays the
+research disclosure folded beside labeled Copy/Insert/Ask again buttons. Capture
+refused all network, observed zero calls, six citation chips and 318 indexed notes,
+and verified that the restored answer matches the saved answer. Settings and the
+session were restored and Obsidian restarted normally afterward. This is a saved
+real answer displayed in the new UI, not a fresh live-model test. The original
+live and scripted screenshots remain unchanged.
