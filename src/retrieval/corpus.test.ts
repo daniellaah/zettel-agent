@@ -106,3 +106,21 @@ describe("Corpus", () => {
     expect(corpus.graph().backlinks("Z/Permanent/Linking.md")).toEqual([]);
   });
 });
+
+it("shares empty stage semantics and binds revision to path/content/stage changes", () => {
+  let stage: "permanent" | "literature" = "permanent";
+  const corpus = new Corpus({ stageForPath: () => stage });
+  corpus.upsert("P/A.md", "---\ntags: [topic/sub]\n---\nalpha");
+  const revision = corpus.revision;
+  expect(corpus.eligible("P/A.md", { stages: [], folder: "P/", tag: "#TOPIC" })).toBe(true);
+  expect(corpus.eligible("outside.md")).toBe(false);
+  expect(corpus.eligible("P/A.md", { stages: ["writing"] })).toBe(false);
+  expect(corpus.eligible("P/A.md", { folder: "Other" })).toBe(false);
+  expect(corpus.eligible("P/A.md", { tag: "absent" })).toBe(false);
+  corpus.upsert("P/A.md", "---\ntags: [topic/sub]\n---\nalpha");
+  expect(corpus.revision).toBe(revision);
+  stage = "literature";
+  expect(corpus.revision).not.toBe(revision);
+  corpus.rename("P/A.md", "P/New.md", "alpha");
+  expect(corpus.eligible("P/A.md")).toBe(false);
+});

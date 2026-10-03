@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "items": [
+    {
+      "id": "f01",
+      "path": "02-Zettelkasten/Literature/Predictor scaling before ridge regression.md",
+      "sourceSha256": "02d58e0f7d0a20984f62561127ad75c7899ef72c8430fb25b4962fcd7cfdd58f",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f02",
+      "path": "02-Zettelkasten/Literature/Predictor scaling before ridge regression.md",
+      "sourceSha256": "02d58e0f7d0a20984f62561127ad75c7899ef72c8430fb25b4962fcd7cfdd58f",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f03",
+      "path": "02-Zettelkasten/Literature/Ridge penalties and coefficient shrinkage.md",
+      "sourceSha256": "77e25cd9325b94b180bb1361a7a44af7c5d99a2666705a3e654b5eb87807a3ea",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f04",
+      "path": "02-Zettelkasten/Literature/Ridge penalties and coefficient shrinkage.md",
+      "sourceSha256": "77e25cd9325b94b180bb1361a7a44af7c5d99a2666705a3e654b5eb87807a3ea",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f05",
+      "path": "02-Zettelkasten/Permanent/A zero lasso coefficient is a conditional modeling result.md",
+      "sourceSha256": "a14bb64b8eec85f303a3aa2eb3e127482cb8f8470c3e1b611e218a4426edb411",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f06",
+      "path": "02-Zettelkasten/Permanent/A zero lasso coefficient is a conditional modeling result.md",
+      "sourceSha256": "a14bb64b8eec85f303a3aa2eb3e127482cb8f8470c3e1b611e218a4426edb411",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f07",
+      "path": "02-Zettelkasten/Literature/Sparse coefficient selection with the lasso.md",
+      "sourceSha256": "e728c1971274de02acdb44eca0ec00a5a10634bef00a73506d5d206dd8c0e10f",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f08",
+      "path": "02-Zettelkasten/Literature/Sparse coefficient selection with the lasso.md",
+      "sourceSha256": "e728c1971274de02acdb44eca0ec00a5a10634bef00a73506d5d206dd8c0e10f",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f09",
+      "path": "02-Zettelkasten/Permanent/Cross-validation evaluates repeated fits rather than one fixed artifact.md",
+      "sourceSha256": "72b29b093c32a208e3afe9a101ef33ef5a0ceac8db7471b7f836bc47d23ba424",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f10",
+      "path": "02-Zettelkasten/Permanent/Cross-validation evaluates repeated fits rather than one fixed artifact.md",
+      "sourceSha256": "72b29b093c32a208e3afe9a101ef33ef5a0ceac8db7471b7f836bc47d23ba424",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f11",
+      "path": "02-Zettelkasten/Literature/Rotating held-out folds in cross-validation.md",
+      "sourceSha256": "f8546a02de6793b5b07689b87a77528d7f0c61f3301900dfeb1590d31f24e6c3",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f12",
+      "path": "02-Zettelkasten/Literature/Rotating held-out folds in cross-validation.md",
+      "sourceSha256": "f8546a02de6793b5b07689b87a77528d7f0c61f3301900dfeb1590d31f24e6c3",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f13",
+      "path": "02-Zettelkasten/Literature/Feature subsampling to decorrelate random forests.md",
+      "sourceSha256": "85c1dda1286664558aed089e934a6b4e17d039ca85392433e01b2ff0cec643cd",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f14",
+      "path": "02-Zettelkasten/Literature/Feature subsampling to decorrelate random forests.md",
+      "sourceSha256": "85c1dda1286664558aed089e934a6b4e17d039ca85392433e01b2ff0cec643cd",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f15",
+      "path": "02-Zettelkasten/Literature/Feature subsampling to decorrelate random forests.md",
+      "sourceSha256": "85c1dda1286664558aed089e934a6b4e17d039ca85392433e01b2ff0cec643cd",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f16",
+      "path": "02-Zettelkasten/Literature/Feature subsampling to decorrelate random forests.md",
+      "sourceSha256": "85c1dda1286664558aed089e934a6b4e17d039ca85392433e01b2ff0cec643cd",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f17",
+      "path": "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md",
+      "sourceSha256": "cf070d853db03babe7170e7c707370a465bff12c7e68d5b0cf0593ff967a7620",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f18",
+      "path": "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md",
+      "sourceSha256": "cf070d853db03babe7170e7c707370a465bff12c7e68d5b0cf0593ff967a7620",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f19",
+      "path": "02-Zettelkasten/Literature/Term saturation and length scaling in BM25.md",
+      "sourceSha256": "9a5bac10dac5d32066002a554265634d8155d9d4323d5aa5873159047f783497",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f20",
+      "path": "02-Zettelkasten/Permanent/BM25 frequency saturation limits the reward for repetition.md",
+      "sourceSha256": "cf070d853db03babe7170e7c707370a465bff12c7e68d5b0cf0593ff967a7620",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f21",
+      "path": "02-Zettelkasten/Permanent/Adam initialization correction is not a model-bias correction.md",
+      "sourceSha256": "a65ce0b25c51011f94d66383921f8e4160ea9b886967c7c18c293b72e9eca81e",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f22",
+      "path": "02-Zettelkasten/Permanent/Adam initialization correction is not a model-bias correction.md",
+      "sourceSha256": "a65ce0b25c51011f94d66383921f8e4160ea9b886967c7c18c293b72e9eca81e",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f23",
+      "path": "02-Zettelkasten/Literature/Moment estimation and bias correction in Adam.md",
+      "sourceSha256": "03d93500c7ec645db8f20c7d44ff8c0d016198a3e944db74827e8ffab6827270",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    },
+    {
+      "id": "f24",
+      "path": "02-Zettelkasten/Literature/Moment estimation and bias correction in Adam.md",
+      "sourceSha256": "03d93500c7ec645db8f20c7d44ff8c0d016198a3e944db74827e8ffab6827270",
+      "purpose": "source anchor for AI-authored question, not exhaustive gold labels"
+    }
+  ]
+}

@@ -1,10 +1,11 @@
-import { ItemView, MarkdownView, Notice, type WorkspaceLeaf } from "obsidian";
+import { ItemView, MarkdownView, Notice, TFile, type WorkspaceLeaf } from "obsidian";
 import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 
 import { linkTarget } from "../agent/evidence";
 import { PROVIDERS } from "../agent/providers/catalog";
 import type ZettelAgentPlugin from "../main";
+import { evidenceTarget } from "./evidence-target";
 import { ChatApp } from "./ChatApp";
 import { HostContext, type ChatHost } from "./host";
 
@@ -51,6 +52,7 @@ export class ChatView extends ItemView {
   }
 
   override onClose(): Promise<void> {
+    this.plugin.session.stop();
     this.root?.unmount();
     this.root = null;
     return Promise.resolve();
@@ -97,22 +99,40 @@ export class ChatView extends ItemView {
       },
       openEvidence: (id, newLeaf) => {
         const evidence = session.evidence(id);
-        if (!evidence) return;
-        const heading = evidence.headingPath.length > 1 ? `#${evidence.headingPath.at(-1)}` : "";
-        void app.workspace.openLinkText(
-          `${evidence.path.replace(/\.md$/, "")}${heading}`,
-          "",
-          newLeaf,
+        const target = evidenceTarget(
+          evidence,
+          evidence ? plugin.vaultCorpus.current.get(evidence.path)?.contentHash : undefined,
         );
+        if (typeof target === "string") {
+          new Notice(target);
+          return;
+        }
+        const file = app.vault.getAbstractFileByPath(target.path);
+        if (!(file instanceof TFile)) {
+          new Notice("This evidence file is no longer available.");
+          return;
+        }
+        if (target.notice) new Notice(target.notice);
+        void app.workspace
+          .getLeaf(newLeaf)
+          .openFile(file, { eState: { subpath: target.subpath } })
+          .catch(() => new Notice("This evidence could not be opened. No note was created."));
       },
       resolveLink,
       openLink: (linkText, newLeaf) => {
-        // Obsidian's openLinkText creates a note for an unresolved link; the agent must not.
-        if (!resolveLink(linkText)) {
-          new Notice(`"${linkText.split("#")[0]}" does not exist in your vault.`);
+        const path = resolveLink(linkText);
+        const file = path ? app.vault.getAbstractFileByPath(path) : null;
+        if (!(file instanceof TFile)) {
+          new Notice("This linked note does not exist. No note was created.");
           return;
         }
-        void app.workspace.openLinkText(linkText, "", newLeaf);
+        const subpath = linkText.includes("#")
+          ? `#${linkText.split("#").slice(1).join("#").split("|")[0]}`
+          : "";
+        void app.workspace
+          .getLeaf(newLeaf)
+          .openFile(file, { eState: { subpath } })
+          .catch(() => new Notice("This linked note could not be opened. No note was created."));
       },
       insertAtCursor: (text) => {
         const view = app.workspace.getMostRecentLeaf()?.view;
@@ -157,9 +177,13 @@ export class ChatView extends ItemView {
 
       listConversations: () => plugin.conversations.list(),
       openConversation: async (id) => {
-        const record = await plugin.conversations.load(id);
-        if (record) session.load(record);
-        else new Notice("That chat could not be found.");
+        try {
+          const record = await plugin.conversations.load(id);
+          if (record) session.load(record);
+          else new Notice("That chat could not be found.");
+        } catch {
+          new Notice("This saved chat could not be loaded. Its files were retained for recovery.");
+        }
       },
       deleteConversation: async (id) => {
         await plugin.conversations.delete(id);

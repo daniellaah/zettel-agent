@@ -1,6 +1,7 @@
 import { Component, Keymap, MarkdownRenderer } from "obsidian";
 import { memo, useEffect, useRef, useState, type MouseEvent } from "react";
 
+import { safeExternalLink } from "./link-safety";
 import { citationIdOf, citationsToHtml } from "./citation-markup";
 import { useHost, type ChatHost } from "./host";
 
@@ -52,21 +53,47 @@ export const Markdown = memo(function Markdown(props: { text: string; streaming:
     const id = cite ? citationIdOf(cite) : null;
     if (id) {
       event.preventDefault();
+      event.stopPropagation();
       host.openEvidence(id, newLeaf);
       return;
     }
     const link = target.closest<HTMLAnchorElement>("a.internal-link");
     if (link) {
       event.preventDefault();
+      event.stopPropagation();
       host.openLink(link.dataset.href ?? link.getAttribute("href") ?? "", newLeaf);
+      return;
+    }
+    const anchor = target.closest<HTMLAnchorElement>("a");
+    if (anchor && !safeExternalLink(anchor.getAttribute("href") ?? "")) {
+      event.preventDefault();
+      event.stopPropagation();
+      host.notify(
+        "This app or local-file link is disabled in chat. Use a note link or a web source.",
+      );
     }
   };
 
-  return <div ref={ref} className="za-markdown markdown-rendered" onClick={onClick} />;
+  return (
+    <div
+      ref={ref}
+      className="za-markdown markdown-rendered"
+      onClickCapture={onClick}
+      onAuxClickCapture={onClick}
+    />
+  );
 });
 
 /** Links to notes that do not exist get Obsidian's faded "unresolved" style. */
 function markUnresolvedLinks(root: HTMLElement, host: ChatHost): void {
+  for (const link of Array.from(
+    root.querySelectorAll<HTMLAnchorElement>("a:not(.internal-link)[href]"),
+  )) {
+    if (!safeExternalLink(link.getAttribute("href") ?? "")) {
+      link.removeAttribute("href");
+      link.title = "App commands and local-file links are disabled in chat";
+    }
+  }
   for (const link of Array.from(root.querySelectorAll<HTMLAnchorElement>("a.internal-link"))) {
     const target = link.dataset.href ?? link.getAttribute("href") ?? "";
     if (!host.resolveLink(target)) {

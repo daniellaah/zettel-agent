@@ -33,7 +33,7 @@ describe("resolveSettings", () => {
       models: { openai: 42 },
       stageFolders: { permanent: " /Zettel/ " },
     });
-    expect(resolved.provider).toBe("anthropic");
+    expect(resolved.provider).toBe("deepseek");
     expect(resolved.models.openai).toBe(DEFAULT_SETTINGS.models.openai);
     expect(resolved.stageFolders.permanent).toBe("Zettel");
     expect(resolved.stageFolders.fleeting).toBe("Fleeting");
@@ -74,4 +74,18 @@ describe("normalizeFolder", () => {
   it("strips whitespace and surrounding slashes", () => {
     expect(normalizeFolder("  /a/b/  ")).toBe("a/b");
   });
+});
+
+it("keeps lexical retrieval by default and persists explicit local hybrid configuration", () => {
+  expect(resolveSettings({}).retrievalMode).toBe("lexical");
+  expect(resolveSettings({ retrievalMode: "cloud" }).retrievalMode).toBe("lexical");
+  expect(
+    resolveSettings({ retrievalMode: "hybrid", ollamaEndpoint: "http://localhost:11434" }),
+  ).toMatchObject({ retrievalMode: "hybrid", ollamaEndpoint: "http://localhost:11434" });
+});
+
+it("requires an explicit valid opt-in for additional answer self-review calls", () => {
+  expect(resolveSettings({}).answerReviewMode).toBe("structural");
+  expect(resolveSettings({ answerReviewMode: true }).answerReviewMode).toBe("structural");
+  expect(resolveSettings({ answerReviewMode: "self-review" }).answerReviewMode).toBe("self-review");
 });

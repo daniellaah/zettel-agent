@@ -1,0 +1,144 @@
+{
+  "version": "local-hybrid-quality-v1",
+  "createdAt": "2026-10-03T03:03:02.485Z",
+  "frozenSuite": {
+    "final-anchors.json": "b45c6c2f64b665d07c7293d504be0b03b5b3f1c01e65024f8c04ac6d7199b004",
+    "dev.json": "e571d9acbbef369607bd6cf3ff5c68d777836186aef10fe325a10e62adc5a8d8",
+    "protocol.json": "3c40b228b159cc8c29e87d1015440838b01b258cd42ba7e7bad876fddb70c8ce",
+    "final.json": "9d185ca9afc784579faa000657c654017e4791565409da0d65c93967a36cd838"
+  },
+  "corpusRevision": "11c645e93fb01e",
+  "model": {
+    "provider": "ollama-local",
+    "model": "qwen3-embedding:0.6b",
+    "modelVersion": "ac6da0dfba84a81fdbfbaf330198c33cd77c4cdfc53e8bc50eb581914a15621d:research-query-v1",
+    "dimensions": 1024,
+    "normalization": "l2",
+    "metric": "cosine",
+    "batchSize": 8,
+    "timeoutMs": 120000
+  },
+  "representation": "note-section-v1; research-query-v1; exact cosine; RRF k60; per-branch depth50/per-note5; output per-note1 cutoff10",
+  "runtimeWeights": [1, 2],
+  "review": "Codex source-aware/unblinded AI review; no independent human calibration",
+  "hardware": {
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpu": "Apple M1 Pro",
+    "logicalCpus": 8,
+    "memoryBytes": 17179869184
+  },
+  "development": {
+    "indexing": {
+      "expectedSections": 318,
+      "cachedSections": 0,
+      "encodedSections": 318,
+      "requests": 40,
+      "inputCharacters": 204993,
+      "inputTokens": 35356,
+      "usd": 0,
+      "elapsedMs": 27598.834583
+    },
+    "queryUsage": { "requests": 15, "inputTokens": 4584, "usd": 0 },
+    "queryTiming": "Preparation pre-encoded queries in batches of8; per-row queryEmbedding timings are cache reads, not interactive encoding latency.",
+    "offlineRankingAccounting": "Per-row queryAccounting.requests counts cached-provider logical invocations, not HTTP calls. Actual Ollama embedding requests are recorded only in indexing and queryUsage ledgers."
+  },
+  "final": {
+    "indexing": {
+      "expectedSections": 318,
+      "cachedSections": 318,
+      "encodedSections": 0,
+      "requests": 0,
+      "inputCharacters": 0,
+      "inputTokens": 0,
+      "usd": 0,
+      "elapsedMs": 108.673542
+    },
+    "queryUsage": {
+      "requests": 24,
+      "batchSize": 1,
+      "inputTokens": 1025,
+      "usd": 0,
+      "batchLatencyMs": [
+        3108.948125, 60.746458000000075, 38.71516700000029, 39.77933299999995, 39.19766699999991,
+        36.336333000000195, 37.83391699999993, 30.761083000000326, 39.42079199999989,
+        37.55441699999983, 30.7297080000003, 30.278124999999818, 31.072291999999834,
+        29.906750000000102, 28.823541999999634, 34.301124999999956, 34.877292000000125,
+        31.029583000000457, 33.357208999999784, 31.486915999999837, 29.718292000000474,
+        38.691749999999956, 30.188083999999435, 30.77991700000075
+      ]
+    },
+    "queryTiming": "One query per local HTTP encoding call; includes first local model startup; excludes identity checks, exact scan and UI.",
+    "fullFinalGate": "unavailable: no exact-term final slice; development exact-term guardrail passed; paid answer gate deferred"
+  },
+  "discardedLocalJudges": {
+    "acceptedLabels": 0,
+    "gemmaFailedBatchAttempts": 3,
+    "llamaProbeRequests": 1,
+    "additionalGemmaSingleDocumentProbe": "local-only exploratory probe; not used for labels; token/timing accounting incomplete",
+    "rawFailuresRetained": true
+  },
+  "checks": {
+    "check": { "passed": true, "tests": 314, "files": 52 },
+    "localE2E": {
+      "passed": true,
+      "tests": 5,
+      "files": 2,
+      "command": "E2E_LOCAL_EMBEDDINGS=1 npm run e2e -- e2e/plugin.e2e.ts e2e/local-retrieval.e2e.ts",
+      "firstLaunchFailed": "macOS LaunchServices error -600; retry passed and normal startup restored",
+      "scriptedAnswerProvider": true,
+      "cloudCalls": 0
+    },
+    "protectedOriginalHashes": {
+      "files": 2554,
+      "unchanged": true,
+      "inventoryHash": "0e1480cf540a962ae6195497070e66c71149d567ddeed814aee9f7efc88e6a59"
+    },
+    "ownerVault": "not used",
+    "paidEvaluation": "deferred by user",
+    "providerUSD": 0,
+    "build": { "passed": true, "command": "npm run build", "ownerVaultCopy": false }
+  },
+  "implementation": {
+    "src/retrieval/vector.ts": "fadd9ddf80a9b8296a3eaaff03e800c9ba5327cee758239e98a6b9eaf008cc87",
+    "src/retrieval/local-search.ts": "de27205eaa3e645ad293864bb59225254794d5c60dd7b60a544a51b334e54ba4",
+    "src/retrieval/ollama.ts": "3733e524ca501da21552f0611f1965273364d5ebca6bab53978590ae06ce5bcb",
+    "src/retrieval/corpus.ts": "328636154877252977e8e66d9bfce940dedc3439addbc3361177d24eb58d2011",
+    "src/retrieval/lexical-index.ts": "b4a7703292ddff6c5e4e90ebc8c59074cf43f9ac99e42574a04f283b35212ad4",
+    "src/retrieval/markdown.ts": "55e59ea3d4391d91e9791978e5dca75410c18e24c98c91093d7465b5eff142e7",
+    "src/retrieval/tokenize.ts": "660208d6a143591700f972a7f7893bbbcfdcf8d4f7ce83f897f8de02eb4ca601",
+    "src/vault/embedding-cache.ts": "e081e7cd9b1c26fd02669f263d2af752b86933339c64230ec98966316e1100af",
+    "src/vault/local-http.ts": "49b8c314b55b39a6ddb97216be933f96d9ad52b0df28d685c819026d3122537b",
+    "src/vault/local-embeddings.ts": "2fd9eeeb12eec0cc38d846ddafb1f3d5bdfe69a6fee48b3ee2e79b2e6a556daf",
+    "src/agent/tools.ts": "65017c727dace6432047a5a9e0068fb79ddc0cc1e20d845c0daa875cf312cf5a",
+    "eval/vector-experiment.ts": "c67cfa638c528b8ad38d9802a5ad3789dff9a21875a7e72dd05ded56ce96d90c",
+    "eval/local-quality-scoring.ts": "683ae17e1b185852932d072938cf6fce61c7a62ba6ccee0a14932aa834e9dc53",
+    "eval/local-pool-review.ts": "c1808341bff463728b9f6a958996b621815b79933bf3f80ee7eb4a97e31f0890",
+    "eval/local-quality.run.ts": "6928cece8329994b1d7d1c703b6bd34f505429eeeb121e15d7b6969182da261d",
+    "eval/metrics.ts": "52d4410de44ecda4a962d4ce6838334eff8585ff4fd5675768ec8ad510ff449e",
+    "eval/paired-bootstrap.ts": "38adb286f37575d5e75bbfae9192cde985e0409500205c768c09987a169a39a3"
+  },
+  "reports": {
+    "dev-labels.json": "a91c3c8d5edffb405027a9fa70f6dca8ca4ed08fe495af3a30e356290bb7f16a",
+    "dev-quality.json": "a58a2250648af0a59f75551c1ab5c757d988e2f5a27a3c9804ad3962722a0d59",
+    "dev-rankings.json": "094c0b1c78d38013eab0385c5ea4b7a6c406e95b0f084b00aaed42c246f01aab",
+    "dev-review.json": "a53416d7552d5f753a8c884f96ff1b53422b2799454990617ac5a6e8c0bdafe8",
+    "final-labels.json": "937b63147cb2ef93a03102e1ff83f6bbe685b8f03ee19feaec2f51db849e8907",
+    "final-quality.json": "e95602256acdbf436742148bcd85fd507dacd0c4bc9bcce6edcb93d0e2cc7dd3",
+    "final-rankings.json": "cc0462ba7a0e3c586f852972717af47bd63793077ea58ba2c0e0c5b3c56eb492",
+    "final-review.json": "8797c85cffe90fe4415e422d356985de04a54d122d72b18df8814a7c646bf672",
+    "selection.json": "57ebae990108611945e6daf83208ac66ed2004186264136ff761c3825453de6c"
+  },
+  "ignoredArtifacts": {
+    "dev-query-vectors.json": "e65436d700f2bb9daff11ed89488f78413ef0a860bd72cddb19c59c43bdf5def",
+    "final-query-vectors.json": "a2080f790488d7a209390f917c2148bb73713b4ce301dc5a99f4af44c376e49c",
+    "dev-pool.json": "40b4d64909432a91da199917daa7ba151aa463f30323b323dacdc0140af39685",
+    "final-pool.json": "bcd3cdea69760df5ba4cb241730c0458a9b3598545a2445965c4b4b27702f207",
+    "dev-source-review.json": "97c60fb53a9820d142fdf37c071fc8a40f52f2da50d0a024dc997a4f90d31b58",
+    "final-source-review.json": "670505a79b14d183a9dbee9a12dd5aeeb60c67d938ebfbcf5ed3010f52638f6f",
+    "dev-pool-additions.json": "a6f34e7d29cc991bf5e6d10fc3a192cfaa3a7d9ab308c21ea26d2f0483c0b6ae",
+    "final-pool-additions.json": "7c518757ac45aa95bd57992bac81c2cc0c4a502d4a61193122a610adc6e17cdd",
+    "reviews/dev-r01-0.json.failed": "be3a29960e02219e442ea3b8f21e7114aa43c9b9b3c75d12364c46125ef189b0",
+    "reviews/llama3-unreliable-probe.json": "c2372c2884f946c1a5b8178e24fb6fe15422904a01c233aab1a22b3fdb624b9e"
+  }
+}

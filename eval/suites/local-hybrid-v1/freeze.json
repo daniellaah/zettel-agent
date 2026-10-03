@@ -1,0 +1,10 @@
+{
+  "frozenAt": "2026-10-03T02:24:46.867650+00:00",
+  "files": {
+    "final-anchors.json": "b45c6c2f64b665d07c7293d504be0b03b5b3f1c01e65024f8c04ac6d7199b004",
+    "dev.json": "e571d9acbbef369607bd6cf3ff5c68d777836186aef10fe325a10e62adc5a8d8",
+    "protocol.json": "3c40b228b159cc8c29e87d1015440838b01b258cd42ba7e7bad876fddb70c8ce",
+    "final.json": "9d185ca9afc784579faa000657c654017e4791565409da0d65c93967a36cd838"
+  },
+  "stage": "before rankings and semantic score inspection"
+}

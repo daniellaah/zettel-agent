@@ -16,7 +16,7 @@ const item = {
   family: text,
   split: z.enum(["dev", "test"]),
   origin: z.enum(["synthetic", "owner"]),
-  lang: z.literal("en"),
+  lang: z.enum(["en", "zh"]),
 };
 
 export const snapshotNoteSchema = z

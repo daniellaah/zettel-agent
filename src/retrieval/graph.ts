@@ -18,7 +18,7 @@ export class LinkGraph {
       for (const target of targets) {
         const resolved = resolve(target, source);
         if (resolved === null) addTo(graph.unresolved, source, target);
-        else if (resolved !== source) {
+        else {
           addTo(graph.outgoing, source, resolved);
           addTo(graph.incoming, resolved, source);
         }
@@ -40,13 +40,20 @@ export class LinkGraph {
   }
 
   /** Notes reachable within `depth` hops in either direction, with their distance. */
-  neighborhood(path: string, depth: number): Map<string, number> {
+  neighborhood(
+    path: string,
+    depth: number,
+    direction: "both" | "outgoing" | "incoming" = "both",
+  ): Map<string, number> {
     const distances = new Map<string, number>([[path, 0]]);
     let frontier = [path];
     for (let hop = 1; hop <= depth && frontier.length > 0; hop++) {
       const next: string[] = [];
       for (const node of frontier) {
-        for (const neighbor of [...this.outlinks(node), ...this.backlinks(node)]) {
+        for (const neighbor of [
+          ...(direction !== "incoming" ? this.outlinks(node) : []),
+          ...(direction !== "outgoing" ? this.backlinks(node) : []),
+        ]) {
           if (distances.has(neighbor)) continue;
           distances.set(neighbor, hop);
           next.push(neighbor);

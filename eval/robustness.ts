@@ -7,6 +7,8 @@ import type { AnswerItem } from "./agent-runner";
 export interface RobustCase {
   id: string;
   question: string;
+  lang?: "en" | "zh";
+  history?: string[];
   notes: { path: string; stage: "literature" | "permanent" | "fleeting"; body: string }[];
   keyPoints: string[];
   forbidden: string[];
@@ -27,11 +29,11 @@ export function robustnessTask(test: RobustCase): { item: AnswerItem; corpus: Co
     family: test.id,
     split: "test",
     origin: "synthetic",
-    lang: "en",
+    lang: test.lang ?? "en",
     question: test.question,
     kind: test.answerability === "no-answer" ? "no-answer" : "lookup",
     answerability: test.answerability ?? "answerable",
-    history: [],
+    history: test.history ?? [],
     activeNote: null,
     evidence: Object.fromEntries(
       test.notes

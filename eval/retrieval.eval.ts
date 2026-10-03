@@ -3,6 +3,7 @@ import path from "node:path";
 import { format } from "prettier";
 import { describe, expect, it } from "vitest";
 
+import { reportDestination } from "./report-destination";
 import type { TokenizerMode } from "../src/retrieval/tokenize";
 import { loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
 import { meanMeasured, scoreRetrieval } from "./metrics";
@@ -189,12 +190,12 @@ describe("frozen learning corpus retrieval pilot", () => {
       "",
       "Do not tune on the test scores. Answer quality, independently declared robustness cases, solver comparisons and repetitions are measured separately. Unknown labels are reported explicitly and make these retrieval quality estimates provisional.",
       "",
-      "Reproduce with `npm run eval`. Machine-readable rankings, configuration hashes and denominators are in `retrieval-baseline.json`. Each run replaces these two reports without modifying the corpus or annotations.",
+      "Reproduce with `npm run eval`. Machine-readable rankings, configuration hashes and denominators are in `retrieval-baseline.json`. Use EVAL_REPORT_DIR for a new versioned destination; the default is eval/reports/tool-v2. Historical reports, corpus and annotations are preserved.",
       "",
     ];
     const reportName =
       process.env.EVAL_SUITE === "expanded" ? "retrieval-expanded" : "retrieval-baseline";
-    const out = path.join(import.meta.dirname, "reports");
+    const out = reportDestination(import.meta.dirname, process.env.EVAL_REPORT_DIR);
     mkdirSync(out, { recursive: true });
     writeFileSync(
       path.join(out, `${reportName}.json`),

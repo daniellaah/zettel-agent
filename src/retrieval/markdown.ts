@@ -11,6 +11,8 @@ export interface Section {
   headingPath: string[];
   /** Heading level 1–6, or 0 for text before the first heading. */
   level: number;
+  /** True only for later pieces of the same heading, never repeated sibling headings. */
+  continuation?: boolean;
   /** 0-based line range [startLine, endLine) in the whole file, frontmatter included. */
   startLine: number;
   endLine: number;
@@ -63,7 +65,7 @@ export function parseNote(path: string, content: string): ParsedNote {
   const closeSection = (endLine: number) => {
     const body = lines.slice(current.startLine, endLine);
     if (body.join("").trim() === "") return;
-    for (const piece of splitOversized(body, current.startLine)) {
+    for (const [pieceIndex, piece] of splitOversized(body, current.startLine).entries()) {
       const key = [path, ...current.headingPath].join("\u0000");
       const occurrence = occurrences.get(key) ?? 0;
       occurrences.set(key, occurrence + 1);
@@ -73,6 +75,7 @@ export function parseNote(path: string, content: string): ParsedNote {
         id: hash(`${key}\u0000${occurrence}`),
         headingPath: current.headingPath,
         level: current.level,
+        continuation: pieceIndex > 0,
         startLine: piece.startLine,
         endLine: piece.endLine,
         text: piece.text,
@@ -131,7 +134,9 @@ export function sectionSubtree(note: ParsedNote, sectionId: string): Section[] {
     const sharesPrefix = root.headingPath.every((heading, i) => section.headingPath[i] === heading);
     // Pieces of an oversized section share its heading path and level.
     const isContinuation =
-      section.level === root.level && section.headingPath.length === root.headingPath.length;
+      section.continuation === true &&
+      section.level === root.level &&
+      section.headingPath.length === root.headingPath.length;
     const isDescendant = root.level > 0 && section.level > root.level;
     if (!sharesPrefix || !(isContinuation || isDescendant)) break;
     subtree.push(section);

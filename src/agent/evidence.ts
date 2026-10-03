@@ -11,6 +11,8 @@ export interface Evidence {
   /** Heading path of the cited section, e.g. ["原子性", "论证"]. */
   headingPath: string[];
   contentHash: string;
+  /** Exact vault-relative link identity for ambiguous basenames; absent in historical ledgers. */
+  linkPath?: string;
 }
 
 export class EvidenceLedger {
@@ -88,5 +90,6 @@ export function linkTarget(evidence: Evidence): string {
   const title = (evidence.path.split("/").pop() ?? evidence.path).replace(/\.md$/i, "");
   // A lone top heading is usually the note's title; link to the note itself.
   const heading = evidence.headingPath.length > 1 ? evidence.headingPath.at(-1) : undefined;
-  return heading ? `${title}#${heading}` : title;
+  const target = evidence.linkPath ?? title;
+  return heading ? `${target}#${heading}` : target;
 }

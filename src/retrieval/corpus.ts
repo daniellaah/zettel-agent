@@ -1,7 +1,7 @@
 import { STAGES, type Stage } from "../settings";
 import { LinkGraph, basenameResolver, type LinkResolver } from "./graph";
 import { LexicalIndex, type SearchHit } from "./lexical-index";
-import { parseNote, type ParsedNote } from "./markdown";
+import { hash, parseNote, type ParsedNote } from "./markdown";
 import type { TokenizerMode } from "./tokenize";
 
 export interface CorpusOptions {
@@ -13,12 +13,12 @@ export interface CorpusOptions {
 }
 
 export interface CorpusSearchOptions {
-  limit?: number;
-  perNote?: number;
-  stages?: Stage[];
+  limit?: number | undefined;
+  perNote?: number | undefined;
+  stages?: Stage[] | undefined;
   /** Vault-relative folder prefix. */
-  folder?: string;
-  tag?: string;
+  folder?: string | undefined;
+  tag?: string | undefined;
 }
 
 /** The notes the agent can see, with their search index and link graph. */
@@ -34,6 +34,47 @@ export class Corpus {
 
   get size(): number {
     return this.notes.size;
+  }
+
+  /** Content/stage/path identity, stable across identical rebuilds. */
+  get revision(): string {
+    return hash(
+      JSON.stringify(
+        this.paths().map((path) => [path, this.notes.get(path)!.contentHash, this.stage(path)]),
+      ),
+    );
+  }
+
+  /** Shared filters: an omitted or empty stage array means all research stages. */
+  eligible(path: string, options: CorpusSearchOptions = {}): boolean {
+    const note = this.notes.get(path);
+    if (!note) return false;
+    const { stages, folder, tag } = options;
+    if (folder && !path.startsWith(`${folder.replace(/\/+$/, "")}/`)) return false;
+    if (stages?.length) {
+      const stage = this.stage(path);
+      if (!stage || !stages.includes(stage)) return false;
+    }
+    const wanted = tag?.replace(/^#/, "").toLowerCase();
+    return (
+      !wanted ||
+      note.tags.some((t) => t.toLowerCase() === wanted || t.toLowerCase().startsWith(`${wanted}/`))
+    );
+  }
+
+  /** Bare duplicate names need explicit source context or an exact path. */
+  ambiguous(target: string, sourcePath?: string): boolean {
+    const cleaned = target
+      .trim()
+      .replace(/^!?\[\[|\]\]$/g, "")
+      .replace(/[#|^].*$/, "");
+    const name = cleaned.replace(/\.md$/i, "");
+    if (sourcePath || this.notes.has(cleaned) || this.notes.has(`${cleaned}.md`)) return false;
+    return (
+      this.paths().filter(
+        (path) => path.replace(/\.md$/i, "").split("/").pop()?.toLowerCase() === name.toLowerCase(),
+      ).length > 1
+    );
   }
 
   paths(): string[] {
@@ -113,29 +154,10 @@ export class Corpus {
   }
 
   search(query: string, options: CorpusSearchOptions = {}): SearchHit[] {
-    const { stages, folder, tag } = options;
-    const prefix = folder ? `${folder.replace(/\/+$/, "")}/` : null;
-    const wantedTag = tag?.replace(/^#/, "").toLowerCase();
     return this.index.search(query, {
       limit: options.limit ?? 10,
       perNote: options.perNote ?? 1,
-      filter: (path) => {
-        if (prefix && !path.startsWith(prefix)) return false;
-        if (stages && stages.length > 0) {
-          const stage = this.stage(path);
-          if (!stage || !stages.includes(stage)) return false;
-        }
-        if (wantedTag) {
-          const tags = this.notes.get(path)?.tags ?? [];
-          if (
-            !tags.some(
-              (t) => t.toLowerCase() === wantedTag || t.toLowerCase().startsWith(`${wantedTag}/`),
-            )
-          )
-            return false;
-        }
-        return true;
-      },
+      filter: (path) => this.eligible(path, options),
     });
   }
 }

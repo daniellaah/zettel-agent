@@ -35,8 +35,8 @@ describe("LinkGraph", () => {
     basenameResolver(PATHS),
   );
 
-  it("tracks outgoing, incoming and unresolved links, ignoring self-links", () => {
-    expect(graph.outlinks("Z/Permanent/A.md")).toEqual(["Z/Permanent/B.md"]);
+  it("tracks outgoing, incoming and unresolved links, including self-links", () => {
+    expect(graph.outlinks("Z/Permanent/A.md")).toEqual(["Z/Permanent/A.md", "Z/Permanent/B.md"]);
     expect(graph.backlinks("Z/Permanent/B.md")).toEqual(["Z/Permanent/A.md"]);
     expect(graph.unresolvedLinks("Z/Permanent/A.md")).toEqual(["Missing"]);
   });

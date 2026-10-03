@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "predeclared future paid development phase; no allowance or live calls authorized",
+  "devItems": ["a01", "a02", "a03", "a04", "a05", "a06", "a07", "a08", "a09", "a10", "a11", "a12"],
+  "pairedRepeatItems": ["a02", "a03", "a04", "a05", "a09", "a10"],
+  "repeatTrials": 2,
+  "coverage": {
+    "a01": "lookup",
+    "a02": "lookup",
+    "a03": "lookup",
+    "a04": "synthesis",
+    "a05": "synthesis",
+    "a06": "synthesis",
+    "a07": "follow-up",
+    "a08": "provenance",
+    "a09": "link-suggestion",
+    "a10": "follow-up",
+    "a11": "partial",
+    "a12": "no-answer"
+  },
+  "hybridGate": {
+    "recallOrMrrGain": 0.03,
+    "maximumOtherLoss": 0.02,
+    "maximumExactSliceLoss": 0.02,
+    "rrfConstant": 60,
+    "candidateDepth": 50,
+    "cutoff": 10
+  },
+  "requirements": [
+    "explicit embedding/agent/judge configuration, current rates, USD allowance and maximum logical requests",
+    "versioned common reviewed genuine lexical/dense/hybrid pool; do not grade fake-vector candidates as semantics",
+    "report denominators and paired uncertainty; no claim of human calibration unless performed",
+    "same versioned judge for both arms; paired grounding/citation/tokens/cost/latency measurement",
+    "freeze new unseen final checkpoint before paid solver results; observed v1 test is regression only"
+  ],
+  "annotationSha256": "4794ddc115020661d240b227f6ce6c84b292826216daf04e8f62aed8889a3a53"
+}

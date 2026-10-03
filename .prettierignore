@@ -8,3 +8,4 @@ e2e/reports/
 eval/artifacts/
 .env.eval.local
 fixtures/recordings/
+artifacts/

@@ -313,3 +313,24 @@ describe("a full agent turn replayed offline", () => {
     expect(result.usage.requests).toBe(2);
   });
 });
+
+it("strict replay binds complete wire history/evidence and refuses mismatches offline", async () => {
+  const ex = {
+    ...exchange("{}", "application/json"),
+    requestBody: { model: "model", messages: [{ content: "Evidence original" }] },
+  };
+  const fetch = replayFetch([ex], { strict: true, eventDelayMs: 0 });
+  await expect(
+    fetch(ex.url, {
+      body: JSON.stringify({ messages: [{ content: "Evidence changed" }], model: "model" }),
+    }),
+  ).rejects.toThrow("Replay refused");
+  const matching = replayFetch([ex], { strict: true, eventDelayMs: 0 });
+  expect(
+    await (
+      await matching(ex.url, {
+        body: JSON.stringify({ messages: [{ content: "Evidence original" }], model: "model" }),
+      })
+    ).text(),
+  ).toBe("{}");
+});

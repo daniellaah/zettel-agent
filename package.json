@@ -29,7 +29,13 @@
     "eval:indexed": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.indexed-eval.config.ts",
     "eval:finish": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.finish-eval.config.ts",
     "eval:ai-recover": "vitest run --config vitest.ai-recover.config.ts",
-    "eval:full-replay": "vitest run --config vitest.full-replay.config.ts"
+    "eval:full-replay": "vitest run --config vitest.full-replay.config.ts",
+    "eval:vector": "vitest run --config vitest.vector.config.ts",
+    "eval:ollama": "vitest run --config vitest.ollama.config.ts",
+    "eval:agentic-rag": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config vitest.agentic-rag.config.ts",
+    "eval:local-quality": "vitest run --config vitest.local-quality.config.ts",
+    "release:package": "node scripts/package-release.mjs",
+    "release:verify": "node scripts/verify-release.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

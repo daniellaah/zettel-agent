@@ -30,6 +30,7 @@ it("runs the frozen answer tasks through the production loop", async () => {
   const runtimeFiles = [
     "src/agent/loop.ts",
     "src/agent/tools.ts",
+    "src/agent/tool-contract.ts",
     "src/agent/prompt.ts",
     "src/agent/evidence.ts",
     "src/agent/messages.ts",

@@ -115,7 +115,8 @@ it("includes final search-excerpt bodies and metadata even when wrapper tags tou
     mode: "scripted",
   });
   const call = run.turns[0]!.calls[0]!;
-  const exposure = call.exposures[0]!;
+  const exposure = { ...call.exposures[0]! };
+  delete exposure.text;
   call.exposures = [exposure];
   call.outcome!.content = `[${exposure.id}] matched: final
 <note path="${exposure.path}">

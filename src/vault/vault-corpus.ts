@@ -17,6 +17,7 @@ export class VaultCorpus {
   constructor(
     private readonly app: App,
     private readonly settings: () => PluginSettings,
+    private readonly onChanged: () => void = () => {},
   ) {
     this.corpus = this.createCorpus();
   }
@@ -75,21 +76,26 @@ export class VaultCorpus {
     const pending = [...this.changedDuringBuild];
     this.changedDuringBuild.clear();
     await Promise.all(pending.map((path) => this.update(path)));
+    this.onChanged();
   }
 
   private async update(path: string): Promise<void> {
     if (this.building) this.changedDuringBuild.add(path);
     const file = this.app.vault.getAbstractFileByPath(path);
     if (!(file instanceof TFile) || file.extension !== "md" || !this.inScope(path)) {
-      this.corpus.remove(path);
+      this.remove(path);
       return;
     }
+    const previous = this.corpus.get(path);
     this.corpus.upsert(path, await this.app.vault.cachedRead(file));
+    if (this.corpus.get(path) !== previous) this.onChanged();
   }
 
   private remove(path: string): void {
     if (this.building) this.changedDuringBuild.add(path);
+    const existed = this.corpus.get(path);
     this.corpus.remove(path);
+    if (existed) this.onChanged();
   }
 
   private inScope(path: string): boolean {

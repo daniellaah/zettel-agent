@@ -93,3 +93,27 @@ Use `EVAL_SUITE=pilot` to reproduce the old retrieval or Agent pilot. `npm run e
 Prompt injection and conflicting content live only in `robustness/cases.json` and in-memory corpora. Interface invariants are free deterministic checks; resistance to embedded instructions requires live Agent responses and semantic grading. Historical recordings remain regression material for their original corpus.
 
 See [ADR-0017](../docs/adr/0017-frozen-learning-corpus-evaluation-pilot.md) for the preserved pilot, [ADR-0016](../docs/adr/0016-source-grounded-learning-dataset.md) for learning-first corpus construction, and [ADR-0020](../docs/adr/0020-frozen-expanded-evaluation-and-isolated-comparisons.md) for the expanded plan.
+
+## Tool v2 and offline vector experiments
+
+New retrieval reports default to `eval/reports/tool-v2`; set `EVAL_REPORT_DIR` to another versioned directory. The frozen historical report directory is rejected as a destination. Run `npm run eval` for lexical regression and `EVAL_MODE=smoke EVAL_ALLOW_API=0 npm run eval:full` for production-loop mechanics without model calls.
+
+`npm run eval:vector` benchmarks fake-vector exact scanning, host cache rebuild/hits, query-cache latency and 10x synthetic scaling. It writes `vector-mechanics.json` and `fake-vector-pool.json` to the versioned report directory. This test encoder measures mechanics only: it makes no semantic quality, human-review or Agent-answer claim. `compareRetrievers` accepts a prepared exact index and explicitly configured cached provider; offline cache misses throw without live fallback. For genuine experiments, freeze a new common candidate pool, review all pooled entries and use the predeclared protocol before quality scoring.
+
+See [execution report](../docs/tool-optimization-results.md) for implemented tools, reproducible commands, deferred paid checks and measured database/planning decisions.
+
+### Genuine local Ollama development run
+
+`npm run eval:ollama` uses the installed `qwen3-embedding:0.6b` through loopback only, creates disposable caches under the OS temporary directory, and writes new reports to `eval/reports/ollama-local`. It encodes the unchanged 318-section fixture and 96 development queries plus one independent Chinese integration query. It never opens held-out query outcomes, calls a paid provider, grades answers or fabricates pool labels. Install/start Ollama first. Model digest, query instruction, implementation hashes, token usage, cache accounting and scan timings are recorded. Reviewed union labels and answer-quality gates remain pending.
+
+### Reviewed local quality and selected fusion
+
+The free `eval:local-quality` experiment freezes 120 development queries, 24 fresh final phrasings and three weight candidates in `suites/local-hybrid-v1`. Complete source-reviewed AI labels compare BM25/dense/hybrid at identical cutoffs. Stage `score` reuses development artifacts; `score-final` reuses the single chosen-variant checkpoint. Preparation cannot overwrite frozen development labels, final redispatch is rejected, and missing/invalid/uncertain judgments block scores. The initial local Gemma2/Llama3 judge trials were excluded; Codex's source-aware AI review is unblinded and uncalibrated, with receipts/quotes saved as a new version.
+
+BM25:dense 1:2 was selected only on development and is now used by opt-in local search. The final lacks an exact-term slice and cannot establish the complete promotion gate. Paid answer evaluation remains deferred. See [quality results](../docs/local-retrieval-quality-results.md), [ADR-0025](../docs/adr/0025-local-retrieval-quality-and-dev-selected-fusion.md) and `reports/local-hybrid-quality-v1` for labels, scores, raw rankings and identity/accounting. Vectors and source-review checkpoints live in the ignored artifacts directory.
+
+## Agentic RAG paired driver
+
+`AGENTIC_PHASE=prepare npm run eval:agentic-rag` freezes a fresh 66-job protocol without constructing answer/judge/embedding providers. An existing `EVAL_MODE=live` does not activate this driver. Live execution separately requires `AGENTIC_PHASE=live`, `EVAL_ALLOW_API=1`, explicit answer/judge model/rate JSON, positive spending and call allowances, keys, and pinned local Ollama. Three variants share configurations and rotate order: BM25, hybrid, hybrid plus same-model self-review. Repeats multiply the fixed plan. Paid execution is deferred; preflight is not quality evaluation.
+
+New cases in `robustness/agentic-rag-v1.json` are synthetic, in memory, and independent of the frozen learning vault. Previously-used test tasks are regression material. Raw recordings, failures, complete implementation/data bindings and pending independent human-review sheets are retained in fresh directories. See [implementation and validation](../docs/agentic-rag-results.md).

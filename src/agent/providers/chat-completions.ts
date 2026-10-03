@@ -62,6 +62,7 @@ export class ChatCompletionsProvider implements ModelProvider {
     this.provider = options.provider;
     this.client = new OpenAI({
       apiKey,
+      maxRetries: 0,
       baseURL: options.baseURL,
       dangerouslyAllowBrowser: true,
       ...(options.fetch && { fetch: options.fetch }),
@@ -82,7 +83,7 @@ export class ChatCompletionsProvider implements ModelProvider {
       })),
       stream: true,
       stream_options: { include_usage: true },
-      max_tokens: 32_000,
+      max_tokens: 8192,
     };
     if (!request.allowTools) body.tool_choice = "none";
     if (this.options.deepseekThinking) {

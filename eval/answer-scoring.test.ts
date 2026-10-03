@@ -87,7 +87,8 @@ describe("answer and semantic citation scoring", () => {
   it("binds supporting text to its note and section in multi-note deliveries", async () => {
     const { run } = await setup();
     const delivery = run.turns[0]!.calls[0]!;
-    const exposure = delivery.exposures[0]!;
+    const exposure = { ...delivery.exposures[0]! };
+    delete exposure.text;
     const content =
       '<note path="p.md">Metadata: source\n[E1]\nFirst fact.\n[E2]\nSecond fact.</note>\n<note path="q.md">[E3]\nOther note.</note>';
     const data = {

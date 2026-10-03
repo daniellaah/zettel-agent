@@ -1,3 +1,5 @@
+import type { ResultContract } from "./tool-contract";
+
 /**
  * Provider-neutral conversation format. The agent loop, the session and the tools only
  * speak this; each provider adapter converts it to and from its own wire format.
@@ -31,11 +33,17 @@ export interface ToolResultPart {
   callId: string;
   content: string;
   isError: boolean;
+  /** Local provenance; adapters send only content/isError to providers. */
+  contract?: ResultContract;
 }
 
 export interface UserMessage {
   role: "user";
+  /** Host control messages are not new human turns when selecting a context window. */
+  origin?: "control";
   parts: (TextPart | ToolResultPart)[];
+  /** Attached note deliveries; never sent as provider wire metadata. */
+  deliveries?: ResultContract[];
 }
 
 export interface RawContent {

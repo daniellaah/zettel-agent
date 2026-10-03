@@ -72,6 +72,14 @@ export class ObsidianPage {
     return this.evaluate<T>(readFileSync(path.join(PAGE_DIR, `${script}.js`), "utf8"), args);
   }
 
+  async screenshot(): Promise<string> {
+    const response = await this.send("Page.captureScreenshot", {
+      format: "png",
+      captureBeyondViewport: false,
+    });
+    return (response.result as unknown as { data: string }).data;
+  }
+
   close(): void {
     this.socket.close();
   }

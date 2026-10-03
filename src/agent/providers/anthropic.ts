@@ -35,6 +35,7 @@ export class AnthropicProvider implements ModelProvider {
     // Obsidian runs plugins in Electron's renderer; the key only goes to api.anthropic.com.
     this.client = new Anthropic({
       apiKey,
+      maxRetries: 0,
       dangerouslyAllowBrowser: true,
       ...(options.fetch && { fetch: options.fetch }),
     });

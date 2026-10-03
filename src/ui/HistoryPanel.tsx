@@ -11,9 +11,17 @@ export function HistoryPanel(props: { currentId: string | null; onClose: () => v
 
   useEffect(() => {
     let current = true;
-    void host.listConversations().then((list) => {
-      if (current) setConversations(list);
-    });
+    void host
+      .listConversations()
+      .then((list) => {
+        if (current) setConversations(list);
+      })
+      .catch(() => {
+        if (current) {
+          setConversations([]);
+          host.notify("Chat history could not be loaded. Check plugin storage access.");
+        }
+      });
     return () => {
       current = false;
     };
@@ -55,7 +63,10 @@ export function HistoryPanel(props: { currentId: string | null; onClose: () => v
                   if (!window.confirm(`Delete the chat "${conversation.title}"?`)) return;
                   void host
                     .deleteConversation(conversation.id)
-                    .then(() => setConversations(conversations.filter((c) => c !== conversation)));
+                    .then(() => setConversations(conversations.filter((c) => c !== conversation)))
+                    .catch(() =>
+                      host.notify("This chat could not be deleted. Check plugin storage access."),
+                    );
                 }}
               />
             </li>

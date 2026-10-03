@@ -37,6 +37,7 @@ export class OpenAIResponsesProvider implements ModelProvider {
     this.effort = options.effort ?? "medium";
     this.client = new OpenAI({
       apiKey,
+      maxRetries: 0,
       dangerouslyAllowBrowser: true,
       ...(options.fetch && { fetch: options.fetch }),
     });

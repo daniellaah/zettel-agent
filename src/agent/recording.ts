@@ -21,7 +21,8 @@ export interface Exchange {
 }
 
 export interface Cassette {
-  version: 1;
+  version: 1 | 2;
+  binding?: { corpusRevision: string; retrieval: "bm25" | "hybrid-local"; reviewMode: string };
   provider: string;
   model: string;
   question: string;
@@ -31,6 +32,7 @@ export interface Cassette {
 
 /** File name for a question's cassette: readable prefix plus a stable hash. */
 export function cassetteFileName(provider: string, model: string, question: string): string {
+  if (!/^[a-z][a-z0-9-]{0,63}$/.test(provider)) throw new Error("Invalid recording provider.");
   const normalized = normalizeQuestion(question);
   const slug = normalized
     .replace(/[^\p{L}\p{N}]+/gu, "-")
@@ -68,6 +70,8 @@ export function recordingFetch(
 }
 
 export interface ReplayOptions {
+  /** Compare the complete wire request, including history, system, tools and delivered evidence. */
+  strict?: boolean;
   /** Longest pause between SSE events, so replies still appear to stream. */
   eventDelayMs?: number;
   /** Upper bound on how long one response takes to replay, however many events it has. */
@@ -79,7 +83,7 @@ export function replayFetch(exchanges: Exchange[], options: ReplayOptions = {}):
   const queue = [...exchanges];
   const maxDelay = options.eventDelayMs ?? 15;
   const maxResponseMs = options.maxResponseMs ?? 1500;
-  return (_input, init) => {
+  return (input, init) => {
     const signal = init?.signal ?? undefined;
     if (signal?.aborted) return Promise.reject(abortError());
     const exchange = queue.shift();
@@ -87,6 +91,19 @@ export function replayFetch(exchanges: Exchange[], options: ReplayOptions = {}):
       return Promise.reject(
         new Error("The recording has no more responses. Record this question again."),
       );
+    }
+    if (options.strict) {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+      if (
+        url !== exchange.url ||
+        canonicalRequest(parseBody(init?.body)) !== canonicalRequest(exchange.requestBody)
+      ) {
+        return Promise.reject(
+          new Error(
+            "Replay refused: request, history, prompt or delivered evidence differs from this recording. No network was used.",
+          ),
+        );
+      }
     }
     const chunks = exchange.contentType.includes("event-stream")
       ? exchange.body.split(/(?<=\n\n)/)
@@ -130,4 +147,39 @@ function parseBody(body: unknown): unknown {
 
 function abortError(): Error {
   return new DOMException("The request was aborted.", "AbortError");
+}
+
+/** Stable JSON identity tolerates object key order, never different values/array order. */
+export function canonicalRequest(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalRequest).join(",")}]`;
+  if (value !== null && typeof value === "object")
+    return `{${Object.keys(value)
+      .sort()
+      .map(
+        (key) =>
+          `${JSON.stringify(key)}:${canonicalRequest((value as Record<string, unknown>)[key])}`,
+      )
+      .join(",")}}`;
+  return JSON.stringify(value) ?? "undefined";
+}
+
+/** UI replay cannot reproduce hybrid ranking without making local network calls. */
+export function validateReplayBinding(
+  cassette: Cassette,
+  corpusRevision: string,
+  reviewMode: string,
+): void {
+  if (cassette.version !== 2 || !cassette.binding)
+    throw new Error(
+      "Legacy recording has no evidence binding. Retained for historical SDK tests; record a new v2 session to replay in the plugin.",
+    );
+  if (
+    cassette.binding.corpusRevision !== corpusRevision ||
+    cassette.binding.reviewMode !== reviewMode
+  )
+    throw new Error("Replay refused: research corpus or answer-check mode changed.");
+  if (cassette.binding.retrieval !== "bm25")
+    throw new Error(
+      "Hybrid recording cannot be safely replayed with BM25. Record a BM25 session for offline replay.",
+    );
 }

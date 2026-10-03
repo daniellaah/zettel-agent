@@ -179,3 +179,29 @@ describe("toChatMessages", () => {
     });
   });
 });
+
+it("does not silently retry rate-limited HTTP requests", async () => {
+  let attempts = 0;
+  const provider = new ChatCompletionsProvider("fixture-key", "deepseek-flash", {
+    provider: "deepseek",
+    label: "DeepSeek",
+    baseURL: "https://api.deepseek.com",
+    deepseekThinking: true,
+    fetch: () => {
+      attempts++;
+      return Promise.resolve(
+        new Response('{"error":{"message":"Fixture rate limit"}}', {
+          status: 429,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+    },
+  });
+  await expect(
+    provider.send(
+      { system: "fixture", messages: [], tools: [], allowTools: true },
+      { onText: () => {}, onThinking: () => {} },
+    ),
+  ).rejects.toThrow();
+  expect(attempts).toBe(1);
+});

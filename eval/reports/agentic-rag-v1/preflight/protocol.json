@@ -1,0 +1,801 @@
+{
+  "version": "agentic-rag-v1",
+  "phase": "prepare",
+  "binding": {
+    "implementation": {
+      "src/agent/loop.ts": "d91708da2346396d103fb880d45ddc8787c83d2d30b3d6a0fa5a94b431935cc1",
+      "src/agent/reviewed-turn.ts": "e0d2edc3465d2d7267df1a226844904156653273b3418a18321cbeff58eafb0b",
+      "src/agent/answer-review.ts": "d92ba40cda81e7ddf16df41708f234fda0a5f1a6a4574bc8ccf72373c3c5f35d",
+      "src/agent/context-window.ts": "35704a2e35eb8fa132a8bd1c86c77ac377caab8decff34e870bdd6256acb3657",
+      "src/agent/tools.ts": "f2075da4ea88d21a5f868248066423cbed3939e699848f677802b02666c6ddc3",
+      "src/agent/tool-contract.ts": "56027d9e7b4532769afd4f31e49b106c3e9604e84178bde3ff06e58674c22b61",
+      "src/agent/evidence.ts": "43088262418d35f4818b63a91c5d6ce328449f96a9089919aac78131f90164c1",
+      "src/agent/prompt.ts": "425cfc8b3a5f9c07b7c9c13643f34660b8c4a8afc18274fa519082bdac211418",
+      "src/agent/messages.ts": "322f36512304337ad2b2cef17a421003fecee1216339784456a77a5f36f8839f",
+      "src/agent/provider.ts": "7829a9b201acbcb7ebf27db4eb3026a1e8f97fb2acee418361a0a4589654c1ed",
+      "src/agent/providers/index.ts": "c6ed0115615597d4ea8ea9431ebc60c8c7fdb7f0b8e512a581d7b141d63d72f4",
+      "src/agent/providers/anthropic.ts": "5516ff30f80f953aa75c60d7c1280a9800a60ebad56ca978490e4c5e3e0c1f56",
+      "src/agent/providers/openai-responses.ts": "799a2eb37ddb06bc4dbcecf9df1ec5ec437388b29da374aca873ece4324979c0",
+      "src/agent/providers/chat-completions.ts": "db043946bb3ab6b247ee5f70112d6a48a679c910a4fe49b1a1657a99501b5116",
+      "src/agent/providers/errors.ts": "7396d897d3915b7e597cc06f907ac325993910c6ed3ce763c10032d6a91cb6e0",
+      "src/retrieval/local-search.ts": "de27205eaa3e645ad293864bb59225254794d5c60dd7b60a544a51b334e54ba4",
+      "src/retrieval/vector.ts": "fadd9ddf80a9b8296a3eaaff03e800c9ba5327cee758239e98a6b9eaf008cc87",
+      "src/retrieval/ollama.ts": "3733e524ca501da21552f0611f1965273364d5ebca6bab53978590ae06ce5bcb",
+      "src/retrieval/corpus.ts": "328636154877252977e8e66d9bfce940dedc3439addbc3361177d24eb58d2011",
+      "src/retrieval/markdown.ts": "55e59ea3d4391d91e9791978e5dca75410c18e24c98c91093d7465b5eff142e7",
+      "src/retrieval/lexical-index.ts": "b4a7703292ddff6c5e4e90ebc8c59074cf43f9ac99e42574a04f283b35212ad4",
+      "src/retrieval/tokenize.ts": "660208d6a143591700f972a7f7893bbbcfdcf8d4f7ce83f897f8de02eb4ca601",
+      "src/retrieval/graph.ts": "56118d9aad84efad290ad7d1e6ff6d52c8fabca2030dd3853b6a072c184b4c42",
+      "src/vault/local-http.ts": "49b8c314b55b39a6ddb97216be933f96d9ad52b0df28d685c819026d3122537b",
+      "src/settings.ts": "332629cbab33a34e7384fd94a39ba7c0c349f9d78dbc313d7a44db8a2cb2a7b3",
+      "eval/model-recording.ts": "bfa2490a6b1de4926c7dbcc53c13a91775fbc20029752f2bedb3f7c075bc054e",
+      "eval/paired-bootstrap.ts": "38adb286f37575d5e75bbfae9192cde985e0409500205c768c09987a169a39a3",
+      "eval/report-destination.ts": "a076b92c37321b8887a21ce9124e2443e2070ae9e243e9399b6ba7c2574ccb55",
+      "eval/fixture-vault.ts": "4c5ccbd44573bef46cbda0d3e206335217a1b4bb755acdfe32420b8b658e4ddc",
+      "eval/schema.ts": "6669505d5e70e2d4fb83136f8ddf48aebe4d189adef287a611f7847d970e4d06",
+      "eval/validate.ts": "c3c7bd7c3e4e6a1953931b929a44c6aa7a6cd756930f822df3165e367f28f830",
+      "eval/agentic-plan.ts": "5f744ffdfe531d420c973d0f51d4ba07b49de3c1bb915a668dd2c903ccc39a6b",
+      "eval/agentic-rag.run.ts": "5f35f5da8d4481d7cf61636002291ef241f8b7655cde00dffc755f0bdb8c23e4",
+      "eval/agent-runner.ts": "bf11b57ba6b3ec573fab4663e861abd0b01bde15ec66a8850116858c7c00d370",
+      "eval/answer-scoring.ts": "4807e250e3aeb08b3fce2215c2ecbb90ab13d3babe5bc9db495fdbb114f2a82d",
+      "eval/budget-provider.ts": "e34fa6c8364a6085972ecde97951fd15fe2c873f5a0ba39a8d5cabbe6755fcfe",
+      "eval/run-config.ts": "462a3c57b79e140bb75a7f7440f6542a0865f0642802468cd208b9c255240555",
+      "eval/robustness.ts": "936b3ce790af971eb032f7dd56532b1b1a33272007e1968bd21069597f2b1497",
+      "package-lock.json": "df996d9b27b6358f7dba322f81ef3608ad9104ac3a04f5cd1f29adf456f9ecda"
+    },
+    "corpusHash": "790b1b2bb6c70b4cb0db6e4fdd9a3db21a1839a1c13bb3be473d6e0558b737c0",
+    "observedCorpusHash": "89317b667acbf59fbb17303f405a7bc3a9caa12e4ef2df301c0304f262c2e643",
+    "answersHash": "4794ddc115020661d240b227f6ce6c84b292826216daf04e8f62aed8889a3a53",
+    "robustnessHash": "e5b3e6827577894a3b407b6eba2132188a8ca88ff2076d9f8bc802e5584482f7",
+    "planHash": "844147ef10f22a71e8ec29f6e5fee70acf107e50f51d634cf3be12ede2d39744"
+  },
+  "plan": [
+    {
+      "id": "a02",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a02-1-bm25"
+    },
+    {
+      "id": "a02",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a02-1-hybrid"
+    },
+    {
+      "id": "a02",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a02-1-hybrid-review"
+    },
+    {
+      "id": "a03",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a03-1-hybrid"
+    },
+    {
+      "id": "a03",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a03-1-hybrid-review"
+    },
+    {
+      "id": "a03",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a03-1-bm25"
+    },
+    {
+      "id": "a04",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a04-1-hybrid-review"
+    },
+    {
+      "id": "a04",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a04-1-bm25"
+    },
+    {
+      "id": "a04",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a04-1-hybrid"
+    },
+    {
+      "id": "a05",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a05-1-bm25"
+    },
+    {
+      "id": "a05",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a05-1-hybrid"
+    },
+    {
+      "id": "a05",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a05-1-hybrid-review"
+    },
+    {
+      "id": "a09",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a09-1-hybrid"
+    },
+    {
+      "id": "a09",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a09-1-hybrid-review"
+    },
+    {
+      "id": "a09",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a09-1-bm25"
+    },
+    {
+      "id": "a10",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "dev-a10-1-hybrid-review"
+    },
+    {
+      "id": "a10",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "dev-a10-1-bm25"
+    },
+    {
+      "id": "a10",
+      "group": "dev",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "dev-a10-1-hybrid"
+    },
+    {
+      "id": "ar01",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar01-1-bm25"
+    },
+    {
+      "id": "ar01",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar01-1-hybrid"
+    },
+    {
+      "id": "ar01",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "new-robustness-ar01-1-hybrid-review"
+    },
+    {
+      "id": "ar02",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar02-1-hybrid"
+    },
+    {
+      "id": "ar02",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "new-robustness-ar02-1-hybrid-review"
+    },
+    {
+      "id": "ar02",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar02-1-bm25"
+    },
+    {
+      "id": "ar03",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "new-robustness-ar03-1-hybrid-review"
+    },
+    {
+      "id": "ar03",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar03-1-bm25"
+    },
+    {
+      "id": "ar03",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar03-1-hybrid"
+    },
+    {
+      "id": "ar04",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar04-1-bm25"
+    },
+    {
+      "id": "ar04",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "new-robustness-ar04-1-hybrid"
+    },
+    {
+      "id": "ar04",
+      "group": "new-robustness",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "new-robustness-ar04-1-hybrid-review"
+    },
+    {
+      "id": "a44",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a44-1-hybrid"
+    },
+    {
+      "id": "a44",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a44-1-hybrid-review"
+    },
+    {
+      "id": "a44",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a44-1-bm25"
+    },
+    {
+      "id": "a45",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a45-1-hybrid-review"
+    },
+    {
+      "id": "a45",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a45-1-bm25"
+    },
+    {
+      "id": "a45",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a45-1-hybrid"
+    },
+    {
+      "id": "a46",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a46-1-bm25"
+    },
+    {
+      "id": "a46",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a46-1-hybrid"
+    },
+    {
+      "id": "a46",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a46-1-hybrid-review"
+    },
+    {
+      "id": "a47",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a47-1-hybrid"
+    },
+    {
+      "id": "a47",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a47-1-hybrid-review"
+    },
+    {
+      "id": "a47",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a47-1-bm25"
+    },
+    {
+      "id": "a48",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a48-1-hybrid-review"
+    },
+    {
+      "id": "a48",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a48-1-bm25"
+    },
+    {
+      "id": "a48",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a48-1-hybrid"
+    },
+    {
+      "id": "a49",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a49-1-bm25"
+    },
+    {
+      "id": "a49",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a49-1-hybrid"
+    },
+    {
+      "id": "a49",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a49-1-hybrid-review"
+    },
+    {
+      "id": "a50",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a50-1-hybrid"
+    },
+    {
+      "id": "a50",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a50-1-hybrid-review"
+    },
+    {
+      "id": "a50",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a50-1-bm25"
+    },
+    {
+      "id": "a51",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a51-1-hybrid-review"
+    },
+    {
+      "id": "a51",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a51-1-bm25"
+    },
+    {
+      "id": "a51",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a51-1-hybrid"
+    },
+    {
+      "id": "a52",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a52-1-bm25"
+    },
+    {
+      "id": "a52",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a52-1-hybrid"
+    },
+    {
+      "id": "a52",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a52-1-hybrid-review"
+    },
+    {
+      "id": "a53",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a53-1-hybrid"
+    },
+    {
+      "id": "a53",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a53-1-hybrid-review"
+    },
+    {
+      "id": "a53",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a53-1-bm25"
+    },
+    {
+      "id": "a54",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a54-1-hybrid-review"
+    },
+    {
+      "id": "a54",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a54-1-bm25"
+    },
+    {
+      "id": "a54",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a54-1-hybrid"
+    },
+    {
+      "id": "a55",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "bm25",
+        "retrieval": "lexical",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a55-1-bm25"
+    },
+    {
+      "id": "a55",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid",
+        "retrieval": "hybrid",
+        "review": "structural"
+      },
+      "name": "previously-used-test-a55-1-hybrid"
+    },
+    {
+      "id": "a55",
+      "group": "previously-used-test",
+      "trial": 1,
+      "variant": {
+        "id": "hybrid-review",
+        "retrieval": "hybrid",
+        "review": "self-review"
+      },
+      "name": "previously-used-test-a55-1-hybrid-review"
+    }
+  ],
+  "config": null,
+  "allowance": {
+    "limitUsd": 0,
+    "maxCalls": 0,
+    "accountedUsd": 0,
+    "calls": 0
+  },
+  "qualityStatus": "not-run",
+  "humanReview": "pending",
+  "limitations": "Previously-used pilot test is regression material, not fresh heldout. New robustness is synthetic and has no human labels. Same-model self-review is not an independent judge. Bootstrap estimates are descriptive until independent human calibration.",
+  "metrics": [
+    "claimSupportRate",
+    "citationPrecision",
+    "citationCoverage",
+    "keyPointCoverage",
+    "forbiddenViolations",
+    "stop",
+    "elapsedMs",
+    "usage",
+    "repairCount"
+  ]
+}

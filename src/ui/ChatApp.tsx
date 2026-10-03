@@ -102,9 +102,17 @@ function EmptyState({ onAsk }: { onAsk: (question: string) => void }) {
   useEffect(() => {
     if (!replay) return;
     let current = true;
-    void host.recordedQuestions().then((questions) => {
-      if (current) setRecorded(questions);
-    });
+    void host
+      .recordedQuestions()
+      .then((questions) => {
+        if (current) setRecorded(questions);
+      })
+      .catch(() => {
+        if (current) {
+          setRecorded([]);
+          host.notify("Recordings could not be loaded. Check plugin storage access.");
+        }
+      });
     return () => {
       current = false;
     };
@@ -183,6 +191,23 @@ function AssistantMessage(props: { item: AssistantItem; session: ChatSession; is
       {!running && (
         <>
           <StopNote stop={item.stop} error={item.error} />
+          {!!item.context?.omittedTurns && (
+            <div className="za-note">
+              Earlier turns were omitted from this request; the full conversation remains saved.
+            </div>
+          )}
+          {item.reliability?.mode === "self-review" && (
+            <div className="za-note">
+              {item.reliability.status === "self-reviewed"
+                ? "Evidence and coverage checked by the same model; not independently verified."
+                : "Self-review did not finish successfully; no unchecked draft was delivered."}
+            </div>
+          )}
+          {item.reliability?.mode === "structural" && item.reliability.issues.length > 0 && (
+            <div className="za-note za-note-warning">
+              Some citations lack delivered or current source text. Retrieve those sources again.
+            </div>
+          )}
           {item.citations && item.citations.unknown.length > 0 && (
             <div className="za-note za-note-warning">
               Cited evidence that was never retrieved: {item.citations.unknown.join(", ")}

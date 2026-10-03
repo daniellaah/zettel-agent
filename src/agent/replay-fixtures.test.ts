@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 
 import { loadFixtureCorpus } from "../../eval/fixture-vault";
 import { EvidenceLedger } from "./evidence";
-import { runTurn } from "./loop";
+import { DEFAULT_BUDGET, runTurn } from "./loop";
 import { createProvider } from "./providers";
 import type { ProviderId } from "./providers/catalog";
 import { replayFetch, type Cassette } from "./recording";
@@ -58,6 +58,9 @@ describe.skipIf(recorded.length === 0)("recorded conversations replay offline", 
       context: { corpus, ledger: new EvidenceLedger() },
       history: [],
       userContent: cassette.question,
+      // Historical adapter replay predates context pruning; keep its large signed raw blocks.
+      // The current default input limit is exercised separately in context-window.test.ts.
+      budget: { ...DEFAULT_BUDGET, maxInputTokens: 512_000 },
     });
 
     expect(result.error).toBeUndefined();

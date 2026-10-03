@@ -2,7 +2,7 @@
   "id": "zettel-agent",
   "name": "Zettel Agent",
   "version": "0.1.0",
-  "minAppVersion": "1.11.4",
+  "minAppVersion": "1.11.5",
   "description": "Ask your Zettelkasten anything. A read-only research agent that searches, reads and follows links across your notes, and answers with citations.",
   "author": "Bo Gao",
   "authorUrl": "https://bogao.dev",

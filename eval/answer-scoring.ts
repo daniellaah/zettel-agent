@@ -192,6 +192,16 @@ export function evidenceQuoteMatches(
   id: string,
   quote: string,
 ): boolean {
+  const exactSpans = delivery.exposures.filter(
+    (entry) => entry.id === id && entry.text !== undefined,
+  );
+  if (exactSpans.length)
+    return (
+      !!quote &&
+      !delivery.isError &&
+      delivery.content.includes(quote) &&
+      exactSpans.some((span) => span.text!.includes(quote))
+    );
   const exposure = delivery.exposures.find((entry) => entry.id === id);
   if (!quote || delivery.isError || !exposure || !delivery.content.includes(quote)) return false;
   if (exposure.scope === "graph") return true; // Structural scope; entailment remains a judge task.

@@ -8,6 +8,7 @@ export default tseslint.config(
     ignores: [
       "node_modules/**",
       "coverage/**",
+      "artifacts/**",
       "main.js",
       "fixtures/**",
       "e2e/page/**",

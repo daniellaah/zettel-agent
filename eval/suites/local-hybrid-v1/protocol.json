@@ -1,0 +1,34 @@
+{
+  "version": "local-hybrid-quality-v1",
+  "frozenAt": "2026-10-03T02:24:46.867650+00:00",
+  "review": "AI-assisted, no human calibration",
+  "paidCallsAuthorized": false,
+  "candidateDepth": 50,
+  "candidatePerNote": 5,
+  "cutoff": 10,
+  "perNote": 1,
+  "fusionConstant": 60,
+  "variants": [
+    {
+      "id": "baseline",
+      "weights": [1, 1]
+    },
+    {
+      "id": "lexical-heavy",
+      "weights": [1, 0.5]
+    },
+    {
+      "id": "dense-heavy",
+      "weights": [1, 2]
+    }
+  ],
+  "gate": {
+    "minimumGain": 0.03,
+    "maximumOtherLoss": 0.02,
+    "maximumExactSliceLoss": 0.02,
+    "scanP95TargetMs": 100
+  },
+  "selection": "Only dev scores may select a variant. Prefer passing gate, then macro R@10, then MRR@10; baseline wins ties. No tuning after final inspection. Paid answer/judge stage and default promotion remain pending.",
+  "labels": "Source-complete local AI review of union top10 across all variants plus prior positive candidates; missing/invalid reviews stay unknown and block scoring. Freeze common labels before scoring. Existing labels are contextual checks, never automatic negatives for new candidates.",
+  "final": "24 fresh AI-authored questions frozen before dev-score inspection; 12 English/12 Chinese on six source families not used in this new dev extension. Only one final chosen-variant checkpoint; synthetic/source-aware, not human blind gold."
+}

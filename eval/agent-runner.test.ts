@@ -144,7 +144,9 @@ describe("headless production runner", () => {
       exposures: [],
     });
     expect(
-      describeExposures(trace("list", { preview: true }), context.corpus, context.ledger)[0]!.scope,
+      describeExposures(trace("list", { preview: true }), context.corpus, context.ledger).find(
+        (entry) => entry.scope === "preview",
+      )!.scope,
     ).toBe("preview");
     expect(
       describeExposures(trace("match", { pattern: "saved" }), context.corpus, context.ledger)[0]!

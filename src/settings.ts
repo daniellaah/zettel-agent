@@ -8,6 +8,9 @@ export type RecordingMode = (typeof RECORDING_MODES)[number];
 
 export interface PluginSettings {
   provider: ProviderId;
+  retrievalMode: "lexical" | "hybrid";
+  answerReviewMode: "structural" | "self-review";
+  ollamaEndpoint: string;
   /** Offline record/replay of model responses; see agent/recording.ts. */
   recordingMode: RecordingMode;
   /** Model per provider, so switching providers back and forth keeps each choice. */
@@ -21,7 +24,10 @@ export interface PluginSettings {
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-  provider: "anthropic",
+  provider: "deepseek",
+  retrievalMode: "lexical",
+  answerReviewMode: "structural",
+  ollamaEndpoint: "http://127.0.0.1:11434",
   recordingMode: "off",
   models: {
     anthropic: PROVIDERS.anthropic.defaultModel,
@@ -71,6 +77,9 @@ export function resolveSettings(stored: unknown): PluginSettings {
 
   return {
     provider,
+    answerReviewMode: data.answerReviewMode === "self-review" ? "self-review" : "structural",
+    retrievalMode: data.retrievalMode === "hybrid" ? "hybrid" : "lexical",
+    ollamaEndpoint: stringOr(data.ollamaEndpoint, DEFAULT_SETTINGS.ollamaEndpoint),
     recordingMode,
     models,
     apiKeySecretIds,

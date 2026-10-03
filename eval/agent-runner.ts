@@ -1,3 +1,5 @@
+import type { ReviewMode } from "../src/agent/answer-review";
+import type { SearchPort } from "../src/retrieval/local-search";
 import { EvidenceLedger, type Evidence } from "../src/agent/evidence";
 import { DEFAULT_BUDGET, runTurn, type Budget, type TurnResult } from "../src/agent/loop";
 import type { ChatMessage } from "../src/agent/messages";
@@ -9,10 +11,22 @@ import type { AnswerSet } from "./schema";
 
 export type AnswerItem = AnswerSet["items"][number];
 export type ExposureScope =
-  "title" | "preview" | "search-excerpt" | "match-lines" | "read-body" | "graph";
+  | "title"
+  | "metadata"
+  | "outline"
+  | "preview"
+  | "search-excerpt"
+  | "match-lines"
+  | "read-body"
+  | "graph";
 
 export interface Exposure extends Evidence {
   scope: ExposureScope;
+  /** Present on v2 tool deliveries. Historical traces retain their original parser. */
+  text?: string;
+  start?: number;
+  end?: number;
+  line?: number;
   /** Descriptive only. The exact tool result, never the full source file, is judge evidence. */
   wholeSectionDelivered: boolean;
 }
@@ -61,6 +75,9 @@ export async function runAgentCase(options: {
   mode: AgentRun["mode"];
   budget?: Budget;
   signal?: AbortSignal;
+  search?: SearchPort;
+  reviewMode?: ReviewMode;
+  beforeTurn?: (corpus: Corpus, index: number) => void;
 }): Promise<AgentRun> {
   const { item, corpus, provider } = options;
   const budget = options.budget ?? DEFAULT_BUDGET;
@@ -69,14 +86,16 @@ export async function runAgentCase(options: {
   const turns: RecordedTurn[] = [];
   const startedAt = new Date().toISOString();
   const caseStart = performance.now();
-  for (const question of [...item.history, item.question]) {
+  for (const [index, question] of [...item.history, item.question].entries()) {
+    options.beforeTurn?.(corpus, index);
     const start = performance.now();
     const calls: ToolTrace[] = [];
     let request = 0;
     let firstText: number | null = null;
     const result = await runTurn({
       provider,
-      context: { corpus, ledger },
+      context: { corpus, ledger, ...(options.search && { search: options.search }) },
+      ...(options.reviewMode && { reviewMode: options.reviewMode }),
       history: transcript,
       // An open note is context, not an implicit attachment, matching ChatSession.
       userContent: `${turnContext(corpus, item.activeNote)}\n\n${question}`,
@@ -111,6 +130,7 @@ export async function runAgentCase(options: {
             summary: outcome.summary,
             evidenceIds: outcome.evidenceIds,
             newEvidence: outcome.newEvidence,
+            ...(outcome.contract && { contract: outcome.contract }),
           };
           call.exposures = describeExposures(call, corpus, ledger);
         },
@@ -149,6 +169,21 @@ export function describeExposures(
   ledger: EvidenceLedger,
 ): Exposure[] {
   if (!call.outcome || call.outcome.isError) return [];
+  for (const id of call.outcome.evidenceIds) {
+    if (!ledger.get(id)) throw new Error(`Delivered evidence missing from ledger: ${id}`);
+  }
+  if (call.outcome.contract) {
+    const scopes = {
+      excerpt: "search-excerpt",
+      body: "read-body",
+      "matched-line": "match-lines",
+    } as const;
+    return call.outcome.contract.exposures.map(({ wholeSection, scope, ...span }) => ({
+      ...span,
+      scope: scope in scopes ? scopes[scope as keyof typeof scopes] : (scope as ExposureScope),
+      wholeSectionDelivered: wholeSection,
+    }));
+  }
   const scope: ExposureScope =
     call.name === "list"
       ? typeof call.input === "object" &&

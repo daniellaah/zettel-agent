@@ -40,6 +40,7 @@ it("runs the predeclared expanded suite, paired comparisons, repeats and indepen
   const runtime = [
     "src/agent/loop.ts",
     "src/agent/tools.ts",
+    "src/agent/tool-contract.ts",
     "src/agent/prompt.ts",
     "src/agent/evidence.ts",
     "src/agent/messages.ts",

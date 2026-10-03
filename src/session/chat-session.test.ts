@@ -37,6 +37,7 @@ const lastAssistant = (session: ChatSession) => session.getSnapshot().items.at(-
 
 describe("ChatSession", () => {
   it("interleaves text and tool parts in the assistant message", async () => {
+    await Promise.resolve();
     const { session, notifications } = makeSession([
       [text("先搜一下。"), call("search", { query: "间隔重复" })],
       [text("间隔重复更持久 [E1]。")],
@@ -45,7 +46,10 @@ describe("ChatSession", () => {
 
     const item = lastAssistant(session);
     expect(item.parts.map((part) => part.kind)).toEqual(["text", "tool", "text"]);
-    expect(item.parts[1]).toMatchObject({ name: "search", summary: 'search "间隔重复" → 1 note' });
+    expect(item.parts[1]).toMatchObject({
+      name: "search",
+      summary: 'search "间隔重复" → 1 section',
+    });
     expect(item.status).toBe("done");
     expect(item.citations).toEqual({ valid: ["E1"], unknown: [] });
     expect(session.evidence("E1")?.path).toBe("Z/Permanent/间隔重复.md");
@@ -54,6 +58,7 @@ describe("ChatSession", () => {
   });
 
   it("puts the vault context and the active note in the user turn", async () => {
+    await Promise.resolve();
     const { session, provider } = makeSession([[text("ok")]]);
     await session.send("hi");
     const request = (provider as ScriptedProvider).requests[0]!;
@@ -66,6 +71,7 @@ describe("ChatSession", () => {
   });
 
   it("carries the transcript into the next turn", async () => {
+    await Promise.resolve();
     const { session, provider } = makeSession([[text("first")], [text("second")]]);
     await session.send("one");
     await session.send("two");
@@ -74,6 +80,7 @@ describe("ChatSession", () => {
   });
 
   it("shows a setup problem instead of calling the model", async () => {
+    await Promise.resolve();
     const { session } = makeSession("Set your Anthropic API key in settings.");
     await session.send("hi");
     expect(lastAssistant(session)).toMatchObject({
@@ -83,6 +90,7 @@ describe("ChatSession", () => {
   });
 
   it("drops a turn that failed before any response", async () => {
+    await Promise.resolve();
     const { session, provider } = makeSession([new Error("offline"), [text("ok")]]);
     await session.send("one");
     expect(lastAssistant(session)).toMatchObject({ stop: "error", error: "offline" });
@@ -92,6 +100,7 @@ describe("ChatSession", () => {
   });
 
   it("ignores empty input and clears everything on reset", async () => {
+    await Promise.resolve();
     const { session } = makeSession([[text("ok")]]);
     await session.send("   ");
     expect(session.getSnapshot().items).toEqual([]);
@@ -102,6 +111,7 @@ describe("ChatSession", () => {
   });
 
   it("saves the conversation after every turn", async () => {
+    await Promise.resolve();
     const { session, saved } = makeSession([[text("first")], [text("second")]]);
     await session.send("一个很长的问题".repeat(12));
     await session.send("follow-up");
@@ -118,6 +128,7 @@ describe("ChatSession", () => {
   });
 
   it("reopens a saved conversation with working citations and continues it", async () => {
+    await Promise.resolve();
     const first = makeSession([[call("search", { query: "间隔重复" })], [text("更持久 [E1]。")]]);
     await first.session.send("间隔重复有用吗？");
     const record = first.saved.at(-1)!;
@@ -128,7 +139,7 @@ describe("ChatSession", () => {
     expect(second.session.evidence("E1")?.path).toBe("Z/Permanent/间隔重复.md");
     expect(
       second.session.answerMarkdown(second.session.getSnapshot().items[1] as AssistantItem),
-    ).toBe("更持久 [[间隔重复]]。");
+    ).toBe("更持久 [[Z/Permanent/间隔重复]]。");
 
     await second.session.send("然后呢？");
     const request = (second.provider as ScriptedProvider).requests[0]!;
@@ -137,6 +148,7 @@ describe("ChatSession", () => {
   });
 
   it("retries the last question, dropping only the last answer from the transcript", async () => {
+    await Promise.resolve();
     const { session, provider } = makeSession([[text("one")], [text("two")], [text("two again")]]);
     await session.send("q1");
     await session.send("q2");
@@ -152,6 +164,7 @@ describe("ChatSession", () => {
   });
 
   it("retries a turn that failed before any response", async () => {
+    await Promise.resolve();
     const { session } = makeSession([new Error("offline"), [text("ok")]]);
     await session.send("q");
     await session.retry();
@@ -160,6 +173,7 @@ describe("ChatSession", () => {
   });
 
   it("reads attached notes as citable evidence and quotes selections", async () => {
+    await Promise.resolve();
     const { session, provider } = makeSession([[text("好的 [E1]")]]);
     await session.send("解释一下", [
       { kind: "note", path: "Z/Permanent/Retrieval practice.md", title: "Retrieval practice" },
@@ -181,4 +195,136 @@ describe("ChatSession", () => {
       attachments: [{ kind: "note" }, { kind: "selection" }],
     });
   });
+});
+
+it("persists attachment delivery scopes and excludes outside-corpus selections", async () => {
+  await Promise.resolve();
+  const { session } = makeSession([[text("answer")]]);
+  await session.send("question", [
+    { kind: "note", path: "Z/Permanent/Retrieval practice.md", title: "Retrieval practice" },
+    { kind: "selection", path: "outside.md", title: "Outside", text: "PRIVATE SELECTION" },
+  ]);
+  const record = session.toRecord();
+  expect(JSON.stringify(record!.history)).not.toContain("PRIVATE SELECTION");
+  const first = record!.history[0]!;
+  expect(first.role).toBe("user");
+  if (first.role === "user") {
+    expect(first.deliveries?.[0]?.tool).toBe("read");
+    expect(first.deliveries?.[0]?.exposures.some((span) => span.scope === "body")).toBe(true);
+  }
+});
+
+it("recovers from provider and corpus initialization failures and reports save failure", async () => {
+  await Promise.resolve();
+  const corpus = new Corpus({ stageForPath: () => "permanent" });
+  corpus.upsert("P/Test.md", "# Test\nFixture");
+  let fail = true;
+  const session = new ChatSession({
+    corpus: async () => {
+      await Promise.resolve();
+      if (fail) throw new Error("secret corpus error");
+      return corpus;
+    },
+    provider: async () => {
+      await Promise.resolve();
+      if (fail) throw new Error("secret provider error");
+      return new ScriptedProvider([[text("ok")]]);
+    },
+    activeNotePath: () => null,
+    store: {
+      save: async () => {
+        await Promise.resolve();
+        throw new Error("secret storage error");
+      },
+    },
+  });
+  await session.send("first");
+  expect(session.getSnapshot().running).toBe(false);
+  expect(lastAssistant(session).error).not.toContain("secret");
+  fail = false;
+  await session.send("second");
+  expect(lastAssistant(session)).toMatchObject({
+    status: "done",
+  });
+  expect(lastAssistant(session).error).toContain("could not be saved");
+  expect(session.answerMarkdown(lastAssistant(session))).toBe("ok");
+});
+
+it("cancels pending initialization and prevents late results contaminating a new turn", async () => {
+  await Promise.resolve();
+  let resolve!: (value: ScriptedProvider) => void;
+  const late = new ScriptedProvider([[text("old answer")]]);
+  let first = true;
+  const session = new ChatSession({
+    corpus: () => {
+      const c = new Corpus({ stageForPath: () => "permanent" });
+      c.upsert("P/Test.md", "# Test\nFixture");
+      return Promise.resolve(c);
+    },
+    provider: () =>
+      first
+        ? ((first = false),
+          new Promise((r) => {
+            resolve = r;
+          }))
+        : Promise.resolve(new ScriptedProvider([[text("new answer")]])),
+    activeNotePath: () => null,
+  });
+  const old = session.send("old");
+  session.stop();
+  expect(lastAssistant(session)).toMatchObject({ status: "done", stop: "aborted" });
+  session.reset();
+  await session.send("new");
+  resolve(late);
+  await old;
+  expect(late.requests).toHaveLength(0);
+  expect(session.answerMarkdown(lastAssistant(session))).toBe("new answer");
+  expect(session.getSnapshot().running).toBe(false);
+});
+
+it("isolates corpus initialization across loading history", async () => {
+  await Promise.resolve();
+  let release!: (c: Corpus) => void;
+  const session = new ChatSession({
+    corpus: () =>
+      new Promise((r) => {
+        release = r;
+      }),
+    provider: () => Promise.resolve(new ScriptedProvider([[text("old")]])),
+    activeNotePath: () => null,
+  });
+  const pending = session.send("old");
+  await Promise.resolve();
+  await Promise.resolve();
+  session.load({
+    version: 1,
+    id: "loaded",
+    title: "Loaded",
+    createdAt: "2026-10-02",
+    updatedAt: "2026-10-02",
+    items: [],
+    history: [],
+    evidence: [],
+  });
+  release(new Corpus({ stageForPath: () => "permanent" }));
+  await pending;
+  expect(session.getSnapshot()).toEqual({ conversationId: "loaded", items: [], running: false });
+});
+
+it("recovers a failed corpus initialization before any model dispatch", async () => {
+  const provider = new ScriptedProvider([[text("recovered")]]);
+  const corpus = new Corpus({ stageForPath: () => "permanent" });
+  corpus.upsert("P/Test.md", "# Test\nFixture");
+  let fail = true;
+  const session = new ChatSession({
+    corpus: () => (fail ? Promise.reject(new Error("private failure")) : Promise.resolve(corpus)),
+    provider: () => Promise.resolve(provider),
+    activeNotePath: () => null,
+  });
+  await session.send("first");
+  expect(session.getSnapshot().running).toBe(false);
+  expect(provider.requests).toHaveLength(0);
+  fail = false;
+  await session.send("second");
+  expect(session.answerMarkdown(lastAssistant(session))).toBe("recovered");
 });

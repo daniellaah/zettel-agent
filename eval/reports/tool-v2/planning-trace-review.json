@@ -1,0 +1,395 @@
+{
+  "schema": 1,
+  "review": "mechanical review of immutable historical development traces; no semantic judgment or test tuning",
+  "primaryDevRuns": 48,
+  "toolCalls": 419,
+  "repeatedExactCalls": 0,
+  "maxToolCalls": 19,
+  "runs": [
+    {
+      "itemId": "a01",
+      "turns": 1,
+      "toolCalls": 2,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a01-1-run.json",
+      "sha256": "d5d4134e3618f8bcab38b44ae9dfaa346d19282731e39a05ddc1659e85a0a3f5"
+    },
+    {
+      "itemId": "a02",
+      "turns": 1,
+      "toolCalls": 11,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a02-1-run.json",
+      "sha256": "712c978d1c5ec074158de626b49910fbbf5162e6af67693c2b6d0bb3f44ebcea"
+    },
+    {
+      "itemId": "a03",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a03-1-run.json",
+      "sha256": "c4ee6f72c26a9257088a675bef1ec3d4828a66b1ca980e09fe4f336ba99f1767"
+    },
+    {
+      "itemId": "a04",
+      "turns": 1,
+      "toolCalls": 9,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a04-1-run.json",
+      "sha256": "a07a44130002ff1055e7897ee726ef581bc0bfc9ad066bd2c62e32dd81438d35"
+    },
+    {
+      "itemId": "a05",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a05-1-run.json",
+      "sha256": "e0600ecee08761f7e2539c3dc4ec3324dd90f32e8bce8c6e0c4cee985e2d1019"
+    },
+    {
+      "itemId": "a06",
+      "turns": 1,
+      "toolCalls": 9,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a06-1-run.json",
+      "sha256": "c431cbc8ebcc4f4fbfafb0aefdf26ca36f35baa934003ee618d42f5894f2d616"
+    },
+    {
+      "itemId": "a07",
+      "turns": 2,
+      "toolCalls": 13,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a07-1-run.json",
+      "sha256": "1c7d2418a11b41dd5ce80ae3970183876e10276df3a24d517be753e8850271ba"
+    },
+    {
+      "itemId": "a08",
+      "turns": 1,
+      "toolCalls": 9,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a08-1-run.json",
+      "sha256": "af19cd266a1cbd66982d46ac2f27c0622a19c4030221fceb21688bd977e5c85e"
+    },
+    {
+      "itemId": "a09",
+      "turns": 1,
+      "toolCalls": 5,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a09-1-run.json",
+      "sha256": "dd91be26a8ab4ea25c9c647b41b808b9b0d3fbb1c101c78d78f43aadfb875987"
+    },
+    {
+      "itemId": "a10",
+      "turns": 2,
+      "toolCalls": 19,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a10-1-run.json",
+      "sha256": "6ac31648e8c7b1ba54bebbaa120292c8c632658a5edcaff137dcc9d4ab50a8de"
+    },
+    {
+      "itemId": "a11",
+      "turns": 1,
+      "toolCalls": 13,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a11-1-run.json",
+      "sha256": "b57ac75c51e4a57a3ec8665bd11db06bf204deed2440f5b7bf6880e607930161"
+    },
+    {
+      "itemId": "a12",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a12-1-run.json",
+      "sha256": "e39dd3f65c3edf3385d4e7c64b52712d7407a2d7df591ab2db955b474bf3500c"
+    },
+    {
+      "itemId": "a13",
+      "turns": 1,
+      "toolCalls": 4,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a13-1-run.json",
+      "sha256": "93d2de6f94980b0c5f8fca67dbd49deb62e762d60e5ef0c99a307d13e8ea2ffd"
+    },
+    {
+      "itemId": "a14",
+      "turns": 1,
+      "toolCalls": 14,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a14-1-run.json",
+      "sha256": "8a096f78a38fac217e35b7bae66a9637e5073c7347b232d67216f3f622c09e5b"
+    },
+    {
+      "itemId": "a15",
+      "turns": 1,
+      "toolCalls": 4,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a15-1-run.json",
+      "sha256": "a48e273594125454358795f894b5dc054dc3d976c02f325a32d7b2fbf2f2804b"
+    },
+    {
+      "itemId": "a16",
+      "turns": 1,
+      "toolCalls": 2,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a16-1-run.json",
+      "sha256": "f49b23f8f097f3023e2f68808656ad3fc0eb9a1528c7afea59a5843fd5b4f6ab"
+    },
+    {
+      "itemId": "a17",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a17-1-run.json",
+      "sha256": "acb6e7e829305ff8748bfbd7ca0f66e0209ed31283741b863dfbd227834dd6cc"
+    },
+    {
+      "itemId": "a18",
+      "turns": 1,
+      "toolCalls": 14,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a18-1-run.json",
+      "sha256": "19cc9513fa5a1ab45450b47bbab66c4d26af1c7991eb1fe758fbd185f6f7796f"
+    },
+    {
+      "itemId": "a19",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a19-1-run.json",
+      "sha256": "17e5f1b817030d06feede9f656e7928abf503ee7ba9982f308f643cbef72e8af"
+    },
+    {
+      "itemId": "a20",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a20-1-run.json",
+      "sha256": "5278a617a91a049e71a97a33a87627c13425701810ac32dca24c497ba8a7265d"
+    },
+    {
+      "itemId": "a21",
+      "turns": 1,
+      "toolCalls": 3,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a21-1-run.json",
+      "sha256": "b0503ab68d563a773775fa10237909056214e69308a833f4f42fb0d6f9ae5da6"
+    },
+    {
+      "itemId": "a22",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a22-1-run.json",
+      "sha256": "5f121bb6c77ef71475c12d0ca099bbfc261b45afe032fdd27890051b8c1cf8d7"
+    },
+    {
+      "itemId": "a23",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a23-1-run.json",
+      "sha256": "ad7245c7cd0ffd0699812df14d9365cd56ca7d83933d3f39d4552c9964de242f"
+    },
+    {
+      "itemId": "a24",
+      "turns": 1,
+      "toolCalls": 10,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a24-1-run.json",
+      "sha256": "1b9f509787677ca33db000a930baed22f3e0a40c6821cc42f8c05b6b4ab90aec"
+    },
+    {
+      "itemId": "a25",
+      "turns": 1,
+      "toolCalls": 4,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a25-1-run.json",
+      "sha256": "7d996e35c989d4d3120dc1f2c03e285076ad093ba06e29f168b971e5979dc15a"
+    },
+    {
+      "itemId": "a26",
+      "turns": 1,
+      "toolCalls": 11,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a26-1-run.json",
+      "sha256": "ba40f6b32f91c77e7f1d894b1aeb3e980009cd2f62787ef340eacb8bf146793b"
+    },
+    {
+      "itemId": "a27",
+      "turns": 1,
+      "toolCalls": 10,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a27-1-run.json",
+      "sha256": "0d36488372a2b2a933d827e7da3000caa6b1c6474827b0537659fa8a8258dbca"
+    },
+    {
+      "itemId": "a28",
+      "turns": 1,
+      "toolCalls": 2,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a28-1-run.json",
+      "sha256": "5a474e44f0a1cf8cda747fedb0e23a7e2a4b3fd51925c77a7c7fcd593e09edf7"
+    },
+    {
+      "itemId": "a29",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a29-1-run.json",
+      "sha256": "9ee4de9a8db5865d0ac3da99c1e53827e99195d2cc6e50f0605c825b9e0daac7"
+    },
+    {
+      "itemId": "a30",
+      "turns": 1,
+      "toolCalls": 5,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a30-1-run.json",
+      "sha256": "ad89806c3daf9666d079ed5d02a78a6f4b87b2cd4153204adb839cb232fc0837"
+    },
+    {
+      "itemId": "a31",
+      "turns": 1,
+      "toolCalls": 14,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a31-1-run.json",
+      "sha256": "9f79d5e79b44387d87a4be5684fb8e62576e7469e3713f5118ae5634433bb48b"
+    },
+    {
+      "itemId": "a32",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a32-1-run.json",
+      "sha256": "8bc15ee03ef6e7f3728dff89ec37c6d1b027350d5447fc1e39e2c3bb7f05a737"
+    },
+    {
+      "itemId": "a33",
+      "turns": 1,
+      "toolCalls": 11,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a33-1-run.json",
+      "sha256": "47758b1b33c8793a07aaf913ba199ccbb5d24e646f5e9e2e5df847eecc9f032a"
+    },
+    {
+      "itemId": "a34",
+      "turns": 1,
+      "toolCalls": 12,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a34-1-run.json",
+      "sha256": "41d000cbd3c8830465638a4e8d05e2da73d86d3d5c02a6e262f5463eade625b5"
+    },
+    {
+      "itemId": "a35",
+      "turns": 1,
+      "toolCalls": 10,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a35-1-run.json",
+      "sha256": "0b89ef88fd6e73399d532153ba8d19da78acc291c0e3df45a730ae807bd91cc5"
+    },
+    {
+      "itemId": "a36",
+      "turns": 1,
+      "toolCalls": 5,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a36-1-run.json",
+      "sha256": "dc32fca89329e2361692059c6430e1ba6fe86ff8e4b92e269882d2be41006ee8"
+    },
+    {
+      "itemId": "a37",
+      "turns": 1,
+      "toolCalls": 19,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a37-1-run.json",
+      "sha256": "ae32d0c2e85f89ad4e6aef2b859691dc676c675255ae52b8c16f72ea76555a23"
+    },
+    {
+      "itemId": "a38",
+      "turns": 1,
+      "toolCalls": 4,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a38-1-run.json",
+      "sha256": "2ffc970a0f83c48ee612a11d068e03aaff202aeeb55c8db4cd6af6679b19a7ff"
+    },
+    {
+      "itemId": "a39",
+      "turns": 1,
+      "toolCalls": 3,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a39-1-run.json",
+      "sha256": "553b8230f9592fcff2921ef6596027a8f9b94e484ee1f79554aa931ca1a44a2c"
+    },
+    {
+      "itemId": "a40",
+      "turns": 1,
+      "toolCalls": 18,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a40-1-run.json",
+      "sha256": "6cb82d0d72bcca34c10257af5e53e389ce29c1718e9cde91ff78eb7e92c38581"
+    },
+    {
+      "itemId": "a41",
+      "turns": 1,
+      "toolCalls": 5,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a41-1-run.json",
+      "sha256": "037a00c3b1130f2258abe8146e70d2d165f487dda6d775baa4b67be00b3723bc"
+    },
+    {
+      "itemId": "a42",
+      "turns": 1,
+      "toolCalls": 10,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a42-1-run.json",
+      "sha256": "3523a5977ed6aed6d4c1d4193aa8685145104c3838c9854cdfb4893490afb4d2"
+    },
+    {
+      "itemId": "a43",
+      "turns": 1,
+      "toolCalls": 9,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a43-1-run.json",
+      "sha256": "8535d2b638c42246e6f476e62160bf1e9887bd59ca60c44017feceed5b04c2cc"
+    },
+    {
+      "itemId": "a56",
+      "turns": 1,
+      "toolCalls": 8,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a56-1-run.json",
+      "sha256": "77a91b098fbd34860910a954dc3cfdaf811c5dc0de9528068f4d2bb689cf0797"
+    },
+    {
+      "itemId": "a57",
+      "turns": 1,
+      "toolCalls": 7,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a57-1-run.json",
+      "sha256": "0bad05785408e9b920c66678999b879051e7580ce42a775d06513e19debe48eb"
+    },
+    {
+      "itemId": "a58",
+      "turns": 1,
+      "toolCalls": 10,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a58-1-run.json",
+      "sha256": "304ca1a20a8ee255a44ccdb57cf061aa1e924bb7cc0041f0b00dd4ac6b061af1"
+    },
+    {
+      "itemId": "a59",
+      "turns": 1,
+      "toolCalls": 12,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a59-1-run.json",
+      "sha256": "959090b37430c836bea8c469493a3b9dbad306f7c43ed3dbbd5c58f9ab854e69"
+    },
+    {
+      "itemId": "a60",
+      "turns": 1,
+      "toolCalls": 14,
+      "repeatedExactCalls": 0,
+      "source": "eval/artifacts/2026-10-02T20-21-26-032Z-full-indexed-live/dev-agent-a60-1-run.json",
+      "sha256": "420e608fa512ab672a4b12e1a959e584ce0a57d52d0010d9cea1053922d4c542"
+    }
+  ],
+  "planToolDecision": "deferred; repeated calls do not establish lost subgoals or revisiting completed work; current traces do not justify adding a new tool"
+}

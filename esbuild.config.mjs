@@ -9,7 +9,10 @@ const watch = process.argv.includes("--watch");
 
 // Set OBSIDIAN_PLUGIN_DIR to <test vault>/.obsidian/plugins/zettel-agent
 // to copy each build into a vault for manual testing.
-const pluginDir = process.env.OBSIDIAN_PLUGIN_DIR;
+// Production builds never copy merely because an inherited environment variable exists.
+const pluginDir = process.argv.includes("--copy-to-vault")
+  ? process.env.OBSIDIAN_PLUGIN_DIR
+  : undefined;
 const releaseAssets = ["main.js", "manifest.json", "styles.css"];
 
 /** @type {esbuild.Plugin} */

@@ -1,6 +1,6 @@
 # Tool optimization and semantic retrieval plan
 
-Status: proposed implementation plan; 2026-10-02. This document is the handoff for a new coding conversation. It authorizes no paid run by itself and changes no runtime code or notes.
+Status: free tool implementation and offline mechanics completed on 2026-10-02. The owner subsequently selected local Ollama and requested a usable opt-in hybrid feature; see [local embedding results](local-embedding-results.md) and the [first-phase report](tool-optimization-results.md). Genuine vectors and local Obsidian E2E are implemented; the free common-label retrieval review, development tuning and one fresh query checkpoint are complete; see [quality results](local-retrieval-quality-results.md). Paid Agent/judge/E2E and default promotion remain deferred. The follow-on free Agentic RAG work (bounded answer self-review/repair, coverage state, context windows, ordered concurrent search preparation and independent mechanics fixtures) is also implemented; see [Agentic RAG results](agentic-rag-results.md). Its real paired validation and independent calibration remain deferred. The original proposal below is retained; it does not authorize paid runs.
 
 ## Objective and starting point
 

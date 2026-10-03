@@ -1,0 +1,1205 @@
+{
+  "schema": 1,
+  "items": [
+    {
+      "id": "r01",
+      "family": "qlora-precision",
+      "query": "Does four-bit QLoRA weight storage imply four-bit matrix computation?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r01"
+    },
+    {
+      "id": "r02",
+      "family": "swing-overlap",
+      "query": "Why does a user pair with a broad shared click history contribute less to Swing item similarity?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r02"
+    },
+    {
+      "id": "r03",
+      "family": "colbert-aggregation",
+      "query": "In ColBERT MaxSim, are maxima summed over query tokens or document tokens?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r03"
+    },
+    {
+      "id": "r04",
+      "family": "logq-sampler",
+      "query": "Which probability must LogQ estimate for interaction-sampled minibatch negatives?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r04"
+    },
+    {
+      "id": "r05",
+      "family": "flash-numerical",
+      "query": "If an attention implementation is mathematically exact, must it produce bit-for-bit identical floating-point results?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r05"
+    },
+    {
+      "id": "r06",
+      "family": "fold-preprocessing",
+      "query": "Should standardization statistics be fitted once on all examples before running cross-validation?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r06"
+    },
+    {
+      "id": "r07",
+      "family": "candidate-coverage",
+      "query": "Can a perfect second-stage ranker recover a relevant item omitted by the first-stage retriever?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r07"
+    },
+    {
+      "id": "r08",
+      "family": "bootstrap-information",
+      "query": "Does drawing the same observation repeatedly in a bootstrap sample create new independent evidence?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r08"
+    },
+    {
+      "id": "r09",
+      "family": "context-continuity",
+      "query": "How can compaction and external task notes preserve progress without guaranteeing that needed details will be used later?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r09"
+    },
+    {
+      "id": "r10",
+      "family": "tfx-parity",
+      "query": "Does exporting preprocessing with a TFX model establish complete training-serving parity?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r10"
+    },
+    {
+      "id": "r11",
+      "family": "idle-lateness",
+      "query": "Why must marking a Flink input idle be considered together with the late-event policy?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r11"
+    },
+    {
+      "id": "r12",
+      "family": "ivf-quantization",
+      "query": "Does probing more IVF lists also eliminate the distance approximation introduced by product quantization?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r12"
+    },
+    {
+      "id": "r13",
+      "family": "dpo-reference",
+      "query": "Is DPO reference-free just because it does not train a separate reward network?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r13"
+    },
+    {
+      "id": "r14",
+      "family": "hnsw-lifecycle",
+      "query": "Can increasing HNSW query search breadth substitute for the graph connections selected during construction?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r14"
+    },
+    {
+      "id": "r15",
+      "family": "citation-support",
+      "query": "Is an answer grounded merely because it is factually correct and contains citation markers?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r15"
+    },
+    {
+      "id": "r16",
+      "family": "paged-lifecycles",
+      "query": "Do QLoRA paged optimizers and vLLM PagedAttention manage the same tensors and workload?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r16"
+    },
+    {
+      "id": "r17",
+      "family": "owner-speculative-measurement",
+      "query": "Which draft lookahead was measured to give the lowest latency in our production service?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r17"
+    },
+    {
+      "id": "r18",
+      "family": "owner-sasrec-measurement",
+      "query": "Do these notes record the online CTR uplift from my SASRec deployment?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r18"
+    },
+    {
+      "id": "r19",
+      "family": "owner-bpr-configuration",
+      "query": "What learning rate did I choose for my own BPR production training run?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r19"
+    },
+    {
+      "id": "r20",
+      "family": "owner-grpo-hardware",
+      "query": "Which GPU model and cluster size did I use for my GRPO training experiment?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r20"
+    },
+    {
+      "id": "r021",
+      "family": "lora",
+      "query": "Does LoRA make the pretrained weight matrix low rank, and why is the initial adaptation zero?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r021"
+    },
+    {
+      "id": "r022",
+      "family": "lora",
+      "query": "Is LoRA rank a restriction on the stored base matrix or on its learned increment?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r022"
+    },
+    {
+      "id": "r023",
+      "family": "lora",
+      "query": "What does merging a LoRA adapter change at deployment, and when is keeping it separate useful?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r023"
+    },
+    {
+      "id": "r024",
+      "family": "lora",
+      "query": "Compare merged LoRA weights with choosing adapters dynamically while sharing a base model.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r024"
+    },
+    {
+      "id": "r025",
+      "family": "qlora",
+      "query": "What does QLoRA double quantization compress beyond the four-bit weight codes?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r025"
+    },
+    {
+      "id": "r026",
+      "family": "qlora",
+      "query": "Why can quantizing quantization scales reduce QLoRA storage without changing the base code width?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r026"
+    },
+    {
+      "id": "r027",
+      "family": "flashattention",
+      "query": "Does FlashAttention remove quadratic arithmetic when it removes the stored attention matrix?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r027"
+    },
+    {
+      "id": "r028",
+      "family": "flashattention",
+      "query": "Explain FlashAttention arithmetic, auxiliary memory and high-bandwidth-memory traffic as separate resource bounds.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r028"
+    },
+    {
+      "id": "r029",
+      "family": "flashattention",
+      "query": "How can FlashAttention perform extra backward arithmetic and still run faster in the paper?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r029"
+    },
+    {
+      "id": "r030",
+      "family": "flashattention",
+      "query": "Why does recomputing attention blocks trade arithmetic for memory traffic rather than just wasting work?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r030"
+    },
+    {
+      "id": "r031",
+      "family": "speculative",
+      "query": "How does speculative decoding verify proposed tokens while preserving an accepted prefix?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r031"
+    },
+    {
+      "id": "r032",
+      "family": "speculative",
+      "query": "What is the draft-token acceptance ratio and why does verification stop at the first rejection?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r032"
+    },
+    {
+      "id": "r033",
+      "family": "speculative",
+      "query": "Why is sampling from the target directly after a draft rejection not the residual correction described in these notes?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r033"
+    },
+    {
+      "id": "r034",
+      "family": "speculative",
+      "query": "What distribution supplies the replacement after a rejected speculative token?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r034"
+    },
+    {
+      "id": "r035",
+      "family": "vllm",
+      "query": "When can vLLM share KV-cache blocks and when must it copy them?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r035"
+    },
+    {
+      "id": "r036",
+      "family": "vllm",
+      "query": "How does copy-on-write preserve shared prompt state when generated continuations diverge?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r036"
+    },
+    {
+      "id": "r037",
+      "family": "sasrec",
+      "query": "What ranking problem do SASRec sampled HR@10 and NDCG@10 evaluate?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r037"
+    },
+    {
+      "id": "r038",
+      "family": "sasrec",
+      "query": "Can SASRec results with one positive and one hundred sampled negatives be treated as full-catalog ranking scores?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r038"
+    },
+    {
+      "id": "r039",
+      "family": "youtube",
+      "query": "Why does watch-time weighting change a YouTube logistic ranker from an ordinary CTR predictor?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r039"
+    },
+    {
+      "id": "r040",
+      "family": "youtube",
+      "query": "Under what assumption do the weighted logistic odds approximate expected watch time?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r040"
+    },
+    {
+      "id": "r041",
+      "family": "youtube",
+      "query": "Why does YouTube retrieval use earlier actions for a future-watch label and limit examples per user?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r041"
+    },
+    {
+      "id": "r042",
+      "family": "youtube",
+      "query": "What leakage and user-weighting issues arise when predicting a randomly held-out watch from the remaining history?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r042"
+    },
+    {
+      "id": "r043",
+      "family": "mind",
+      "query": "Why does MIND randomize routing logits when it shares the behavior-to-interest mapping?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r043"
+    },
+    {
+      "id": "r044",
+      "family": "mind",
+      "query": "Explain how shared routing transformations could otherwise produce identical MIND interest capsules.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r044"
+    },
+    {
+      "id": "r045",
+      "family": "mind",
+      "query": "Is MIND interest count a discovered ground-truth preference count or an allocation heuristic?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r045"
+    },
+    {
+      "id": "r046",
+      "family": "mind",
+      "query": "How does MIND allocate interest capsules from behavior-history length?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r046"
+    },
+    {
+      "id": "r047",
+      "family": "swing",
+      "query": "What evidence and popularity controls define a Swing item-similarity contribution?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r047"
+    },
+    {
+      "id": "r048",
+      "family": "swing",
+      "query": "How do shared clicked items between a user pair and each user activity affect Swing contributions?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r048"
+    },
+    {
+      "id": "r049",
+      "family": "swing",
+      "query": "Why can Swing have extra offline construction work compared with a simpler item-neighborhood method?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r049"
+    },
+    {
+      "id": "r050",
+      "family": "swing",
+      "query": "What additional degree factor and parallel processing pattern appear in Swing graph construction?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r050"
+    },
+    {
+      "id": "r051",
+      "family": "colbert",
+      "query": "Over which token axis does ColBERT MaxSim aggregate its score, and what can be precomputed?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r051"
+    },
+    {
+      "id": "r052",
+      "family": "colbert",
+      "query": "Explain max over document tokens followed by sum over query tokens in ColBERT late interaction.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r052"
+    },
+    {
+      "id": "r053",
+      "family": "colbert",
+      "query": "How do ColBERT approximate token retrieval and exhaustive candidate document scoring differ?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r053"
+    },
+    {
+      "id": "r054",
+      "family": "colbert",
+      "query": "What happens between per-query-token vector search and final ColBERT document scoring?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r054"
+    },
+    {
+      "id": "r055",
+      "family": "faiss",
+      "query": "What is asymmetric about Faiss distance computation with product-quantized database residuals?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r055"
+    },
+    {
+      "id": "r056",
+      "family": "faiss",
+      "query": "Does summing query-dependent codebook lookup distances reconstruct every original database vector exactly?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r056"
+    },
+    {
+      "id": "r057",
+      "family": "dpo",
+      "query": "Why is DPO still reference-relative even though it removes a separately trained reward network?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r057"
+    },
+    {
+      "id": "r058",
+      "family": "dpo",
+      "query": "What assumptions and policy-to-reference ratios underlie the DPO preference objective?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r058"
+    },
+    {
+      "id": "r059",
+      "family": "dpo",
+      "query": "How do DPO offline preference pairs and its fixed reference determine the update?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r059"
+    },
+    {
+      "id": "r060",
+      "family": "dpo",
+      "query": "Does a DPO update simply maximize preferred-response likelihood without considering the rejected response or reference?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r060"
+    },
+    {
+      "id": "r061",
+      "family": "r1",
+      "query": "What do accuracy and format rewards check in R1-Zero, and why are these not universal reasoning validators?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r061"
+    },
+    {
+      "id": "r062",
+      "family": "r1",
+      "query": "Separate task-verifiable rule rewards from formatting rewards in DeepSeek R1-Zero.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r062"
+    },
+    {
+      "id": "r063",
+      "family": "r1",
+      "query": "Why is DeepSeek-R1 training not interchangeable with the R1-Zero or distilled-model pipelines?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r063"
+    },
+    {
+      "id": "r064",
+      "family": "r1",
+      "query": "How do cold-start supervision and the 800000-example distillation collection distinguish R1 from R1-Zero?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r064"
+    },
+    {
+      "id": "r065",
+      "family": "grpo",
+      "query": "How does GRPO construct an outcome advantage without training a value model?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r065"
+    },
+    {
+      "id": "r066",
+      "family": "grpo",
+      "query": "What reference regularization remains when GRPO replaces a critic with group reward statistics?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r066"
+    },
+    {
+      "id": "r067",
+      "family": "qwen3",
+      "query": "How does Qwen3 stop a thinking segment when a reasoning-token budget is reached?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r067"
+    },
+    {
+      "id": "r068",
+      "family": "qwen3",
+      "query": "Is a thinking-token budget the same as a bound on the final-answer tokens in Qwen3?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r068"
+    },
+    {
+      "id": "r069",
+      "family": "dpr",
+      "query": "How do DPR in-batch negatives and a BM25 hard negative contribute different training alternatives?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r069"
+    },
+    {
+      "id": "r070",
+      "family": "dpr",
+      "query": "Which negative passages were considered in DPR and how are batch passage embeddings reused?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r070"
+    },
+    {
+      "id": "r071",
+      "family": "rag",
+      "query": "How do RAG-Sequence and RAG-Token differ, and which retriever components moved during the reported training?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r071"
+    },
+    {
+      "id": "r072",
+      "family": "rag",
+      "query": "Does joint RAG training in these notes imply rebuilding document embeddings on every update?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r072"
+    },
+    {
+      "id": "r073",
+      "family": "react",
+      "query": "What does ReAct reasoning add between actions and observations, and what retrieval interface was evaluated?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r073"
+    },
+    {
+      "id": "r074",
+      "family": "react",
+      "query": "Why should the original ReAct Wikipedia tools not be described as a state-of-the-art retriever?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r074"
+    },
+    {
+      "id": "r075",
+      "family": "agent-design",
+      "query": "What decision separates a predefined workflow from an agent, and what costs come with added autonomy?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r075"
+    },
+    {
+      "id": "r076",
+      "family": "agent-design",
+      "query": "Does placing an LLM inside a fixed sequence make that sequence an autonomous agent?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r076"
+    },
+    {
+      "id": "r077",
+      "family": "swebench",
+      "query": "What must happen for a SWE-bench patch to count as resolved, beyond a plausible explanation?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r077"
+    },
+    {
+      "id": "r078",
+      "family": "swebench",
+      "query": "Why are regression tests part of SWE-bench resolution instead of checking only the newly failing test?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r078"
+    },
+    {
+      "id": "r079",
+      "family": "alce",
+      "query": "Why can citation precision and recall reveal different failures in an otherwise fully cited answer?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r079"
+    },
+    {
+      "id": "r080",
+      "family": "alce",
+      "query": "How does ALCE consider support from multiple passages and unnecessary references?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r080"
+    },
+    {
+      "id": "r081",
+      "family": "agent-evals",
+      "query": "Why does increasing attempts affect at-least-one success differently from every-trial reliability?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r081"
+    },
+    {
+      "id": "r082",
+      "family": "agent-evals",
+      "query": "Can best-of-k success be reported as a guarantee that every customer-facing trial succeeds?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r082"
+    },
+    {
+      "id": "r107",
+      "family": "experiments",
+      "query": "Why should sample-ratio mismatch be investigated before interpreting an experiment uplift?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r107"
+    },
+    {
+      "id": "r108",
+      "family": "experiments",
+      "query": "Does a significant treatment metric repair an invalid allocation ratio?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r108"
+    },
+    {
+      "id": "r109",
+      "family": "experiments",
+      "query": "Why can segmenting by activity during treatment distort an experiment comparison?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r109"
+    },
+    {
+      "id": "r110",
+      "family": "experiments",
+      "query": "Compare pre-experiment activity segments with activity-defined segments after treatment starts.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r110"
+    },
+    {
+      "id": "r111",
+      "family": "flink",
+      "query": "What must a Flink source support for checkpoint recovery to maintain exactly-once processing semantics?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r111"
+    },
+    {
+      "id": "r112",
+      "family": "flink",
+      "query": "How do source positions and operator state combine during Flink recovery?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r112"
+    },
+    {
+      "id": "r113",
+      "family": "ml-debt",
+      "query": "How can two ML systems create a feedback loop without an explicit data dependency?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r113"
+    },
+    {
+      "id": "r114",
+      "family": "ml-debt",
+      "query": "Distinguish direct training-data selection feedback from interactions mediated through users and the world.",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r114"
+    },
+    {
+      "id": "r115",
+      "family": "bpr",
+      "query": "What preferences does BPR infer from implicit interactions, and which comparisons remain unspecified?",
+      "slice": "exact-term",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r115"
+    },
+    {
+      "id": "r116",
+      "family": "bpr",
+      "query": "Is every unobserved user-item pair an explicit negative preference in BPR?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r116"
+    },
+    {
+      "id": "r117",
+      "family": "owner-speculative-measurement",
+      "query": "What batch size and measured latency made speculative lookahead optimal for my service?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r117"
+    },
+    {
+      "id": "r118",
+      "family": "owner-sasrec-measurement",
+      "query": "Which A/B experiment reports my SASRec CTR lift?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r118"
+    },
+    {
+      "id": "r119",
+      "family": "owner-bpr-configuration",
+      "query": "What was the exact production learning rate for my BPR model?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r119"
+    },
+    {
+      "id": "r120",
+      "family": "owner-grpo-hardware",
+      "query": "What GPU model and number of machines did my own GRPO experiment actually use?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "dev",
+      "answerability": "no-answer",
+      "sourceQuery": "r120"
+    },
+    {
+      "id": "zh01",
+      "family": "lora",
+      "query": "LoRA 的低秩约束施加在原始大矩阵还是新增的更新矩阵？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r021"
+    },
+    {
+      "id": "zh02",
+      "family": "lora",
+      "query": "共享一套基础权重时，把适配器合并进去会损失哪种运行时选择能力？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r023"
+    },
+    {
+      "id": "zh03",
+      "family": "qlora",
+      "query": "QLoRA 的 double quantization 第二次压缩的是什么？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r025"
+    },
+    {
+      "id": "zh04",
+      "family": "flashattention",
+      "query": "不保存完整注意力得分表，是否意味着计算量也变成线性？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r027"
+    },
+    {
+      "id": "zh05",
+      "family": "speculative",
+      "query": "speculative decoding 为什么接受一个草稿前缀后，遇到首次拒绝就停止逐个验收？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r031"
+    },
+    {
+      "id": "zh06",
+      "family": "speculative",
+      "query": "猜测的下一个字被拒绝时，怎样补抽才不会改变目标模型的输出分布？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r033"
+    },
+    {
+      "id": "zh07",
+      "family": "vllm",
+      "query": "vLLM 的共享提示缓存在哪个条件下需要 copy-on-write？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r035"
+    },
+    {
+      "id": "zh08",
+      "family": "sasrec",
+      "query": "只让一个正确商品与一百个随机商品竞争的分数，能代表在全目录中排序的效果吗？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r037"
+    },
+    {
+      "id": "zh09",
+      "family": "mind",
+      "query": "MIND 为什么在共享映射时随机初始化 routing logits？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r043"
+    },
+    {
+      "id": "zh10",
+      "family": "mind",
+      "query": "根据历史行为长度分配的兴趣槽位数量，是否测量了用户真正拥有多少种偏好？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r045"
+    },
+    {
+      "id": "zh11",
+      "family": "swing",
+      "query": "Swing 中共同点击很多商品的用户对，为什么每份共现证据反而更弱？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r047"
+    },
+    {
+      "id": "zh12",
+      "family": "colbert",
+      "query": "把每个提问词与候选文章里最相近的词匹配后，最终要沿哪一侧求和？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r051"
+    },
+    {
+      "id": "zh13",
+      "family": "faiss",
+      "query": "Faiss 的 ADC 为什么一边保留原始查询，一边使用压缩后的数据库向量？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r055"
+    },
+    {
+      "id": "zh14",
+      "family": "dpo",
+      "query": "偏好优化的一次更新，是否只需提高胜出回答的概率而忽略落败回答和参考策略？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r059"
+    },
+    {
+      "id": "zh15",
+      "family": "r1",
+      "query": "R1-Zero 的 format reward 与 accuracy reward 分别检查什么？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r061"
+    },
+    {
+      "id": "zh16",
+      "family": "r1",
+      "query": "用教师生成的答案训练小模型，是否等于复制教师完整的强化学习训练过程？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r063"
+    },
+    {
+      "id": "zh17",
+      "family": "grpo",
+      "query": "GRPO 没有 critic 时怎样用同组奖励计算 advantage？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r065"
+    },
+    {
+      "id": "zh18",
+      "family": "qwen3",
+      "query": "思考阶段的令牌配额，能否直接充当最后回答长度的上限？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r067"
+    },
+    {
+      "id": "zh19",
+      "family": "dpr",
+      "query": "DPR 中批内负例与 BM25 hard negative 提供了什么不同的训练对照？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r069"
+    },
+    {
+      "id": "zh20",
+      "family": "rag",
+      "query": "查询编码器被更新以后，是否必然要在每一步重新计算所有文章的向量？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r072"
+    },
+    {
+      "id": "zh21",
+      "family": "agent-design",
+      "query": "ReAct 或固定 LLM workflow 是否仅凭使用模型就具备自主选择下一步的能力？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r075"
+    },
+    {
+      "id": "zh22",
+      "family": "alce",
+      "query": "答案里每句话都有参考标记，为什么仍可能既漏掉必要证据又夹带无关引用？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r079"
+    },
+    {
+      "id": "zh23",
+      "family": "flink",
+      "query": "Flink 恢复 checkpoint 时，operator state 与 source position 为什么需要一起恢复？",
+      "slice": "exact-term",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r111"
+    },
+    {
+      "id": "zh24",
+      "family": "bpr",
+      "query": "用户没有点击某个物品，能否直接推断他明确讨厌这个物品？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "dev",
+      "answerability": "answerable",
+      "sourceQuery": "r115"
+    }
+  ]
+}

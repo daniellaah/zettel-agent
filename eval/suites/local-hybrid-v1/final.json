@@ -1,0 +1,245 @@
+{
+  "schema": 1,
+  "items": [
+    {
+      "id": "f01",
+      "family": "fresh-ridge",
+      "query": "If every predictor is expressed in centimeters rather than meters, why can the shrinkage pattern change even though least-squares predictions would not?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f02",
+      "family": "fresh-ridge",
+      "query": "一个特征从米改成厘米以后，对它施加同样的系数惩罚还公平吗？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f03",
+      "family": "fresh-ridge",
+      "query": "Does an intercept receive the same squared-coefficient penalty as slope parameters in the regularized linear fit described here?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f04",
+      "family": "fresh-ridge",
+      "query": "增大平方系数惩罚时，是否保证每个单独系数的绝对值都严格下降？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f05",
+      "family": "fresh-lasso",
+      "query": "When a feature receives a zero coefficient, what fitting conditions must qualify any claim that the feature is useless?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f06",
+      "family": "fresh-lasso",
+      "query": "某次拟合把一个变量系数压到零，就能说它在所有任务上都无用吗？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f07",
+      "family": "fresh-lasso",
+      "query": "Which penalty geometry permits exact predictor elimination rather than merely shrinking all slopes toward zero?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f08",
+      "family": "fresh-lasso",
+      "query": "为什么绝对值系数约束能够让部分变量退出模型，而不只是把系数变小？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f09",
+      "family": "fresh-cv",
+      "query": "A team reports mean error across five fitted models. Why is this not a direct measurement of its single final deployed artifact?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f10",
+      "family": "fresh-cv",
+      "query": "五次轮换验证的平均误差，究竟评价拟合流程还是最后上线的那一个模型文件？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f11",
+      "family": "fresh-cv",
+      "query": "With ten equal groups, how often is each group withheld and what quantity is averaged to estimate test error?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f12",
+      "family": "fresh-cv",
+      "query": "把样本分成十组以后，每组会做几次验证集，最后怎样汇总误差？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f13",
+      "family": "fresh-forest",
+      "query": "What mechanism allows a weaker predictor to compete at an early tree split when one dominant predictor would otherwise win repeatedly?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f14",
+      "family": "fresh-forest",
+      "query": "一个强特征总是抢走树的前几次分裂机会，怎样给其他特征参与的机会？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f15",
+      "family": "fresh-forest",
+      "query": "If all predictors are made available at every split, which ensemble setup is recovered and what correlation benefit is lost?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f16",
+      "family": "fresh-forest",
+      "query": "每次分裂都允许查看全部特征，会退回哪一种集成方式？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f17",
+      "family": "fresh-bm25",
+      "query": "Under a term-saturating relevance score, why does repeating a query word twenty times fail to yield twenty independent units of ranking reward?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f18",
+      "family": "fresh-bm25",
+      "query": "把提问里的词在文章中反复堆砌，为什么评分收益会越来越小？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f19",
+      "family": "fresh-bm25",
+      "query": "Which setting disables document-length normalization while preserving the separate effect of term-frequency saturation?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f20",
+      "family": "fresh-bm25",
+      "query": "长度归一化参数设为零时，是否连词频的饱和效应也一并消失？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f21",
+      "family": "fresh-adam",
+      "query": "Why does correcting the startup error of zero-initialized gradient accumulators fail to guarantee fairness between demographic groups?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f22",
+      "family": "fresh-adam",
+      "query": "优化器修正初始移动平均的偏差，能否同时消除人群预测偏见？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f23",
+      "family": "fresh-adam",
+      "query": "Which two gradient statistics are tracked by the optimizer, and why might its suggested learning rate still require tuning?",
+      "slice": "paraphrase",
+      "lang": "en",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    },
+    {
+      "id": "f24",
+      "family": "fresh-adam",
+      "query": "同时跟踪梯度均值和未中心化二阶矩的优化器，为什么还不能保证默认学习率处处合适？",
+      "slice": "cross-language",
+      "lang": "zh",
+      "split": "final",
+      "answerability": "answerable",
+      "sourceQuery": null
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import { parseNote } from "../retrieval/markdown";
 import { EvidenceLedger } from "./evidence";
 import {
   excerptAround,
+  excerptWindow,
   executeTool,
   openingText,
   toolDefinitions,
@@ -144,7 +145,7 @@ describe("read", () => {
     const result = executeTool("read", { target: "Large metadata" }, context);
     expect(result.content).toContain("Visible body.");
     expect(result.content).not.toContain("a".repeat(2001));
-    expect(result.content.length).toBeLessThan(2400);
+    expect(result.content.length).toBeLessThan(2800);
   });
 
   it("expands an evidence id to its section and sub-sections", () => {
@@ -177,9 +178,9 @@ describe("read", () => {
 describe("links and list", () => {
   it("shows outgoing links, backlinks and the two-hop neighbourhood", () => {
     const result = executeTool("links", { target: "链接需要理由", depth: 2 }, makeContext());
-    expect(result.content).toContain("Outgoing (1):\n- [E2] Retrieval practice (permanent)");
-    expect(result.content).toContain("Backlinks (1):\n- [E3] 一张卡片只承载一个想法 (permanent)");
-    expect(result.content).toContain("Two links away (0):");
+    expect(result.content).toContain("- [E2] Retrieval practice (permanent)");
+    expect(result.content).toContain("- [E3] 一张卡片只承载一个想法 (permanent)");
+    expect(result.content).toContain("Outgoing (1); Backlinks (1); isOrphan=false");
     expect(result.summary).toBe("links 链接需要理由 → 1 out, 1 in");
   });
 
@@ -192,7 +193,7 @@ describe("links and list", () => {
   it("gives every listed note a citable evidence id", () => {
     const context = makeContext();
     const result = executeTool("list", { orphans_only: true, stages: ["permanent"] }, context);
-    expect(result.content).toMatch(/^- \[E1\] 孤立的想法 /);
+    expect(result.content).toMatch(/^- \[E1\] 孤立的想法 /m);
     expect(result.evidenceIds).toEqual(["E1"]);
     expect(context.ledger.get("E1")?.path).toBe("Z/Permanent/孤立的想法.md");
   });
@@ -200,8 +201,8 @@ describe("links and list", () => {
   it("gives every note in a link neighbourhood an evidence id", () => {
     const context = makeContext();
     const result = executeTool("links", { target: "链接需要理由" }, context);
-    expect(result.content).toMatch(/^Note: \[E1\] 链接需要理由 /);
-    expect(result.content).toContain("Outgoing (1):\n- [E2] Retrieval practice (permanent)");
+    expect(result.content).toMatch(/^Note: \[E1\] 链接需要理由 /m);
+    expect(result.content).toContain("- [E2] Retrieval practice (permanent)");
     expect(result.evidenceIds).toHaveLength(3);
   });
 
@@ -211,7 +212,7 @@ describe("links and list", () => {
     const plain = executeTool("list", filters, context);
     expect(plain.content).not.toContain("没有任何链接");
     const preview = executeTool("list", { ...filters, preview: true }, context);
-    expect(preview.content).toBe(
+    expect(preview.content).toContain(
       "<note_lines>\n- [E1] 孤立的想法 (permanent, 0 out, 0 in) Z/Permanent/孤立的想法.md\n  没有任何链接。\n</note_lines>",
     );
   });
@@ -269,4 +270,48 @@ describe("excerptAround", () => {
     expect(excerpt).toContain("关键句");
     expect(excerpt.startsWith("…")).toBe(true);
   });
+});
+
+describe("precise excerpt offsets", () => {
+  it("records exact source offsets for a clipped excerpt", () => {
+    const context = makeContext();
+    context.corpus.upsert(
+      "Z/Permanent/Long.md",
+      `# Long\n${"before ".repeat(150)}needle${" after".repeat(150)}`,
+    );
+    const result = executeTool("search", { query: "needle" }, context);
+    const span = result.contract!.exposures.find((s) => s.scope === "excerpt")!;
+    const section = context.corpus.get(span.path)!.sections.find((s) => s.id === span.sectionId)!;
+    expect(span.text).toContain(section.text.slice(span.start, span.end));
+    expect(span.wholeSection).toBe(false);
+    expect(result.contract!.truncated).toBe(true);
+  });
+});
+
+it("keeps excerpt ranges valid when the selected window is only whitespace", () => {
+  const window = excerptWindow(" ".repeat(1000), [], 100);
+  expect(window.start).toBeLessThanOrEqual(window.end);
+  expect(window.end).toBeLessThanOrEqual(1000);
+  expect(excerptWindow("short", [], 100)).toEqual({ text: "short", start: 0, end: 5 });
+});
+
+it("bounds encoded source output against input allowance without committing undelivered IDs", () => {
+  const corpus = new Corpus({ stageForPath: () => "permanent" });
+  corpus.upsert("unicode.md", "# Source\n\n" + "中文证据。".repeat(200));
+  const ledger = new EvidenceLedger();
+  const blocked = executeTool(
+    "read",
+    { target: "unicode.md" },
+    { corpus, ledger, maxChars: 10_000, maxOutputBytes: 400 },
+  );
+  expect(blocked.contract?.error?.code).toBe("output-budget");
+  expect(new TextEncoder().encode(JSON.stringify(blocked.content)).length).toBeLessThanOrEqual(400);
+  expect(ledger.entries()).toEqual([]);
+  const passed = executeTool(
+    "read",
+    { target: "unicode.md", max_chars: 100 },
+    { corpus, ledger, maxChars: 10_000, maxOutputBytes: 4000 },
+  );
+  expect(passed.isError).toBe(false);
+  expect(ledger.entries()).toHaveLength(1);
 });

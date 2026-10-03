@@ -1,5 +1,6 @@
 import { PluginSettingTab, SecretComponent, Setting, type App } from "obsidian";
 
+import { localOllamaUrl } from "../retrieval/ollama";
 import type ZettelAgentPlugin from "../main";
 import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "../agent/providers/catalog";
 import { STAGES, normalizeFolder, type RecordingMode } from "../settings";
@@ -88,8 +89,72 @@ export class SettingsTab extends PluginSettingTab {
           .onChange((mode) => {
             settings.recordingMode = mode as RecordingMode;
             void this.plugin.saveSettings();
+            this.plugin.localEmbeddings.schedule();
           }),
       );
+
+    new Setting(containerEl)
+      .setName("Answer checks")
+      .setDesc(
+        "Structural checks add no model calls. Optional self-review uses the same answer model, may add up to three billed calls within the turn budget, and is not independent verification.",
+      )
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("structural", "Citation structure")
+          .addOption("self-review", "Evidence and coverage self-review (experimental)")
+          .setValue(settings.answerReviewMode)
+          .onChange((value) => {
+            settings.answerReviewMode = value === "self-review" ? "self-review" : "structural";
+            void this.plugin.saveSettings();
+          }),
+      );
+
+    new Setting(containerEl).setName("Local retrieval").setHeading();
+    new Setting(containerEl)
+      .setName("Search mode")
+      .setDesc(
+        "Local hybrid combines BM25 with Qwen3 embeddings through Ollama. Research chapters and queries go only to the local service; selected evidence still goes to your answer model. Quality evaluation is pending.",
+      )
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("lexical", "BM25 keywords")
+          .addOption("hybrid", "Local hybrid (experimental)")
+          .setValue(settings.retrievalMode)
+          .onChange((value) => {
+            settings.retrievalMode = value === "hybrid" ? "hybrid" : "lexical";
+            void this.plugin.saveSettings();
+            this.plugin.localEmbeddings.schedule();
+          }),
+      );
+    new Setting(containerEl)
+      .setName("Ollama address")
+      .setDesc("Loopback only. Install once with: ollama pull qwen3-embedding:0.6b")
+      .addText((text) =>
+        text.setValue(settings.ollamaEndpoint).onChange((value) => {
+          try {
+            settings.ollamaEndpoint = localOllamaUrl(value);
+            text.inputEl.setCustomValidity("");
+            void this.plugin.saveSettings();
+            this.plugin.localEmbeddings.schedule();
+          } catch {
+            text.inputEl.setCustomValidity("Use an HTTP localhost address without a path.");
+            text.inputEl.reportValidity();
+          }
+        }),
+      );
+    new Setting(containerEl)
+      .setName("Local index")
+      .setDesc(this.plugin.localEmbeddings.status)
+      .addButton((button) =>
+        button.setButtonText("Build / retry").onClick(async () => {
+          button.setDisabled(true);
+          const pending = this.plugin.localEmbeddings.rebuild();
+          this.display();
+          await pending;
+          this.display();
+        }),
+      )
+      .addButton((button) => button.setButtonText("Refresh status").onClick(() => this.display()));
 
     new Setting(containerEl).setName("Zettelkasten").setHeading();
 
@@ -115,6 +180,7 @@ export class SettingsTab extends PluginSettingTab {
           text.setValue(settings.stageFolders[stage]).onChange((value) => {
             settings.stageFolders[stage] = normalizeFolder(value);
             void this.plugin.saveSettings();
+            this.plugin.scheduleRebuild();
           }),
         );
     }

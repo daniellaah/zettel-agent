@@ -82,6 +82,22 @@ export function indexedInput(item: AnswerItem, run: AgentRun) {
   const seen = new Set<string>();
   for (const delivery of deliveredEvidence(run))
     for (const exposure of delivery.exposures) {
+      if (exposure.text !== undefined) {
+        for (const part of answerUnits(exposure.text)) {
+          if (!delivery.content.includes(part.quote)) continue;
+          const key = `${exposure.id}\u0000${exposure.scope}\u0000${part.quote}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          quotes.push({
+            index: quotes.length,
+            callId: delivery.callId,
+            evidenceId: exposure.id,
+            quote: part.quote,
+            scope: exposure.scope,
+          });
+        }
+        continue;
+      }
       for (const part of answerUnits(delivery.content)) {
         if (
           /^(?:\[E\d+\]\n)?#{1,6} /.test(part.quote) ||
@@ -106,7 +122,7 @@ export function indexedInput(item: AnswerItem, run: AgentRun) {
     const interiors = [
       ...delivery.content.matchAll(/<note path="[^"]+"[^>]*>([\s\S]*?)<\/note>/g),
     ].map((block) => block[1]!);
-    for (const exposure of delivery.exposures)
+    for (const exposure of delivery.exposures.filter((span) => span.text === undefined))
       for (const interior of interiors) {
         for (const part of answerUnits(interior)) {
           if (

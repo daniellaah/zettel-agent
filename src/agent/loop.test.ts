@@ -3,6 +3,11 @@ import { describe, expect, it } from "vitest";
 import { Corpus } from "../retrieval/corpus";
 import { EvidenceLedger } from "./evidence";
 import { textOf, type AssistantMessage, type ChatMessage } from "./messages";
+import { executeTool } from "./tools";
+import { estimateInput } from "./context-window";
+import { SYSTEM_PROMPT } from "./prompt";
+import { userText } from "./messages";
+import { toolDefinitions } from "./tools";
 import { runTurn, type Budget } from "./loop";
 import { ScriptedProvider, call, text, type Step } from "../testing/scripted-provider";
 
@@ -69,7 +74,7 @@ describe("runTurn", () => {
       [call("search", { query: "间隔重复" })],
       [text("间隔重复让记忆更持久 [E1]，另见 [E9]。")],
     ]);
-    expect(toolSummaries).toEqual(['search "间隔重复" → 1 note']);
+    expect(toolSummaries).toEqual(['search "间隔重复" → 1 section']);
     expect(result.citations).toEqual({ valid: ["E1"], unknown: ["E9"] });
     expect(result.usage).toMatchObject({ requests: 2, toolCalls: 1, cacheReadTokens: 160 });
     expectValidTranscript(result.messages);
@@ -107,6 +112,64 @@ describe("runTurn", () => {
     expect(provider.requests[1]!.allowTools).toBe(false);
     const lastUser = provider.requests[1]!.messages.at(-1)!;
     expect(contentOf(lastUser)).toContain("research budget for this turn is used up");
+  });
+
+  it("reserves a final answer before research can consume the remaining input space", async () => {
+    const provider = new ScriptedProvider([
+      [text("Evidence is insufficient; no measurement found.")],
+    ]);
+    const userContent = "Do my notes contain my own measured deployment improvement?";
+    const initialSize = estimateInput(SYSTEM_PROMPT, [userText(userContent)], toolDefinitions());
+    const result = await runTurn({
+      provider,
+      context: makeContext(),
+      history: [],
+      userContent,
+      budget: {
+        maxRequests: 10,
+        maxToolCalls: 30,
+        maxToolChars: 120_000,
+        maxInputTokens: initialSize + 4000,
+      },
+    });
+    expect(provider.requests).toHaveLength(1);
+    expect(provider.requests[0]!.allowTools).toBe(false);
+    expect(result.answer).toContain("insufficient");
+    expect(result.stop).toBe("budget_exhausted");
+  });
+
+  it("synthesizes after an expansion is rejected by the input budget, with calls paired", async () => {
+    const context = makeContext();
+    context.corpus.upsert(
+      "Z/Permanent/Long source.md",
+      "# Long source\n\n" + "alpha ".repeat(5000),
+    );
+    const userContent = "Find alpha and explain what is still missing.";
+    const initialSize = estimateInput(SYSTEM_PROMPT, [userText(userContent)], toolDefinitions());
+    const provider = new ScriptedProvider([
+      [call("read", { target: "Long source" })],
+      [text("The source could not be fully read within this turn; no measurement is established.")],
+    ]);
+    const result = await runTurn({
+      provider,
+      context,
+      history: [],
+      userContent,
+      budget: {
+        maxRequests: 10,
+        maxToolCalls: 30,
+        maxToolChars: 120_000,
+        maxInputTokens: initialSize + 8000,
+      },
+    });
+    expect(provider.requests.map((r) => r.allowTools)).toEqual([true, false]);
+    expect(result.stop).toBe("budget_exhausted");
+    expectValidTranscript(result.messages);
+    expect(result.answer).toContain("no measurement");
+    expect(JSON.stringify(result.messages)).toContain('"code":"output-budget"');
+    const finalRequest = provider.requests.at(-1)!;
+    expect(contentOf(finalRequest.messages.at(-1)!)).toContain("opening and headings");
+    expect(contentOf(finalRequest.messages.at(-1)!)).toContain("never claim corpus-wide absence");
   });
 
   it("runs at most eight tool calls from one response", async () => {
@@ -169,4 +232,59 @@ describe("runTurn", () => {
     expect(result.stop).toBe("error");
     expect(result.messages.map((m) => m.role)).toEqual(["user"]);
   });
+});
+
+it("treats body expansion after title delivery as new progress and persists the scopes", async () => {
+  const context = makeContext();
+  const provider = new ScriptedProvider([
+    [call("list", {})],
+    [call("read", { target: "E1" })],
+    [call("read", { target: "E2" })],
+    [text("done")],
+  ]);
+  const result = await runTurn({ provider, context, history: [], userContent: "q" });
+  const serialized = JSON.stringify(result.messages);
+  expect(serialized).toContain('"scope":"body"');
+  expect(serialized).toContain('"scope":"title"');
+  expect(serialized).not.toContain("recent tool calls returned only evidence");
+});
+
+it("counts attached tool output before allowing further research", async () => {
+  const context = makeContext();
+  const attached = executeTool("read", { target: "Retrieval practice" }, context);
+  const provider = new ScriptedProvider([[text("answer [E1]")]]);
+  const result = await runTurn({
+    provider,
+    context,
+    history: [],
+    userContent: attached.content,
+    userDeliveries: [attached.contract!],
+    budget: { maxRequests: 3, maxToolCalls: 10, maxToolChars: attached.content.length },
+  });
+  expect(provider.requests[0]!.allowTools).toBe(false);
+  expect(result.stop).toBe("budget_exhausted");
+});
+
+it("closes pending tool calls when stopping during local query embedding", async () => {
+  const context = makeContext();
+  const controller = new AbortController();
+  const provider = new ScriptedProvider([
+    [call("search", { query: "memory" }), call("read", { target: "Retrieval practice" })],
+  ]);
+  const result = await runTurn({
+    provider,
+    context: {
+      ...context,
+      search: () => {
+        controller.abort(new Error("stop embedding"));
+        return Promise.reject(new Error("stop embedding"));
+      },
+    },
+    history: [],
+    userContent: "question",
+    signal: controller.signal,
+  });
+  expect(result.stop).toBe("aborted");
+  expectValidTranscript(result.messages);
+  expect(context.ledger.size).toBe(0);
 });

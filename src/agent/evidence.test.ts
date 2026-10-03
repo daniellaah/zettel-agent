@@ -65,3 +65,15 @@ describe("citationsToLinks", () => {
     );
   });
 });
+
+it("preserves qualified link identity in copied citations", () => {
+  const entries = new EvidenceLedger();
+  entries.register({
+    path: "Other/A.md",
+    linkPath: "Other/A",
+    sectionId: "a",
+    headingPath: ["A", "Details"],
+    contentHash: "1",
+  });
+  expect(citationsToLinks("Fact [E1]", entries)).toBe("Fact [[Other/A#Details]]");
+});
