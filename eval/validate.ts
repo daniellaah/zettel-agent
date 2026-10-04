@@ -113,7 +113,24 @@ export function validateSets(
     }
   }
   for (const item of retrieval.items) {
-    if (new Set(item.pool.modes).size !== 3) issues.push(`${item.id}: duplicate pool mode`);
+    if ("modes" in item.pool && new Set(item.pool.modes).size !== 3)
+      issues.push(`${item.id}: duplicate pool mode`);
+    if ("term" in item.pool) {
+      const term = termPattern(item.pool.term);
+      const containing = [...frozen].filter((file) =>
+        corpus.get(file)?.sections.some((section) => term.test(section.text)),
+      );
+      const positive = Object.entries(item.judgments).filter(([, j]) => j.grade === 2);
+      if (
+        positive.length !== Object.keys(item.judgments).length ||
+        containing.sort().join("\n") !==
+          positive
+            .map(([file]) => file)
+            .sort()
+            .join("\n")
+      )
+        issues.push(`${item.id}: term-occurrence labels differ from the notes containing the term`);
+    }
     if (/\p{Script=Han}/u.test(item.query) !== (item.lang === "zh"))
       issues.push(`${item.id}: query language is not ${item.lang}`);
     const positive = Object.values(item.judgments).filter((j) => j.grade > 0);
@@ -180,6 +197,11 @@ export function validateSets(
     }
   }
   return issues;
+}
+
+/** A whole word or phrase, case-insensitive, as an exact-term lookup means it. */
+export function termPattern(term: string): RegExp {
+  return new RegExp(`(?<![\\w-])${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?!\\w)`, "i");
 }
 
 // Metadata values are retained as note data, including provenance wikilinks.

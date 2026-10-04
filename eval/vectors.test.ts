@@ -29,6 +29,45 @@ describe("cross-lingual suite", () => {
   });
 });
 
+describe("pool extension", () => {
+  it("only adds judgments to never-judged candidates, and can be switched off", () => {
+    const frozen = loadEvaluationData("expanded", "frozen");
+    const extended = loadEvaluationData("expanded", "extended");
+    expect(frozen.files).not.toHaveProperty("poolExtension");
+    let added = 0;
+    extended.retrieval.items.forEach((item, i) => {
+      const original = frozen.retrieval.items[i]!.judgments;
+      for (const [path, judgment] of Object.entries(original))
+        expect(item.judgments[path]).toEqual(judgment);
+      added += Object.keys(item.judgments).length - Object.keys(original).length;
+    });
+    expect(added).toBeGreaterThan(0);
+    expect(
+      validateSets(extended.manifest, extended.retrieval, extended.answers, loadFixtureCorpus()),
+    ).toEqual([]);
+    const chinese = loadEvaluationData("crosslingual", "extended");
+    expect(chinese.retrieval.items.map((item) => item.judgments)).toEqual(
+      extended.retrieval.items.map((item) => item.judgments),
+    );
+  });
+});
+
+describe("exact-term suite", () => {
+  it("judges exactly the frozen notes that contain each term", () => {
+    const exact = loadEvaluationData("exact");
+    expect(exact.retrieval.items).toHaveLength(32);
+    expect(exact.retrieval.items.every((item) => item.kind === "exact")).toBe(true);
+    expect(
+      validateSets(exact.manifest, exact.retrieval, exact.answers, loadFixtureCorpus()),
+    ).toEqual([]);
+    const broken = structuredClone(exact.retrieval);
+    delete broken.items[0]!.judgments[Object.keys(broken.items[0]!.judgments)[0]!];
+    expect(validateSets(exact.manifest, broken, exact.answers, loadFixtureCorpus())).toContain(
+      "x01: term-occurrence labels differ from the notes containing the term",
+    );
+  });
+});
+
 describe("frozen evaluation vectors", () => {
   it("cover every frozen section and every evaluation query with unit vectors", () => {
     const sets = loadEvalVectors();

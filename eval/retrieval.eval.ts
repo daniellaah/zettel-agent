@@ -27,7 +27,7 @@ interface Retriever {
 
 describe("frozen learning corpus retrieval", () => {
   it("validates fixtures and compares lexical, semantic and hybrid retrieval without model calls", async () => {
-    const { manifest, retrieval, answers, files } = loadEvaluationData();
+    const { manifest, retrieval, answers, files, labels } = loadEvaluationData();
     const corpus = loadFixtureCorpus();
     expect(validateSnapshot(manifest, readSnapshot(corpus))).toEqual([]);
     expect(validateSets(manifest, retrieval, answers, corpus)).toEqual([]);
@@ -78,7 +78,9 @@ describe("frozen learning corpus retrieval", () => {
           answerability: item.answerability,
           relevantCount: Object.values(grades).filter((grade) => grade > 0).length,
           scores: scoreRetrieval(top10, grades),
-          judgedOnly: scoreJudgedOnly(ranked, grades),
+          // A term-occurrence pool is complete: every unjudged note lacks the term.
+          judgedOnly:
+            "term" in item.pool ? scoreRetrieval(top10, grades) : scoreJudgedOnly(ranked, grades),
           /** Rank of the first sufficient (grade-2) note within the candidate depth. */
           answerRank: answer === -1 ? null : answer + 1,
           missed10: Object.entries(grades)
@@ -155,13 +157,16 @@ describe("frozen learning corpus retrieval", () => {
       corpusHash: manifest.corpusHash,
       node: process.version,
       apiCalls: 0,
+      labels,
       review: retrieval.review,
       status:
         SUITE === "expanded"
           ? "frozen family-separated synthetic evaluation; AI labels, incomplete relevance pools; not agent quality"
           : SUITE === "crosslingual"
             ? "Chinese restatements of the expanded suite (AI-translated); labels inherited; not agent quality"
-            : "development pilot; not a held-out benchmark or agent-quality result",
+            : SUITE === "exact"
+              ? "exact-term lookups with complete term-occurrence labels; not agent quality"
+              : "development pilot; not a held-out benchmark or agent-quality result",
       implementation: {
         bm25: {
           k1: 1.2,
@@ -231,7 +236,8 @@ describe("frozen learning corpus retrieval", () => {
     const pct = (value: number | null) => (value === null ? "—" : `${(value * 100).toFixed(1)}%`);
     const signed = (value: number) => `${value >= 0 ? "+" : ""}${(value * 100).toFixed(1)}`;
     const short = (file: string) => file.split("/").pop()!.replace(/\.md$/, "");
-    const language = SUITE === "crosslingual" ? "Chinese" : "English";
+    const language =
+      SUITE === "crosslingual" ? "Chinese" : SUITE === "exact" ? "English and Chinese" : "English";
     const summaryRows = runs.flatMap((run) =>
       run.groups
         .filter((g) => g.group === "all" || g.group.startsWith("split:"))
@@ -258,7 +264,9 @@ describe("frozen learning corpus retrieval", () => {
       "",
       `Retrievers: BM25F over three tokenizations; ${vectorSets.length ? vectorSets.map((set) => `semantic and hybrid with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid fuses ${FUSION_CANDIDATES} section candidates from each retriever by reciprocal rank fusion (k=${RRF_K}). API calls: 0.`,
       "",
-      "Relevance pools were built from lexical runs only. A semantic retriever can surface relevant notes that were never judged, and the standard metrics count them as zero. Judged-only metrics drop unjudged notes before the cutoff instead; read both, and the unjudged counts, before concluding.",
+      SUITE === "exact"
+        ? "Labels are complete: every note containing the looked-up term is grade 2 and every other note is irrelevant, so standard and judged-only metrics agree."
+        : `Labels: ${labels === "extended" ? "frozen labels plus an AI-judged pool extension for unjudged notes that any retriever ranked in its top five" : "frozen labels only"}. The original pools came from lexical runs, so a semantic retriever can surface relevant notes that were never judged; standard metrics count unjudged notes as zero, judged-only metrics drop them before the cutoff. Read both, and the unjudged counts, before concluding.`,
       "",
       "Recall counts grades 1 and 2. MRR@10 uses only queries with a grade-2 note. nDCG@10 uses linear graded gain (0, 1, 2). No-answer queries are excluded from quality averages.",
       "",
@@ -379,23 +387,24 @@ describe("frozen learning corpus retrieval", () => {
       "",
       "Do not tune on the test split. Labels are AI-authored and pools incomplete, so these retrieval estimates are provisional; answer quality is measured separately.",
       "",
-      "Reproduce with `npm run eval` (English) or `npm run eval:crosslingual` (Chinese). Regenerate frozen vectors with `npm run eval:embed`. Machine-readable rankings, configuration hashes and denominators are in the JSON report next to this file.",
+      "Reproduce with `npm run eval` (English), `npm run eval:crosslingual` (Chinese) or `npm run eval:exact` (exact terms). Regenerate frozen vectors with `npm run eval:embed`. Machine-readable rankings, configuration hashes and denominators are in the JSON report next to this file.",
       "",
     ];
     const reportName =
       SUITE === "expanded"
         ? "retrieval-expanded"
-        : SUITE === "crosslingual"
-          ? "retrieval-crosslingual"
+        : SUITE === "crosslingual" || SUITE === "exact"
+          ? `retrieval-${SUITE}`
           : "retrieval-baseline";
+    const reportFile = labels === "frozen" ? `${reportName}-frozen-labels` : reportName;
     const out = reportDestination(import.meta.dirname, process.env.EVAL_REPORT_DIR);
     mkdirSync(out, { recursive: true });
     writeFileSync(
-      path.join(out, `${reportName}.json`),
+      path.join(out, `${reportFile}.json`),
       await format(JSON.stringify(report), { parser: "json", printWidth: 100 }),
     );
     writeFileSync(
-      path.join(out, `${reportName}.md`),
+      path.join(out, `${reportFile}.md`),
       await format(lines.join("\n"), { parser: "markdown" }),
     );
     console.log(lines.slice(0, lines.indexOf("## By kind")).join("\n"));

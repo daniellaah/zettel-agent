@@ -7,6 +7,7 @@ import { resolveSettings, stageForPath } from "../src/settings";
 import {
   answerSetSchema,
   manifestSchema,
+  poolExtensionSchema,
   retrievalSetSchema,
   translationSetSchema,
   type RetrievalSet,
@@ -15,32 +16,68 @@ import {
 export const VAULT_DIR = path.resolve(import.meta.dirname, "../fixtures/vault");
 export const ZETTELKASTEN_ROOT = "02-Zettelkasten";
 
-/** pilot and expanded are English; crosslingual asks the expanded questions in Chinese. */
-export const SUITES = ["pilot", "expanded", "crosslingual"] as const;
+/**
+ * pilot and expanded are English; crosslingual asks the expanded questions in Chinese;
+ * exact looks up rare terms and phrases, the case keyword search exists for.
+ */
+export const SUITES = ["pilot", "expanded", "crosslingual", "exact"] as const;
 
-export function evaluationFiles(suite = "pilot") {
+/** "frozen" reproduces the original labels; "extended" adds the AI-judged pool extension. */
+export type LabelSet = "frozen" | "extended";
+
+export function evaluationFiles(suite = "pilot", labels: LabelSet = "extended") {
   if (!(SUITES as readonly string[]).includes(suite))
     throw new Error(`Unknown evaluation suite: ${suite}`);
   const dir =
     suite === "pilot" ? import.meta.dirname : path.join(import.meta.dirname, "suites/expanded");
   return {
-    retrieval: path.join(dir, "retrieval.json"),
+    retrieval:
+      suite === "exact"
+        ? path.join(import.meta.dirname, "suites/exact/retrieval.json")
+        : path.join(dir, "retrieval.json"),
+    // Retrieval-only suites validate against the expanded rubrics and add no answers.
     answers: path.join(dir, "answers.json"),
     ...(suite === "crosslingual" && {
       translations: path.join(import.meta.dirname, "suites/crosslingual/queries.json"),
     }),
+    ...(labels === "extended" &&
+      (suite === "expanded" || suite === "crosslingual") && {
+        poolExtension: path.join(import.meta.dirname, "suites/pool-extension/judgments.json"),
+      }),
   };
 }
 
-export function loadEvaluationData(suite = process.env.EVAL_SUITE ?? "pilot") {
-  const files = evaluationFiles(suite);
-  const retrieval = retrievalSetSchema.parse(JSON.parse(readFileSync(files.retrieval, "utf8")));
+export function loadEvaluationData(
+  suite = process.env.EVAL_SUITE ?? "pilot",
+  labels: LabelSet = process.env.EVAL_LABELS === "frozen" ? "frozen" : "extended",
+) {
+  const files = evaluationFiles(suite, labels);
+  let retrieval = retrievalSetSchema.parse(JSON.parse(readFileSync(files.retrieval, "utf8")));
+  if (files.poolExtension) retrieval = extendPool(retrieval, files.poolExtension);
   return {
     manifest: manifestSchema.parse(readJson("corpus-manifest.json")),
+    labels,
     retrieval: files.translations ? translate(retrieval, files.translations) : retrieval,
     answers: answerSetSchema.parse(JSON.parse(readFileSync(files.answers, "utf8"))),
     files,
   };
+}
+
+/** Adds judgments for never-judged candidates; a judgment that already exists is a conflict. */
+function extendPool(retrieval: RetrievalSet, file: string): RetrievalSet {
+  const extension = poolExtensionSchema.parse(JSON.parse(readFileSync(file, "utf8")));
+  if (extension.corpusId !== retrieval.corpusId)
+    throw new Error("Pool extension corpusId mismatch");
+  const extended = structuredClone(retrieval);
+  for (const { id, judgments } of extension.items) {
+    const item = extended.items.find((candidate) => candidate.id === id);
+    if (!item) throw new Error(`Pool extension names an unknown item: ${id}`);
+    for (const [path, judgment] of Object.entries(judgments)) {
+      if (item.judgments[path]) throw new Error(`Pool extension rejudges ${id}: ${path}`);
+      item.judgments[path] = judgment;
+    }
+  }
+  return extended;
 }
 
 /** Same items and labels, with each query replaced by its restatement. */

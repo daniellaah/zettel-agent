@@ -37,28 +37,31 @@ export const manifestSchema = z
   })
   .strict();
 
+const judgmentSchema = z
+  .object({
+    grade: z.union([z.literal(0), z.literal(1), z.literal(2)]),
+    rationale: text,
+    excerpts: z.array(text),
+  })
+  .strict();
+
 export const retrievalItemSchema = z
   .object({
     ...item,
     query: text,
-    kind: z.enum(["lookup", "paraphrase", "synthesis", "distinction", "no-answer"]),
+    kind: z.enum(["lookup", "paraphrase", "synthesis", "distinction", "no-answer", "exact"]),
     answerability: z.enum(["answerable", "no-answer"]),
-    pool: z
-      .object({
-        depth: z.literal(20),
-        modes: z.array(z.enum(["words", "bigrams", "both"])).length(3),
-      })
-      .strict(),
-    judgments: z.record(
-      notePath,
+    pool: z.union([
       z
         .object({
-          grade: z.union([z.literal(0), z.literal(1), z.literal(2)]),
-          rationale: text,
-          excerpts: z.array(text),
+          depth: z.literal(20),
+          modes: z.array(z.enum(["words", "bigrams", "both"])).length(3),
         })
         .strict(),
-    ),
+      // Exact-term lookups judge every note that contains the term, so the pool is complete.
+      z.object({ method: z.literal("term-occurrence"), term: text }).strict(),
+    ]),
+    judgments: z.record(notePath, judgmentSchema),
     notes: text,
   })
   .strict();
@@ -136,6 +139,20 @@ export const translationSetSchema = z
     translation: z.literal("ai-translated; human-review-not-performed"),
     convention: text,
     items: z.array(z.object({ id: text, query: text }).strict()).min(1),
+  })
+  .strict();
+
+/**
+ * Extra judgments for candidates that later retrievers ranked highly but the frozen labels
+ * never judged. They only add to the frozen labels and never replace one.
+ */
+export const poolExtensionSchema = z
+  .object({
+    schema: z.literal(1),
+    corpusId: text,
+    review: z.literal("ai-judged pool extension; human-review-not-performed"),
+    method: text,
+    items: z.array(z.object({ id: text, judgments: z.record(notePath, judgmentSchema) }).strict()),
   })
   .strict();
 

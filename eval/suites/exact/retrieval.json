@@ -1,0 +1,780 @@
+{
+  "schema": 1,
+  "corpusId": "learning-v1-790b1b2bb6c7",
+  "review": "ai-reviewed; human-review-not-performed",
+  "items": [
+    {
+      "id": "x01",
+      "family": "exact-qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions NormalFloat?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "NormalFloat"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “NormalFloat” that the query looks up.",
+          "excerpts": [
+            "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x02",
+      "family": "exact-qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Where did I write about BFloat16?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "BFloat16"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “BFloat16” that the query looks up.",
+          "excerpts": [
+            "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x03",
+      "family": "exact-colbert-index",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions an IVFPQ index?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "IVFPQ"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Token-index filtering and document refinement in ColBERT.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “IVFPQ” that the query looks up.",
+          "excerpts": [
+            "ColBERT indexes document token embeddings and retains a mapping from each embedding to its source document. At query time it searches the vector index separately for each query embedding, maps the matches to document IDs, and deduplicates them. It then exhaustively computes its document score for that candidate set. The paper uses an approximate IVFPQ index for the initial filtering stage."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x04",
+      "family": "exact-rrf",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note refers to the LETOR combinations?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "LETOR"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Rank-based combination with reciprocal rank fusion.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “LETOR” that the query looks up.",
+          "excerpts": [
+            "Reciprocal rank fusion sums a reciprocal contribution from each system's rank for a document, using an added constant to moderate the influence of very high positions. The method combines rankings without requiring comparable raw retrieval scores or training examples. The authors fix the constant at 60 after a pilot investigation and retain it for subsequent validation. Their reported improvements concern the particular TREC and LETOR combinations studied."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x05",
+      "family": "exact-swing-mapreduce",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Where does MapReduce come up in my notes?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "MapReduce"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Swing construction cost and parallelization.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “MapReduce” that the query looks up.",
+          "excerpts": [
+            "The paper compares Swing's construction cost with conventional local item-similarity computation. Its complexity analysis introduces an additional factor for item-neighborhood user degree because Swing considers user pairs. The implementation parallelizes construction using a MapReduce framework: input consists of per-user clicked-item lists, mapper outputs distribute local neighborhoods, and reducers gather users associated with seed items. The similarity computation described in this part of the paper uses clicks rather than explicit ratings."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x06",
+      "family": "exact-learnbpr",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note is about LearnBPR?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "LearnBPR"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Uniform triple sampling in LearnBPR.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “LearnBPR” that the query looks up.",
+          "excerpts": ["# Uniform triple sampling in LearnBPR"]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x07",
+      "family": "exact-flop",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note talks about FLOP count?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "FLOP"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/Recomputation can improve speed when memory traffic is the bottleneck.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “FLOP” that the query looks up.",
+          "excerpts": [
+            "Recomputing an intermediate adds arithmetic but can avoid transferring a large saved tensor through slower memory. Whether that exchange helps depends on the hardware and workload. The useful optimization target is the limiting resource on the execution path, so a smaller FLOP count alone does not establish lower latency."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x08",
+      "family": "exact-bpr-auc",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note relates a training criterion to AUC?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "AUC"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Pairwise logistic likelihood and priors in BPR.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “AUC” that the query looks up.",
+          "excerpts": [
+            "BPR models the probability of a user preferring one item over another with a logistic function of a pairwise score. Its maximum-posterior criterion sums log probabilities and adds parameter regularization from a normal prior. The paper applies this criterion to matrix factorization using the difference between two user-item scores. It relates the criterion to AUC while distinguishing its smooth log-sigmoid objective and weighting from the AUC statistic."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x09",
+      "family": "exact-dpr-passages",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions 100-word passages?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "100-word"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Dual encoders and passage preparation in DPR.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “100-word” that the query looks up.",
+          "excerpts": [
+            "DPR uses independent BERT question and passage encoders and scores pairs by embedding inner product. Passage vectors are computed and indexed offline; online questions are encoded and used to retrieve nearby passages. Its Wikipedia preparation removes several kinds of non-prose material and splits articles into disjoint 100-word passages. Each passage includes its article title, and these passages form the units used for retrieval."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x10",
+      "family": "exact-qlora-precision",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note uses the word “dequantizes”?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "dequantizes"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Storage and computation precision in QLoRA.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “dequantizes” that the query looks up.",
+          "excerpts": [
+            "QLoRA stores the frozen base weights in a low-precision format and dequantizes them to a higher-precision computation type for matrix operations. Its usual combination is four-bit NormalFloat storage with BFloat16 computation. The trainable parameters are LoRA adapters. NormalFloat uses quantization levels motivated by a zero-centered normal weight distribution, including an exact zero representation; it is not described as universally optimal for arbitrary tensor distributions."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x11",
+      "family": "exact-adam",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions an uncentered moment?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "uncentered"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Moment estimation and bias correction in Adam.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “uncentered” that the query looks up.",
+          "excerpts": [
+            "Adam maintains exponentially weighted estimates of the gradient's first moment and uncentered second moment. It uses these estimates to adapt updates and includes corrections for the bias introduced by initializing the accumulators to zero. The book compares these choices with momentum and RMSProp. It also notes that learning-rate adjustment can still be needed rather than treating the suggested defaults as universally sufficient."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x12",
+      "family": "exact-youtube-odds",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note talks about exponentiating the model output?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "exponentiating"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Watch-time weighting in YouTube ranking.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “exponentiating” that the query looks up.",
+          "excerpts": [
+            "The authors relate the learned odds to expected watch time. Under their assumption that positive impressions form a small fraction of the data, those odds approximate the expected watch time of an impression. At inference, exponentiating the model's output produces the odds used for scoring. The approximation explicitly depends on the low-click-probability setting."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x13",
+      "family": "exact-mind-count",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note uses a base-two logarithm?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "base-two"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Adaptive interest count in MIND.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “base-two” that the query looks up.",
+          "excerpts": [
+            "MIND sets a user-specific number of interest capsules from the base-two logarithm of the number of historical behaviors, bounded below by one and above by the configured maximum. The paper presents this as a heuristic for allocating capsules to different users. Algorithm 1 computes this number before routing. The authors describe reduced computation and memory use for users assigned fewer capsules."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x14",
+      "family": "exact-default-direction",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions non-presence?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "non-presence"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Learned default directions for sparse tree inputs.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “non-presence” that the query looks up.",
+          "excerpts": [
+            "XGBoost assigns each split a learned default direction for examples without the relevant sparse feature value. Split finding visits the non-missing entries and evaluates possible default directions using the training statistics. The paper treats non-presence as missing in its presented algorithm and also discusses a user-specified absent value. This allows the split procedure to exploit sparse input rather than scanning a dense representation."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x15",
+      "family": "exact-xgboost-leaf",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions a tree-complexity penalty?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "tree-complexity"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Second-order leaf optimization in XGBoost.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “tree-complexity” that the query looks up.",
+          "excerpts": [
+            "XGBoost adds trees to an ensemble while minimizing prediction loss and a tree-complexity penalty. Its second-order approximation uses each example's gradient and Hessian evaluated at the current prediction. For a fixed tree structure, the optimal leaf weight is the negative sum of gradients divided by the sum of Hessians plus the weight regularization parameter. The structure score also includes a penalty for the number of leaves."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x16",
+      "family": "exact-simclr-head",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions linear-evaluation results?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "linear-evaluation"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Projection heads and downstream representations in SimCLR.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “linear-evaluation” that the query looks up.",
+          "excerpts": [
+            "SimCLR applies a small nonlinear projection head between the encoder representation and the contrastive loss. After training, it discards the projection head and uses the encoder output for downstream tasks. The authors compare identity, linear, and nonlinear heads and report better linear-evaluation results with a nonlinear head. They also report that the representation before the head performs better than its projected output in that evaluation."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x17",
+      "family": "exact-grpo",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记提到了 policy-ratio？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "policy-ratio"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Group-relative advantages in GRPO.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “policy-ratio” that the query looks up.",
+          "excerpts": [
+            "GRPO samples several outputs for the same question and estimates a baseline from their rewards rather than training a value model. For outcome supervision, it subtracts the group's mean reward and divides by the group standard deviation, applying the resulting advantage to tokens in each output. Its objective includes clipped policy-ratio terms and reference-policy regularization. The paper also explores process rewards, which assign feedback to intermediate reasoning steps."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x18",
+      "family": "exact-rrf",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "我在哪里写过 TREC？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "TREC"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Rank-based combination with reciprocal rank fusion.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “TREC” that the query looks up.",
+          "excerpts": [
+            "Reciprocal rank fusion sums a reciprocal contribution from each system's rank for a document, using an added constant to moderate the influence of very high positions. The method combines rankings without requiring comparable raw retrieval scores or training examples. The authors fix the constant at 60 after a pilot investigation and retain it for subsequent validation. Their reported improvements concern the particular TREC and LETOR combinations studied."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x19",
+      "family": "exact-upstream",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记提到了 miscalibrations？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "miscalibrations"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Unstable upstream data dependencies.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “miscalibrations” that the query looks up.",
+          "excerpts": [
+            "Features produced by other systems can change when their owners update models, lookup tables, or semantic mappings. A consuming model may have adapted to the previous signal, including its miscalibrations, so correcting that signal can adversely affect the consumer. The paper describes maintaining a versioned signal until an update has been vetted. This mitigation introduces costs from stale signals and maintaining multiple versions."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x20",
+      "family": "exact-cross-encoder",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记里出现了 cross-encoder？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "cross-encoder"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/Independent document encoding limits where query-specific interaction can occur.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “cross-encoder” that the query looks up.",
+          "excerpts": [
+            "A document representation computed before the query cannot condition its encoder attention on that query. Late interaction retains detailed matching while accepting this constraint on the encoder. Comparing it with a cross-encoder therefore involves both serving reuse and the location of query-document interaction, rather than simply the number of vectors stored."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x21",
+      "family": "exact-flashattention-hbm",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪些笔记提到了 high-bandwidth memory？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "high-bandwidth"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Arithmetic memory and IO bounds in FlashAttention.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “high-bandwidth” that the query looks up.",
+          "excerpts": [
+            "For sequence length N and head dimension d, the paper states that FlashAttention uses O(N squared times d) arithmetic and O(N) additional memory beyond its inputs and output. For on-chip memory size M between d and N times d, its analyzed high-bandwidth-memory accesses are proportional to N squared times d squared divided by M. These bounds describe arithmetic, auxiliary storage, and memory traffic separately."
+          ]
+        },
+        "02-Zettelkasten/Literature/Blockwise softmax accumulation in FlashAttention.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “high-bandwidth” that the query looks up.",
+          "excerpts": [
+            "FlashAttention loads blocks of queries, keys, and values into fast on-chip memory and combines their attention contributions without storing the full score or probability matrices in high-bandwidth memory. It maintains row maxima and normalization sums, rescales earlier contributions when the maxima change, and updates the output. The paper proves that this procedure returns the same attention expression as the full matrix computation."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x22",
+      "family": "exact-faiss-coarse",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记提到了 coarse representatives？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "representatives"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Inverted-file pruning in Faiss similarity search.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “representatives” that the query looks up.",
+          "excerpts": [
+            "For a query, the system selects a subset of coarse representatives and scans their associated lists. Distances are estimated using the quantized representations rather than the original database vectors. This restricts the search to selected regions and avoids examining every stored vector. The number of scanned lists controls the extent of that restricted search."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x23",
+      "family": "exact-logistic-unit",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记写到了 one-unit 的预测变量变化？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "one-unit"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Logistic probabilities and linear log odds.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “one-unit” that the query looks up.",
+          "excerpts": [
+            "Logistic regression applies the logistic function to a linear predictor to produce probabilities between zero and one. The book shows that the logarithm of probability divided by one minus probability is linear in the input. A one-unit predictor increase adds its coefficient to the log odds and multiplies the odds by the exponential of that coefficient. Its effect on probability depends on the current predictor value."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x24",
+      "family": "exact-momentum",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "zh",
+      "query": "哪篇笔记提到了 oscillation？",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "oscillation"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Momentum and optimization geometry.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “oscillation” that the query looks up.",
+          "excerpts": [
+            "Ill-conditioning can make gradient descent slow because steep curvature limits a step that would otherwise advance along a shallow direction. Momentum maintains an exponentially decaying accumulation of past gradients and moves parameters using that accumulated direction. The book illustrates how this can reduce oscillation across a narrow valley while progressing along it, and discusses benefits for small consistent gradients and stochastic gradient noise."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x25",
+      "family": "exact-neighborhood-score",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note says “changes the meaning of the score even when the resulting values”?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "changes the meaning of the score even when the resulting values"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/Neighborhood similarity and learned interaction coefficients are different quantities.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “changes the meaning of the score even when the resulting values” that the query looks up.",
+          "excerpts": [
+            "A neighborhood similarity summarizes relationships between item interaction patterns. An FM interaction coefficient is learned as part of predicting a target from feature pairs. Both can appear in recommender systems, but they arise from different computations and objectives. Replacing one with the other changes the meaning of the score even when the resulting values are both used to rank items."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x26",
+      "family": "exact-thinking-budget",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Find the note containing “differs from cutting off the entire generation”.",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "differs from cutting off the entire generation"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/Thinking-token limits and final-answer limits control different stages.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “differs from cutting off the entire generation” that the query looks up.",
+          "excerpts": [
+            "Stopping the reasoning segment at a budget and allowing a final response differs from cutting off the entire generation at the same token count. The former preserves an opportunity to summarize the available work. Evaluation should record both limits and the stopping mechanism. More thinking tokens represent additional inference expenditure whose benefit depends on the task and model, rather than an unconditional quality guarantee."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x27",
+      "family": "exact-residual",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note says the residual distribution “compensates for probability mass already supplied”?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "compensates for probability mass already supplied"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/Residual correction is essential to distribution-preserving draft acceptance.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “compensates for probability mass already supplied” that the query looks up.",
+          "excerpts": [
+            "Keeping likely draft tokens and resampling rejected ones directly from the target does not in general recover the target distribution. The residual distribution compensates for probability mass already supplied through accepted proposals. This correction is a substantive part of exact speculative sampling, not an interchangeable rejection fallback."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x28",
+      "family": "exact-fm-sharing",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Find the note with the phrase “allowing observations of related interactions to influence”.",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "allowing observations of related interactions to influence"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Shared interaction evidence under sparse observations.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “allowing observations of related interactions to influence” that the query looks up.",
+          "excerpts": [
+            "The factorization-machine paper explains that independently estimating every interaction is difficult when few training examples contain a given feature pair. Factorized interactions share feature vectors across pairs, allowing observations of related interactions to influence an unobserved pair's estimated coefficient. The paper recommends restricting factor dimensionality in sparse settings because the available observations may not support a highly expressive interaction model. Its example follows shared user and item factors across movie-rating observations."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x29",
+      "family": "exact-comirec-split",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note mentions an 8:1:1 ratio?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "8:1:1"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/Sequence evaluation protocol in ComiRec.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “8:1:1” that the query looks up.",
+          "excerpts": [
+            "ComiRec's public-dataset experiments divide users into training, validation, and test groups in an 8:1:1 ratio. Training uses the sequences of training users. For validation and test users, the first 80 percent of behaviors provide context, and the remaining behaviors provide prediction targets. Histories are truncated to 20 items for Amazon Books and 50 for Taobao. The evaluation reports recall, NDCG, and hit rate, and averages recall over users."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x30",
+      "family": "exact-correlated-trees",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note says “shared variation survives the average”?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "shared variation survives the average"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/More trees cannot fully compensate for highly correlated predictions.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “shared variation survives the average” that the query looks up.",
+          "excerpts": [
+            "Averaging suppresses variation that differs across predictors, while shared variation survives the average. Adding similarly behaving trees can therefore give diminishing variance reduction. Feature subsampling changes the dependence among trees, making diversity in their errors a distinct design choice from simply increasing the ensemble size."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x31",
+      "family": "exact-feature-maintenance",
+      "split": "dev",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Find the note that says removing a feature can “simplify future migrations”.",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "simplify future migrations"
+      },
+      "judgments": {
+        "02-Zettelkasten/Permanent/A weak feature can still carry a strong maintenance obligation.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “simplify future migrations” that the query looks up.",
+          "excerpts": [
+            "A feature with negligible incremental predictive value can still tie a model to an upstream pipeline, owner, or identifier scheme. Removing it can simplify future migrations even when immediate accuracy barely changes. Feature selection therefore has an operational dimension in addition to predictive value. The relevant comparison includes dependency cost, not just whether the feature receives a nonzero learned weight."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    },
+    {
+      "id": "x32",
+      "family": "exact-logq",
+      "split": "test",
+      "origin": "synthetic",
+      "lang": "en",
+      "query": "Which note says the authors “subtract the logarithm” of a sampling probability?",
+      "kind": "exact",
+      "answerability": "answerable",
+      "pool": {
+        "method": "term-occurrence",
+        "term": "subtract the logarithm"
+      },
+      "judgments": {
+        "02-Zettelkasten/Literature/In-batch negatives and sampling correction in neural retrieval.md": {
+          "grade": 2,
+          "rationale": "Contains the exact term “subtract the logarithm” that the query looks up.",
+          "excerpts": [
+            "Because batch items follow a skewed interaction distribution, popular items appear disproportionately as negatives. The authors subtract the logarithm of an item's estimated batch sampling probability from its training logit. The corrected logits define the batch loss. The probability refers to how the training batch is sampled, and the method does not require a fixed item vocabulary."
+          ]
+        }
+      },
+      "notes": "Exact-term lookup. Every frozen note containing the term (case-insensitive, whole word or phrase) is judged grade 2; no other note contains it."
+    }
+  ]
+}
