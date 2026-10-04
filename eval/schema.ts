@@ -127,7 +127,20 @@ export const answerSetSchema = z
   })
   .strict();
 
+/** Restated queries in another language; relevance labels come from the source suite. */
+export const translationSetSchema = z
+  .object({
+    schema: z.literal(1),
+    corpusId: text,
+    source: z.literal("expanded"),
+    translation: z.literal("ai-translated; human-review-not-performed"),
+    convention: text,
+    items: z.array(z.object({ id: text, query: text }).strict()).min(1),
+  })
+  .strict();
+
 export type SnapshotNote = z.infer<typeof snapshotNoteSchema>;
 export type CorpusManifest = z.infer<typeof manifestSchema>;
 export type RetrievalSet = z.infer<typeof retrievalSetSchema>;
 export type AnswerSet = z.infer<typeof answerSetSchema>;
+export type TranslationSet = z.infer<typeof translationSetSchema>;

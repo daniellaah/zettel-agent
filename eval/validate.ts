@@ -114,7 +114,8 @@ export function validateSets(
   }
   for (const item of retrieval.items) {
     if (new Set(item.pool.modes).size !== 3) issues.push(`${item.id}: duplicate pool mode`);
-    if (/\p{Script=Han}/u.test(item.query)) issues.push(`${item.id}: non-English query`);
+    if (/\p{Script=Han}/u.test(item.query) !== (item.lang === "zh"))
+      issues.push(`${item.id}: query language is not ${item.lang}`);
     const positive = Object.values(item.judgments).filter((j) => j.grade > 0);
     if ((positive.length === 0) !== (item.answerability === "no-answer"))
       issues.push(`${item.id}: inconsistent answerability`);

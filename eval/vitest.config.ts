@@ -6,6 +6,7 @@ const entries: Record<string, string> = {
   retrieval: "eval/**/*.eval.ts",
   full: "eval/full.run.ts",
   "trace-report": "eval/trace-report.run.ts",
+  embed: "eval/embed.run.ts",
 };
 
 // Retrieval reads the expanded suite unless EVAL_SUITE says otherwise.

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { resolveSettings, stageForPath } from "../settings";
+import { FakeEmbedder } from "../testing/fake-embedder";
 import { Corpus } from "./corpus";
 
 function makeCorpus() {
@@ -123,4 +124,106 @@ it("shares empty stage semantics and binds revision to path/content/stage change
   expect(corpus.revision).not.toBe(revision);
   corpus.rename("P/A.md", "P/New.md", "alpha");
   expect(corpus.eligible("P/A.md")).toBe(false);
+});
+
+describe("semantic and hybrid search", () => {
+  // The fake model knows "standardization" and "标准化" mean what the note calls "scaling".
+  const embedder = new FakeEmbedder({ standardization: "scaling", 标准化: "scaling" });
+  const PREPROCESSING = "Z/Permanent/Preprocessing must respect the fold boundary.md";
+  const FOLDS = "Z/Permanent/Rotating held-out folds.md";
+
+  async function semanticCorpus() {
+    const settings = resolveSettings({ zettelkastenRoot: "Z" });
+    const corpus = new Corpus({
+      stageForPath: (path) => stageForPath(path, settings),
+      semantic: true,
+    });
+    corpus.upsert(
+      PREPROCESSING,
+      "# Preprocessing must respect the fold boundary\n\nFit scaling statistics on the training fold only.",
+    );
+    corpus.upsert(
+      FOLDS,
+      "# Rotating held-out folds\n\nCross-validation rotates the held-out fold.",
+    );
+    corpus.upsert("Z/Permanent/Atomic notes.md", "# Atomic notes\n\nOne idea per note.");
+    corpus.upsert("Z/Fleeting/scaling.md", "standardization scaling");
+    const pending = corpus.dense!.pending();
+    const vectors = await embedder.embed(
+      pending.map((p) => p.text),
+      "document",
+    );
+    pending.forEach(({ key }, i) => corpus.dense!.set(key, vectors[i]!));
+    return corpus;
+  }
+  const vector = async (query: string) => (await embedder.embed([query], "query"))[0]!;
+
+  it("finds a note by meaning when it shares no words with the query", async () => {
+    const corpus = await semanticCorpus();
+    const query = "standardization before cross-validation";
+    expect(corpus.search(query).map((h) => h.path)).toEqual([FOLDS]);
+    const semantic = corpus.search("标准化", {
+      mode: "semantic",
+      queryVector: await vector("标准化"),
+    });
+    expect(semantic[0]).toMatchObject({
+      path: PREPROCESSING,
+      lexicalRank: null,
+      semanticRank: 1,
+      matchedTerms: [],
+    });
+    expect(semantic[0]!.score).toBeGreaterThan(0);
+    // Fleeting captures stay out of semantic results too.
+    expect(semantic.map((h) => h.path)).not.toContain("Z/Fleeting/scaling.md");
+  });
+
+  it("merges keyword and semantic candidates and reports where each came from", async () => {
+    const corpus = await semanticCorpus();
+    const query = "standardization before cross-validation";
+    const hits = corpus.search(query, { mode: "hybrid", queryVector: await vector(query) });
+    const byPath = new Map(hits.map((h) => [h.path, h]));
+    expect(byPath.get(FOLDS)).toMatchObject({
+      lexicalRank: 1,
+      matchedTerms: ["cross", "validation"],
+    });
+    expect(byPath.get(PREPROCESSING)).toMatchObject({ lexicalRank: null, semanticRank: 1 });
+    expect(hits[0]!.score).toBeLessThanOrEqual(2 / 61);
+    expect(
+      corpus.search(query, { mode: "hybrid", queryVector: await vector(query), limit: 1 }),
+    ).toHaveLength(1);
+    expect(
+      corpus
+        .search(query, { mode: "hybrid", queryVector: await vector(query), folder: "Z/Other" })
+        .map((h) => h.path),
+    ).toEqual([]);
+  });
+
+  it("returns one section per note unless asked for more", async () => {
+    const corpus = await semanticCorpus();
+    corpus.upsert(
+      PREPROCESSING,
+      "# Preprocessing must respect the fold boundary\n\nFit scaling on the training fold.\n\n## Scaling\n\nScaling statistics leak.",
+    );
+    const pending = corpus.dense!.pending();
+    const vectors = await embedder.embed(
+      pending.map((p) => p.text),
+      "document",
+    );
+    pending.forEach(({ key }, i) => corpus.dense!.set(key, vectors[i]!));
+    const queryVector = await vector("standardization");
+    const one = corpus.search("standardization", { mode: "semantic", queryVector });
+    expect(one.filter((h) => h.path === PREPROCESSING)).toHaveLength(1);
+    const two = corpus.search("standardization", { mode: "semantic", queryVector, perNote: 2 });
+    expect(two.filter((h) => h.path === PREPROCESSING)).toHaveLength(2);
+  });
+
+  it("needs a query vector and a semantic corpus", async () => {
+    const corpus = await semanticCorpus();
+    expect(() => corpus.search("x", { mode: "hybrid" })).toThrow("needs a semantic corpus");
+    const lexicalOnly = new Corpus({ stageForPath: () => "permanent" });
+    expect(lexicalOnly.dense).toBeNull();
+    expect(() =>
+      lexicalOnly.search("x", { mode: "semantic", queryVector: new Float32Array(1) }),
+    ).toThrow("needs a semantic corpus");
+  });
 });
