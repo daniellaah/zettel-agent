@@ -1,0 +1,7 @@
+---
+type: fleeting
+created: {{date:YYYY-MM-DD}}
+tags: [inbox]
+---
+
+# {{title}}
