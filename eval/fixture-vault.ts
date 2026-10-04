@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
-import { Corpus } from "../src/retrieval/corpus";
+import { Corpus, type CorpusOptions } from "../src/retrieval/corpus";
 import type { TokenizerMode } from "../src/retrieval/tokenize";
 import { resolveSettings, stageForPath } from "../src/settings";
 import {
@@ -18,9 +18,10 @@ export const ZETTELKASTEN_ROOT = "02-Zettelkasten";
 
 /**
  * pilot and expanded are English; crosslingual asks the expanded questions in Chinese;
- * exact looks up rare terms and phrases, the case keyword search exists for.
+ * exact looks up rare terms and phrases, the case keyword search exists for, as questions;
+ * exact-terms sends only the term or phrase, as an agent's search call usually does.
  */
-export const SUITES = ["pilot", "expanded", "crosslingual", "exact"] as const;
+export const SUITES = ["pilot", "expanded", "crosslingual", "exact", "exact-terms"] as const;
 
 /** "frozen" reproduces the original labels; "extended" adds the AI-judged pool extension. */
 export type LabelSet = "frozen" | "extended";
@@ -32,7 +33,7 @@ export function evaluationFiles(suite = "pilot", labels: LabelSet = "extended") 
     suite === "pilot" ? import.meta.dirname : path.join(import.meta.dirname, "suites/expanded");
   return {
     retrieval:
-      suite === "exact"
+      suite === "exact" || suite === "exact-terms"
         ? path.join(import.meta.dirname, "suites/exact/retrieval.json")
         : path.join(dir, "retrieval.json"),
     // Retrieval-only suites validate against the expanded rubrics and add no answers.
@@ -57,7 +58,11 @@ export function loadEvaluationData(
   return {
     manifest: manifestSchema.parse(readJson("corpus-manifest.json")),
     labels,
-    retrieval: files.translations ? translate(retrieval, files.translations) : retrieval,
+    retrieval: files.translations
+      ? translate(retrieval, files.translations)
+      : suite === "exact-terms"
+        ? termsOnly(retrieval)
+        : retrieval,
     answers: answerSetSchema.parse(JSON.parse(readFileSync(files.answers, "utf8"))),
     files,
   };
@@ -78,6 +83,17 @@ function extendPool(retrieval: RetrievalSet, file: string): RetrievalSet {
     }
   }
   return extended;
+}
+
+/** Same items and labels, asking for the looked-up term or phrase alone. */
+function termsOnly(retrieval: RetrievalSet): RetrievalSet {
+  return {
+    ...retrieval,
+    items: retrieval.items.map((item) => {
+      if (!("term" in item.pool)) throw new Error(`${item.id} has no looked-up term`);
+      return { ...item, query: item.pool.term, lang: "en" };
+    }),
+  };
 }
 
 /** Same items and labels, with each query replaced by its restatement. */
@@ -104,14 +120,10 @@ function readJson(file: string): unknown {
 /** Loads the fixture vault's Zettelkasten folder the way the plugin does. */
 export function loadFixtureCorpus(
   mode: TokenizerMode = "both",
-  options: { semantic?: boolean } = {},
+  options: Pick<CorpusOptions, "semantic" | "lexical" | "phrases"> = {},
 ): Corpus {
   const settings = resolveSettings({ zettelkastenRoot: ZETTELKASTEN_ROOT });
-  const corpus = new Corpus({
-    mode,
-    stageForPath: (p) => stageForPath(p, settings),
-    ...(options.semantic && { semantic: true }),
-  });
+  const corpus = new Corpus({ mode, stageForPath: (p) => stageForPath(p, settings), ...options });
   for (const file of walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT))) {
     corpus.upsert(path.relative(VAULT_DIR, file), readFileSync(file, "utf8"));
   }

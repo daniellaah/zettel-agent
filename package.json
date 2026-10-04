@@ -21,6 +21,8 @@
     "eval:crosslingual": "EVAL_SUITE=crosslingual vitest run --config eval/vitest.config.ts --project retrieval",
     "eval:embed": "vitest run --config eval/vitest.config.ts --project embed",
     "eval:exact": "EVAL_SUITE=exact vitest run --config eval/vitest.config.ts --project retrieval",
+    "eval:exact-terms": "EVAL_SUITE=exact-terms vitest run --config eval/vitest.config.ts --project retrieval",
+    "eval:sweep": "vitest run --config eval/vitest.config.ts --project sweep",
     "e2e": "vitest run --config e2e/vitest.config.ts",
     "e2e:live": "E2E_LIVE=1 vitest run --config e2e/vitest.config.ts e2e/agent.e2e.ts",
     "eval:full": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config eval/vitest.config.ts --project full",

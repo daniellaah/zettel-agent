@@ -1,10 +1,10 @@
 import { STAGES, type Stage } from "../settings";
 import { DenseIndex } from "./dense-index";
-import { reciprocalRankFusion } from "./fusion";
+import { reciprocalRankFusion, RRF_K } from "./fusion";
 import { LinkGraph, basenameResolver, type LinkResolver } from "./graph";
-import { LexicalIndex, type SearchHit } from "./lexical-index";
+import { LexicalIndex, type LexicalOptions, type SearchHit } from "./lexical-index";
 import { hash, parseNote, type ParsedNote } from "./markdown";
-import type { TokenizerMode } from "./tokenize";
+import { normalizeText, type TokenizerMode } from "./tokenize";
 
 export interface CorpusOptions {
   mode?: TokenizerMode;
@@ -14,6 +14,10 @@ export interface CorpusOptions {
   resolver?: LinkResolver;
   /** Keep section vectors for semantic and hybrid search. */
   semantic?: boolean;
+  /** Keyword-index switches for ablations; all on by default. */
+  lexical?: LexicalOptions;
+  /** Rank sections that contain a query's quoted phrases first. Default on. */
+  phrases?: boolean;
 }
 
 /**
@@ -24,6 +28,15 @@ export type SearchMode = "lexical" | "semantic" | "hybrid";
 
 /** Sections each retriever contributes before fusion. */
 export const FUSION_CANDIDATES = 50;
+
+/**
+ * How hybrid search merges its two lists. rrf: reciprocal rank fusion of ranks only.
+ * convex: alpha × BM25 normalized by the query's highest possible score + (1 − alpha) ×
+ * cosine similarity.
+ */
+export type Fusion = { method: "rrf"; k: number } | { method: "convex"; alpha: number };
+
+export const DEFAULT_FUSION: Fusion = { method: "rrf", k: RRF_K };
 
 export interface CorpusSearchOptions {
   limit?: number | undefined;
@@ -36,6 +49,7 @@ export interface CorpusSearchOptions {
   mode?: SearchMode | undefined;
   /** The query embedded with the same embedder as the corpus's sections. */
   queryVector?: Float32Array | undefined;
+  fusion?: Fusion | undefined;
 }
 
 export interface CorpusHit extends SearchHit {
@@ -55,7 +69,7 @@ export class Corpus {
   private cachedResolver: LinkResolver | null = null;
 
   constructor(private readonly options: CorpusOptions) {
-    this.index = new LexicalIndex(options.mode ?? "both");
+    this.index = new LexicalIndex(options.mode ?? "both", options.lexical);
     this.dense = options.semantic ? new DenseIndex() : null;
   }
 
@@ -183,50 +197,120 @@ export class Corpus {
   }
 
   search(query: string, options: CorpusSearchOptions = {}): CorpusHit[] {
-    const { mode = "lexical", queryVector } = options;
-    const limit = options.limit ?? 10;
-    const perNote = options.perNote ?? 1;
     const filter = (path: string) => this.eligible(path, options);
-    if (mode === "lexical") {
-      return this.index
-        .search(query, { limit, perNote, filter })
-        .map((hit, i) => ({ ...hit, lexicalRank: i + 1, semanticRank: null }));
-    }
+    let ranked = this.rank(query, options, filter);
+    const phrases = this.options.phrases === false ? [] : quotedPhrases(query);
+    if (phrases.length) ranked = this.phrasesFirst(ranked, phrases, filter);
+    // Keep each note's best sections only, after ranking every section.
+    const perNote = options.perNote ?? 1;
+    const perPath = new Map<string, number>();
+    return ranked
+      .filter((hit) => {
+        const count = perPath.get(hit.path) ?? 0;
+        perPath.set(hit.path, count + 1);
+        return count < perNote;
+      })
+      .slice(0, options.limit ?? 10);
+  }
+
+  /** Every candidate section, best first, with its rank in each retriever's list. */
+  private rank(
+    query: string,
+    options: CorpusSearchOptions,
+    filter: (path: string) => boolean,
+  ): CorpusHit[] {
+    const { mode = "lexical", queryVector, fusion = DEFAULT_FUSION } = options;
+    const all = { limit: Number.MAX_SAFE_INTEGER, perNote: Number.MAX_SAFE_INTEGER, filter };
+    const lexical = mode === "semantic" ? [] : this.index.search(query, all);
+    if (mode === "lexical")
+      return lexical.map((hit, i) => ({ ...hit, lexicalRank: i + 1, semanticRank: null }));
     if (!this.dense || !queryVector)
       throw new Error(`A ${mode} search needs a semantic corpus and a query vector.`);
+    const dense = this.dense;
+    const semantic = dense.search(queryVector, all);
 
-    // Fuse section candidates first, so a note's best section from either list can win.
-    const semantic = this.dense.search(queryVector, { limit: FUSION_CANDIDATES, filter });
-    const lexical =
-      mode === "hybrid"
-        ? this.index.search(query, {
-            limit: FUSION_CANDIDATES,
-            perNote: FUSION_CANDIDATES,
-            filter,
-          })
-        : [];
+    const id = (hit: { path: string; sectionId: string }) => `${hit.path}\u0000${hit.sectionId}`;
+    const lexicalRanks = new Map(lexical.map((hit, i) => [id(hit), { hit, rank: i + 1 }]));
+    const semanticRanks = new Map(semantic.map((hit, i) => [id(hit), { hit, rank: i + 1 }]));
     const matchedTerms = new Map(lexical.map((hit) => [hit.path, hit.matchedTerms]));
-    const similarity = new Map(semantic.map((hit) => [`${hit.path}\u0000${hit.sectionId}`, hit]));
-    const perPath = new Map<string, number>();
-    const hits: CorpusHit[] = [];
-    for (const fused of reciprocalRankFusion([lexical, semantic])) {
-      const count = perPath.get(fused.path) ?? 0;
-      if (count >= perNote) continue;
-      perPath.set(fused.path, count + 1);
-      hits.push({
-        path: fused.path,
-        sectionId: fused.sectionId,
-        // Semantic alone keeps the cosine similarity; hybrid scores are fusion scores.
-        score:
-          mode === "semantic"
-            ? similarity.get(`${fused.path}\u0000${fused.sectionId}`)!.score
-            : fused.score,
-        matchedTerms: matchedTerms.get(fused.path) ?? [],
-        lexicalRank: fused.ranks[0] ?? null,
-        semanticRank: fused.ranks[1] ?? null,
-      });
-      if (hits.length === limit) break;
-    }
-    return hits;
+    const describe = (path: string, sectionId: string, score: number): CorpusHit => {
+      const key = id({ path, sectionId });
+      return {
+        path,
+        sectionId,
+        score,
+        matchedTerms: matchedTerms.get(path) ?? [],
+        lexicalRank: lexicalRanks.get(key)?.rank ?? null,
+        semanticRank: semanticRanks.get(key)?.rank ?? null,
+      };
+    };
+    // Semantic alone keeps the cosine similarity as its score.
+    if (mode === "semantic")
+      return semantic.map((hit) => describe(hit.path, hit.sectionId, hit.score));
+
+    const top = [lexical, semantic].map((list) => list.slice(0, FUSION_CANDIDATES));
+    if (fusion.method === "rrf")
+      return reciprocalRankFusion(top, fusion.k).map((fused) =>
+        describe(fused.path, fused.sectionId, fused.score),
+      );
+
+    // Convex combination: BM25 divided by the query's highest possible score, so keywords
+    // weigh in only as far as the query's terms actually matched, plus cosine similarity.
+    const max = this.index.maxScore(query) || 1;
+    const candidates = new Map(top.flat().map((hit) => [id(hit), hit]));
+    return [...candidates.values()]
+      .map(({ path, sectionId }) => {
+        const key = id({ path, sectionId });
+        const keyword = (lexicalRanks.get(key)?.hit.score ?? 0) / max;
+        const meaning =
+          semanticRanks.get(key)?.hit.score ?? dense.similarity(queryVector, path, sectionId) ?? 0;
+        return describe(path, sectionId, fusion.alpha * keyword + (1 - fusion.alpha) * meaning);
+      })
+      .sort(
+        (a, b) =>
+          b.score - a.score ||
+          a.path.localeCompare(b.path) ||
+          a.sectionId.localeCompare(b.sectionId),
+      );
   }
+
+  /** Sections containing every quoted phrase verbatim come first, ranked or not. */
+  private phrasesFirst(
+    ranked: CorpusHit[],
+    phrases: string[],
+    filter: (path: string) => boolean,
+  ): CorpusHit[] {
+    const contains = (path: string, sectionId: string) => {
+      const text = this.notes.get(path)?.sections.find((section) => section.id === sectionId)?.text;
+      const normalized = text === undefined ? "" : normalizePhrase(text);
+      return phrases.every((phrase) => normalized.includes(phrase));
+    };
+    const first = ranked.filter((hit) => contains(hit.path, hit.sectionId));
+    const seen = new Set(first.map((hit) => `${hit.path}\u0000${hit.sectionId}`));
+    for (const path of this.paths()) {
+      if (!filter(path)) continue;
+      for (const section of this.notes.get(path)!.sections)
+        if (!seen.has(`${path}\u0000${section.id}`) && contains(path, section.id))
+          first.push({
+            path,
+            sectionId: section.id,
+            score: 0,
+            matchedTerms: [],
+            lexicalRank: null,
+            semanticRank: null,
+          });
+    }
+    return [...first, ...ranked.filter((hit) => !contains(hit.path, hit.sectionId))];
+  }
+}
+
+/** Text inside straight, curly or CJK double quotes, compared case- and space-insensitively. */
+export function quotedPhrases(query: string): string[] {
+  return [...query.matchAll(/["“”「」『』]([^"“”「」『』]+)["“”「」『』]/g)]
+    .map((match) => normalizePhrase(match[1]!))
+    .filter((phrase) => phrase.length > 1);
+}
+
+function normalizePhrase(text: string): string {
+  return normalizeText(text).replace(/\s+/g, " ").trim();
 }

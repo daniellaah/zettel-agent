@@ -29,7 +29,28 @@ export function normalizeText(text: string): string {
   return text.normalize("NFKC").toLowerCase();
 }
 
-export function tokenize(text: string, mode: TokenizerMode = "both"): string[] {
+/** Latin or digit parts joined by "-", ":", ".", "/" or "@": policy-ratio, 8:1:1, recall@10. */
+const COMPOUND = /[\p{Script=Latin}\p{N}]+(?:[-:./@][\p{Script=Latin}\p{N}]+)+/gu;
+
+/**
+ * Words that ask about the vault rather than its content ("which note mentions …"). Only
+ * queries drop them: a title such as "Permanent notes" stays findable by its other words.
+ */
+export const QUERY_STOPWORDS = new Set(["note", "notes", "mention", "mentions", "mentioned"]);
+
+export interface TokenizeOptions {
+  /**
+   * Also emit each compound whole, besides its parts, so "policy-ratio" can match only
+   * "policy-ratio" rather than any text with "policy" and "ratio".
+   */
+  compounds?: boolean;
+}
+
+export function tokenize(
+  text: string,
+  mode: TokenizerMode = "both",
+  options: TokenizeOptions = {},
+): string[] {
   const normalized = normalizeText(text);
   const tokens: string[] = [];
   const wordSpans = new Set<string>();
@@ -64,6 +85,9 @@ export function tokenize(text: string, mode: TokenizerMode = "both"): string[] {
       }
     }
   }
+
+  if (options.compounds)
+    for (const [compound] of normalized.matchAll(COMPOUND)) tokens.push(compound);
 
   return tokens;
 }

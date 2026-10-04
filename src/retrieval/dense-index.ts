@@ -77,6 +77,13 @@ export class DenseIndex {
     return used;
   }
 
+  /** Cosine similarity of one section, or null if it has no vector yet. */
+  similarity(query: Float32Array, path: string, sectionId: string): number | null {
+    const key = this.notes.get(path)?.find((entry) => entry.sectionId === sectionId)?.key;
+    const vector = key === undefined ? undefined : this.vectors.get(key);
+    return vector ? dot(query, vector) : null;
+  }
+
   search(
     query: Float32Array,
     options: { limit?: number; filter?: (path: string) => boolean } = {},

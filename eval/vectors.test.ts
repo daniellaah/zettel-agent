@@ -68,6 +68,22 @@ describe("exact-term suite", () => {
   });
 });
 
+describe("exact-terms suite", () => {
+  it("sends only the looked-up term or phrase, with the exact suite's labels", () => {
+    const exact = loadEvaluationData("exact");
+    const terms = loadEvaluationData("exact-terms");
+    terms.retrieval.items.forEach((item, i) => {
+      const source = exact.retrieval.items[i]!;
+      expect(item.query).toBe("term" in source.pool ? source.pool.term : null);
+      expect(item.judgments).toEqual(source.judgments);
+      expect(item.lang).toBe("en");
+    });
+    expect(
+      validateSets(terms.manifest, terms.retrieval, terms.answers, loadFixtureCorpus()),
+    ).toEqual([]);
+  });
+});
+
 describe("frozen evaluation vectors", () => {
   it("cover every frozen section and every evaluation query with unit vectors", () => {
     const sets = loadEvalVectors();

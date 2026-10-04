@@ -1,5 +1,5 @@
 import type { ParsedNote } from "./markdown";
-import { tokenize, type TokenizerMode } from "./tokenize";
+import { QUERY_STOPWORDS, tokenize, type TokenizerMode } from "./tokenize";
 
 /**
  * Two-level BM25F over parsed notes.
@@ -24,6 +24,14 @@ export const FIELD_WEIGHTS: Record<NoteField | ChunkField, number> = {
   body: 1,
   links: 0.25,
 };
+
+/** Switches for retrieval ablations; all are on by default. */
+export interface LexicalOptions {
+  /** Index hyphenated and punctuated compounds whole as well as by their parts. */
+  compounds?: boolean;
+  /** Drop vault-referring words such as "note" from queries. */
+  queryStopwords?: boolean;
+}
 
 export interface SearchOptions {
   /** Maximum number of hits (default 10). */
@@ -60,10 +68,12 @@ export class LexicalIndex {
   private readonly noteLevel = createLevel(NOTE_FIELDS);
   private readonly chunkLevel = createLevel(CHUNK_FIELDS);
 
+  private readonly k1 = 1.2;
+  private readonly b = 0.75;
+
   constructor(
     readonly mode: TokenizerMode = "both",
-    private readonly k1 = 1.2,
-    private readonly b = 0.75,
+    private readonly options: LexicalOptions = {},
   ) {}
 
   get noteCount(): number {
@@ -107,7 +117,7 @@ export class LexicalIndex {
 
   search(query: string, options: SearchOptions = {}): SearchHit[] {
     const { limit = 10, perNote = 1, filter } = options;
-    const terms = [...new Set(this.tokens(query))];
+    const terms = this.queryTerms(query);
     if (terms.length === 0) return [];
 
     const noteScores = this.score(this.noteLevel, terms, this.notes.size);
@@ -164,8 +174,33 @@ export class LexicalIndex {
       }));
   }
 
+  /** Distinct query terms, without vault-referring words unless nothing else is left. */
+  queryTerms(query: string): string[] {
+    const terms = [...new Set(this.tokens(query))];
+    if (this.options.queryStopwords === false) return terms;
+    const content = terms.filter((term) => !QUERY_STOPWORDS.has(term));
+    return content.length ? content : terms;
+  }
+
+  /**
+   * The score a section would reach if every query term saturated both levels. Terms the
+   * index has never seen count as maximally rare, so dividing by this keeps the scores of a
+   * query the index can barely match low.
+   */
+  maxScore(query: string): number {
+    let max = 0;
+    for (const term of this.queryTerms(query)) {
+      for (const [level, count] of [
+        [this.noteLevel, this.notes.size],
+        [this.chunkLevel, this.chunkDocInfo.size],
+      ] as const)
+        if (count) max += (this.k1 + 1) * idf(count, level.postings.get(term)?.size ?? 0);
+    }
+    return max;
+  }
+
   private tokens(text: string): string[] {
-    return tokenize(text, this.mode);
+    return tokenize(text, this.mode, { compounds: this.options.compounds !== false });
   }
 
   private score<F extends string>(
@@ -181,7 +216,7 @@ export class LexicalIndex {
     for (const term of terms) {
       const postings = level.postings.get(term);
       if (!postings) continue;
-      const idf = Math.log(1 + (docCount - postings.size + 0.5) / (postings.size + 0.5));
+      const termIdf = idf(docCount, postings.size);
       for (const [doc, frequencies] of postings) {
         const lengths = level.lengths.get(doc)!;
         let weightedTf = 0;
@@ -191,13 +226,17 @@ export class LexicalIndex {
           weightedTf += (weights[i]! * tf) / norm;
         });
         const entry = scores.get(doc) ?? { score: 0, terms: new Set<string>() };
-        entry.score += (idf * weightedTf * (this.k1 + 1)) / (this.k1 + weightedTf);
+        entry.score += (termIdf * weightedTf * (this.k1 + 1)) / (this.k1 + weightedTf);
         entry.terms.add(term);
         scores.set(doc, entry);
       }
     }
     return scores;
   }
+}
+
+function idf(docCount: number, documentFrequency: number): number {
+  return Math.log(1 + (docCount - documentFrequency + 0.5) / (documentFrequency + 0.5));
 }
 
 function createLevel<F extends string>(fields: readonly F[]): Level<F> {

@@ -43,4 +43,20 @@ describe("tokenize", () => {
   it("normalizes full-width characters", () => {
     expect(tokenize("ＢＭ２５", "words")).toEqual(["bm25"]);
   });
+
+  it("can also emit punctuated compounds whole", () => {
+    expect(tokenize("policy-ratio at 8:1:1, recall@10", "both", { compounds: true })).toEqual([
+      "policy",
+      "ratio",
+      "8",
+      "1",
+      "1",
+      "recall",
+      "10",
+      "policy-ratio",
+      "8:1:1",
+      "recall@10",
+    ]);
+    expect(tokenize("policy-ratio")).toEqual(["policy", "ratio"]);
+  });
 });

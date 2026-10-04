@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { resolveSettings, stageForPath } from "../settings";
 import { FakeEmbedder } from "../testing/fake-embedder";
-import { Corpus } from "./corpus";
+import { Corpus, quotedPhrases } from "./corpus";
 
 function makeCorpus() {
   const settings = resolveSettings({ zettelkastenRoot: "Z" });
@@ -184,7 +184,7 @@ describe("semantic and hybrid search", () => {
     const byPath = new Map(hits.map((h) => [h.path, h]));
     expect(byPath.get(FOLDS)).toMatchObject({
       lexicalRank: 1,
-      matchedTerms: ["cross", "validation"],
+      matchedTerms: ["cross", "validation", "cross-validation"],
     });
     expect(byPath.get(PREPROCESSING)).toMatchObject({ lexicalRank: null, semanticRank: 1 });
     expect(hits[0]!.score).toBeLessThanOrEqual(2 / 61);
@@ -196,6 +196,32 @@ describe("semantic and hybrid search", () => {
         .search(query, { mode: "hybrid", queryVector: await vector(query), folder: "Z/Other" })
         .map((h) => h.path),
     ).toEqual([]);
+  });
+
+  it("can fuse by a convex combination of normalized BM25 and cosine similarity", async () => {
+    const corpus = await semanticCorpus();
+    const query = "standardization before cross-validation";
+    const queryVector = await vector(query);
+    const search = (alpha: number) =>
+      corpus.search(query, {
+        mode: "hybrid",
+        queryVector,
+        fusion: { method: "convex", alpha },
+        limit: 3,
+      });
+    expect(search(0).map((h) => h.path)).toEqual(
+      corpus.search(query, { mode: "semantic", queryVector, limit: 3 }).map((h) => h.path),
+    );
+    expect(search(1)[0]!.path).toBe(FOLDS);
+    // Normalized BM25 never exceeds 1, so alpha = 1 scores stay in [0, 1].
+    for (const hit of search(1)) expect(hit.score).toBeLessThanOrEqual(1);
+    const half = search(0.5);
+    const cosine = corpus.dense!.similarity(
+      queryVector,
+      PREPROCESSING,
+      half.find((h) => h.path === PREPROCESSING)!.sectionId,
+    )!;
+    expect(half.find((h) => h.path === PREPROCESSING)!.score).toBeCloseTo(0.5 * cosine);
   });
 
   it("returns one section per note unless asked for more", async () => {
@@ -225,5 +251,54 @@ describe("semantic and hybrid search", () => {
     expect(() =>
       lexicalOnly.search("x", { mode: "semantic", queryVector: new Float32Array(1) }),
     ).toThrow("needs a semantic corpus");
+  });
+});
+
+describe("keyword search details", () => {
+  function corpusWith(options: Partial<ConstructorParameters<typeof Corpus>[0]> = {}) {
+    const corpus = new Corpus({ stageForPath: () => "permanent", ...options });
+    corpus.upsert("P/Zettelkasten note system.md", "# Zettelkasten note system\n\nOne idea each.");
+    corpus.upsert("P/QLoRA precision.md", "# QLoRA precision\n\nFour-bit NormalFloat storage.");
+    corpus.upsert("P/GRPO.md", "# GRPO\n\nIts objective includes clipped policy-ratio terms.");
+    corpus.upsert("P/Checks.md", "# Checks\n\nA ratio and a ratio guard the policy and policy.");
+    corpus.upsert("P/Trees.md", "# Correlated trees\n\nShared variation survives the average.");
+    corpus.upsert("P/Average.md", "# Average survives\n\nAverage, average and survives.");
+    return corpus;
+  }
+
+  it("ignores words that refer to the vault itself", () => {
+    const query = "Which note mentions NormalFloat?";
+    expect(corpusWith().search(query)[0]!.path).toBe("P/QLoRA precision.md");
+    expect(corpusWith().search("note")[0]!.path).toBe("P/Zettelkasten note system.md");
+    const off = corpusWith({ lexical: { queryStopwords: false } });
+    expect(off.search(query)[0]!.path).toBe("P/Zettelkasten note system.md");
+  });
+
+  it("matches a hyphenated term whole before its parts", () => {
+    expect(corpusWith().search("policy-ratio")[0]!.path).toBe("P/GRPO.md");
+    const off = corpusWith({ lexical: { compounds: false } });
+    expect(off.search("policy-ratio")[0]!.path).toBe("P/Checks.md");
+  });
+
+  it("ranks sections with every quoted phrase first", () => {
+    expect(quotedPhrases('find “Shared  Variation” and "the average" or 「卡片」')).toEqual([
+      "shared variation",
+      "the average",
+      "卡片",
+    ]);
+    const corpus = corpusWith();
+    expect(corpus.search("“survives the average”")[0]!.path).toBe("P/Trees.md");
+    expect(corpus.search("“survives the average”", { folder: "Other" })).toEqual([]);
+    const off = corpusWith({ phrases: false });
+    expect(off.search("“survives the average”")[0]!.path).toBe("P/Average.md");
+  });
+
+  it("bounds normalized keyword scores by the query's highest possible score", () => {
+    const corpus = corpusWith();
+    const hit = corpus.search("GRPO")[0]!;
+    const index = (corpus as unknown as { index: { maxScore(q: string): number } }).index;
+    expect(hit.score / index.maxScore("GRPO")).toBeLessThanOrEqual(1);
+    // An unknown word adds unmatched mass: the same hit explains less of the query.
+    expect(index.maxScore("GRPO 未知")).toBeGreaterThan(index.maxScore("GRPO"));
   });
 });
