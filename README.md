@@ -18,7 +18,7 @@ mkdir -p "$VAULT/.obsidian/plugins/zettel-agent"
 cp main.js manifest.json styles.css "$VAULT/.obsidian/plugins/zettel-agent/"
 ```
 
-Optional, for search by meaning across languages:
+Optional, for embedding search:
 
 ```bash
 brew install ollama
