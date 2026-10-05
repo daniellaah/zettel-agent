@@ -2,6 +2,8 @@
 
 An Obsidian plugin that answers questions about your Zettelkasten, with citations to your notes.
 
+<img src="docs/screenshot.png" alt="Zettel Agent answering a question in the Obsidian sidebar, with numbered citations to notes" width="480">
+
 ## Features
 
 - **Cited answers.** Answers cite the notes they draw on. The Sources list shows which notes the agent read in full and which it saw only as excerpts.
