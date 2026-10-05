@@ -25,7 +25,7 @@ export const FUSION_CANDIDATES = 50;
  */
 export type Fusion = { method: "rrf"; k: number } | { method: "convex"; alpha: number };
 
-export interface CorpusSearchOptions {
+interface CorpusSearchOptions {
   limit?: number | undefined;
   perNote?: number | undefined;
   stages?: Stage[] | undefined;

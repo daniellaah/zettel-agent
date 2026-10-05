@@ -48,7 +48,6 @@ const FINAL_CONTEXT_RESERVE = 4096;
 const MAX_CALLS_PER_RESPONSE = 8;
 
 interface TurnEvents {
-  onRequest?(index: number): void;
   onText?(delta: string): void;
   onThinking?(delta: string): void;
   onToolCall?(call: { id: string; name: string; input: unknown }): void;
@@ -67,7 +66,7 @@ export interface TurnUsage {
   cacheWriteTokens: number;
 }
 
-export interface TurnResult {
+interface TurnResult {
   /** Messages to append to the conversation: the user message, then the turn's exchange. */
   messages: ChatMessage[];
   stop: StopReason;
@@ -78,10 +77,10 @@ export interface TurnResult {
   citationIssues: CitationIssue[];
   usage: TurnUsage;
   error?: unknown;
-  context?: ContextDiagnostics;
+  context: ContextDiagnostics;
 }
 
-export interface TurnOptions {
+interface TurnOptions {
   provider: ModelProvider;
   context: ToolContext;
   history: ChatMessage[];
@@ -187,7 +186,6 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
     exhausted ||= selected.diagnostics.estimatedTokens + FINAL_CONTEXT_RESERVE >= allowance;
     const isFinalRequest = exhausted || usage.requests + 1 >= budget.maxRequests;
     usage.requests++;
-    events.onRequest?.(usage.requests);
     lastRequest = selected.messages;
 
     let response: ModelResponse;
@@ -331,7 +329,6 @@ function skipped(content: string, name: string): ToolOutcome {
     isError: true,
     summary: `${name} → skipped`,
     evidenceIds: [],
-    newEvidence: 0,
   };
 }
 

@@ -21,7 +21,7 @@ export interface ModelRequest {
 /** Why a model response ended, normalized across providers. */
 export type FinishReason = "end" | "tool_calls" | "max_tokens" | "refusal" | "pause";
 
-export interface ModelUsage {
+interface ModelUsage {
   /** Input tokens billed at the full rate. */
   inputTokens: number;
   outputTokens: number;

@@ -200,7 +200,7 @@ export function validateSets(
 }
 
 /** A whole word or phrase, case-insensitive, as an exact-term lookup means it. */
-export function termPattern(term: string): RegExp {
+function termPattern(term: string): RegExp {
   return new RegExp(`(?<![\\w-])${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?!\\w)`, "i");
 }
 

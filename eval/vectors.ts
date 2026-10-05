@@ -13,7 +13,7 @@ import { loadEvaluationData, SUITES } from "./fixture-vault";
  */
 const VECTORS_DIR = path.join(import.meta.dirname, "embeddings");
 
-export interface EvalVectors extends VectorFile {
+interface EvalVectors extends VectorFile {
   model: string;
   file: string;
 }

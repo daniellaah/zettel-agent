@@ -33,7 +33,6 @@ export interface ToolOutcome {
   isError: boolean;
   summary: string;
   evidenceIds: string[];
-  newEvidence: number;
   /** Absent only for calls the loop deliberately skipped. */
   contract?: ResultContract;
 }
@@ -71,7 +70,6 @@ export function defineTool<S extends z.ZodType>(spec: ToolSpec<S>): ToolSpec<z.Z
 export class Delivery {
   private readonly ids: string[] = [];
   private readonly spans: DeliveredSpan[] = [];
-  private fresh = 0;
   constructor(
     private readonly context: ToolContext,
     private readonly tool: string,
@@ -86,17 +84,14 @@ export class Delivery {
     text: string,
     span: Partial<Pick<DeliveredSpan, "start" | "end" | "line" | "wholeSection">> = {},
   ): string {
-    const { evidence, isNew } = this.context.ledger.register({
+    const evidence = this.context.ledger.register({
       path: note.path,
       sectionId: section.id,
       headingPath: section.headingPath,
       contentHash: note.contentHash,
       linkPath: note.path.replace(/\.md$/i, ""),
     });
-    if (!this.ids.includes(evidence.id)) {
-      this.ids.push(evidence.id);
-      if (isNew) this.fresh++;
-    }
+    if (!this.ids.includes(evidence.id)) this.ids.push(evidence.id);
     this.spans.push({ ...evidence, scope, text: quoteData(text), wholeSection: false, ...span });
     return evidence.id;
   }
@@ -141,7 +136,6 @@ export class Delivery {
       summary,
       isError: false,
       evidenceIds: this.ids,
-      newEvidence: this.fresh,
       contract,
     };
   }

@@ -86,11 +86,9 @@ export function parseNote(path: string, content: string): ParsedNote {
 
   for (let i = bodyStart; i < lines.length; i++) {
     const line = lines[i]!;
-    const fenceMatch = FENCE.exec(line);
-    if (fenceMatch) {
-      const marker = fenceMatch[1]!;
-      if (fence === null) fence = marker[0]!.repeat(marker.length);
-      else if (marker.startsWith(fence)) fence = null;
+    const next = fenceAfter(line, fence);
+    if (next !== undefined) {
+      fence = next;
       continue;
     }
     if (fence !== null) continue;
@@ -250,16 +248,19 @@ function stripFencedCode(text: string): string {
   const kept: string[] = [];
   let fence: string | null = null;
   for (const line of text.split("\n")) {
-    const match = FENCE.exec(line);
-    if (match) {
-      const marker = match[1]!;
-      if (fence === null) fence = marker[0]!.repeat(marker.length);
-      else if (marker.startsWith(fence)) fence = null;
-      continue;
-    }
-    if (fence === null) kept.push(line);
+    const next = fenceAfter(line, fence);
+    if (next !== undefined) fence = next;
+    else if (fence === null) kept.push(line);
   }
   return kept.join("\n");
+}
+
+/** The open code fence after this line, or undefined when the line is not a fence marker. */
+function fenceAfter(line: string, fence: string | null): string | null | undefined {
+  const marker = FENCE.exec(line)?.[1];
+  if (marker === undefined) return undefined;
+  if (fence === null) return marker[0]!.repeat(marker.length);
+  return marker.startsWith(fence) ? null : fence;
 }
 
 function piece(body: string[], offset: number, from: number, to: number) {

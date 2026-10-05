@@ -9,7 +9,7 @@ export class OllamaError extends Error {
   override readonly name = "OllamaError";
 }
 
-export interface OllamaOptions {
+interface OllamaOptions {
   model?: string;
   baseUrl?: string;
   fetch?: FetchLike;

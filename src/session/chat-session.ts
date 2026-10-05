@@ -258,7 +258,7 @@ export class ChatSession {
         citations: result.citations,
         usage: result.usage,
         citationIssues: result.citationIssues,
-        ...(result.context && { context: result.context }),
+        context: result.context,
       }));
     } catch {
       if (current())

@@ -13,7 +13,7 @@ import { MAX_OUTPUT, type ToolContext, type ToolOutcome } from "./shared";
 export type { ToolContext, ToolOutcome } from "./shared";
 
 /** The five read-only tools, in the order the model sees them. */
-export const TOOLS = [searchTool, matchTool, readTool, linksTool, listTool];
+const TOOLS = [searchTool, matchTool, readTool, linksTool, listTool];
 
 export function toolDefinitions(): ToolDefinition[] {
   return TOOLS.map((tool) => {
@@ -60,7 +60,6 @@ export function executeTool(name: string, input: unknown, context: ToolContext):
       isError: true,
       summary: `${name} → ${code}`,
       evidenceIds: [],
-      newEvidence: 0,
       contract,
     };
   };

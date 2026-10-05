@@ -15,7 +15,7 @@ const REPORT_DIR = path.join(import.meta.dirname, "reports");
  * Share of expected notes the answer cited, or null for no-answer scenarios, where citing
  * nearby notes as "closest, but not it" is fine and the answer needs reading instead.
  */
-export function expectedHitRate(record: ScenarioRecord): number | null {
+function expectedHitRate(record: ScenarioRecord): number | null {
   const { expect } = record.scenario;
   if (expect.length === 0) return null;
   return expect.filter((p) => record.result.citedPaths.includes(p)).length / expect.length;

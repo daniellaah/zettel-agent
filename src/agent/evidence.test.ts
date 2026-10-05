@@ -31,7 +31,7 @@ describe("EvidenceLedger", () => {
       headingPath: ["原子性", "论证"],
       contentHash: "h1",
     });
-    expect(again).toMatchObject({ isNew: false, evidence: { id: "E1" } });
+    expect(again.id).toBe("E1");
     const changed = entries.register({
       path: "Z/Permanent/原子性.md",
       linkPath: "Z/Permanent/原子性",
@@ -39,7 +39,7 @@ describe("EvidenceLedger", () => {
       headingPath: ["原子性", "论证"],
       contentHash: "h3",
     });
-    expect(changed).toMatchObject({ isNew: true, evidence: { id: "E3" } });
+    expect(changed.id).toBe("E3");
     expect(entries.get("e1")?.path).toBe("Z/Permanent/原子性.md");
   });
 });

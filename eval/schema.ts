@@ -19,7 +19,7 @@ const item = {
   lang: z.enum(["en", "zh"]),
 };
 
-export const snapshotNoteSchema = z
+const snapshotNoteSchema = z
   .object({
     path: notePath,
     stage: z.enum(["literature", "permanent"]),
@@ -45,7 +45,7 @@ const judgmentSchema = z
   })
   .strict();
 
-export const retrievalItemSchema = z
+const retrievalItemSchema = z
   .object({
     ...item,
     query: text,
@@ -72,7 +72,7 @@ export const retrievalSetSchema = z
   })
   .strict();
 
-export const answerItemSchema = z
+const answerItemSchema = z
   .object({
     ...item,
     question: text,

@@ -17,7 +17,7 @@ export class VaultCorpus {
   constructor(
     private readonly app: App,
     private readonly settings: () => PluginSettings,
-    private readonly onChanged: () => void = () => {},
+    private readonly onChanged: () => void,
   ) {
     this.corpus = this.createCorpus();
   }

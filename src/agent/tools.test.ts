@@ -60,7 +60,6 @@ describe("search", () => {
     expect(result.content).toContain('stage="permanent"');
     expect(result.content).toContain('link="[[一张卡片只承载一个想法]]"');
     expect(result.evidenceIds).toEqual(["E1"]);
-    expect(result.newEvidence).toBe(1);
   });
 
   it("reuses ids for evidence already delivered", () => {
@@ -68,7 +67,7 @@ describe("search", () => {
     executeTool("search", { query: "原子性" }, context);
     const again = executeTool("search", { query: "原子性" }, context);
     expect(again.evidenceIds).toEqual(["E1"]);
-    expect(again.newEvidence).toBe(0);
+    expect(context.ledger.size).toBe(1);
   });
 
   it("says so honestly when nothing matches", () => {

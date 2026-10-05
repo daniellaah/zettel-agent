@@ -24,13 +24,13 @@ export class EvidenceLedger {
   }
 
   /** Returns the existing id for the same section and content, or assigns the next one. */
-  register(evidence: Omit<Evidence, "id">): { evidence: Evidence; isNew: boolean } {
+  register(evidence: Omit<Evidence, "id">): Evidence {
     const key = `${evidence.path}\u0000${evidence.sectionId}\u0000${evidence.contentHash}`;
     const existing = this.byKey.get(key);
-    if (existing) return { evidence: existing, isNew: false };
+    if (existing) return existing;
     const entry = { ...evidence, id: `E${this.byId.size + 1}` };
     this.add(entry);
-    return { evidence: entry, isNew: true };
+    return entry;
   }
 
   get(id: string): Evidence | undefined {

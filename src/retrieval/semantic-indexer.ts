@@ -27,7 +27,7 @@ export interface VectorStore {
  */
 export const READY_COVERAGE = 0.95;
 
-export interface SemanticIndexerOptions {
+interface SemanticIndexerOptions {
   connect: () => Promise<Embedder>;
   store: VectorStore;
   /** The current corpus; the vault may replace it when it rebuilds. */
