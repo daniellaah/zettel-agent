@@ -136,7 +136,7 @@ function neutralAssistant(message: AssistantMessage): RawAssistant {
 }
 
 /** Folds streamed chunks into one assistant message. */
-export class ChatStreamAccumulator {
+class ChatStreamAccumulator {
   private content = "";
   private reasoning = "";
   private readonly calls = new Map<number, { id: string; name: string; arguments: string }>();

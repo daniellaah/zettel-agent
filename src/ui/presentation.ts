@@ -80,7 +80,7 @@ export function citationWarnings(
   return warnings;
 }
 
-export interface AnswerNotice {
+interface AnswerNotice {
   tone: "info" | "warning" | "error";
   text: string;
 }
@@ -133,9 +133,9 @@ export function answerNotices(
 }
 
 /** How much of a source the model saw: read text, partial text, or no text at all. */
-export type SeenTier = "read" | "partial" | "glimpse" | "unknown";
+type SeenTier = "read" | "partial" | "glimpse" | "unknown";
 
-export interface SeenPresentation {
+interface SeenPresentation {
   label: string;
   tier: SeenTier;
   icon: string;

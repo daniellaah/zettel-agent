@@ -58,7 +58,7 @@ export const sourceSchema = z
   .optional()
   .describe("Exact accessible source path for Obsidian-compatible link resolution.");
 
-export interface ToolSpec<S extends z.ZodType> {
+interface ToolSpec<S extends z.ZodType> {
   name: string;
   description: string;
   schema: S;

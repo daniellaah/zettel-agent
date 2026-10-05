@@ -45,9 +45,9 @@ const STALE_ROUNDS_BEFORE_REMINDER = 2;
 const FINAL_CONTEXT_RESERVE = 4096;
 
 /** Tool calls run from one model response; the rest are answered "skipped" to force triage. */
-export const MAX_CALLS_PER_RESPONSE = 8;
+const MAX_CALLS_PER_RESPONSE = 8;
 
-export interface TurnEvents {
+interface TurnEvents {
   onRequest?(index: number): void;
   onText?(delta: string): void;
   onThinking?(delta: string): void;

@@ -9,7 +9,7 @@ import type { DeliveredSpan, EvidenceScope } from "../agent/tool-contract";
  */
 
 /** How much of a section a delivery showed, most first. */
-export const SCOPE_ORDER: readonly EvidenceScope[] = [
+const SCOPE_ORDER: readonly EvidenceScope[] = [
   "body",
   "excerpt",
   "matched-line",

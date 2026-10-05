@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { Corpus } from "../retrieval/corpus";
 import { EvidenceLedger } from "./evidence";
-import { boundedMatcher, executeTool, type ToolContext, type ToolOutcome } from "./tools";
+import { executeTool, type ToolContext, type ToolOutcome } from "./tools";
+import { boundedMatcher } from "./tools/match";
 import { runTurn } from "./loop";
 import { call, text, ScriptedProvider } from "../testing/scripted-provider";
 

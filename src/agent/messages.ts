@@ -16,7 +16,7 @@ export interface TextPart {
   text: string;
 }
 
-export interface ThinkingPart {
+interface ThinkingPart {
   type: "thinking";
   text: string;
 }
@@ -37,7 +37,7 @@ export interface ToolResultPart {
   contract?: ResultContract;
 }
 
-export interface UserMessage {
+interface UserMessage {
   role: "user";
   /** Host control messages are not new human turns when selecting a context window. */
   origin?: "control";
@@ -46,7 +46,7 @@ export interface UserMessage {
   deliveries?: ResultContract[];
 }
 
-export interface RawContent {
+interface RawContent {
   provider: string;
   model: string;
   content: unknown;

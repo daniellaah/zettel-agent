@@ -5,13 +5,9 @@ import { Corpus } from "../retrieval/corpus";
 import { parseNote } from "../retrieval/markdown";
 import { FakeEmbedder } from "../testing/fake-embedder";
 import { EvidenceLedger } from "./evidence";
-import {
-  excerptWindow,
-  executeTool,
-  openingText,
-  toolDefinitions,
-  type ToolContext,
-} from "./tools";
+import { executeTool, toolDefinitions, type ToolContext } from "./tools";
+import { excerptWindow } from "./tools/search";
+import { openingText } from "./tools/shared";
 
 function makeContext(): ToolContext {
   const settings = resolveSettings({ zettelkastenRoot: "Z" });

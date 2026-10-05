@@ -11,9 +11,6 @@ import { searchTool } from "./search";
 import { MAX_OUTPUT, type ToolContext, type ToolOutcome } from "./shared";
 
 export type { ToolContext, ToolOutcome } from "./shared";
-export { openingText } from "./shared";
-export { boundedMatcher } from "./match";
-export { excerptWindow } from "./search";
 
 /** The five read-only tools, in the order the model sees them. */
 export const TOOLS = [searchTool, matchTool, readTool, linksTool, listTool];

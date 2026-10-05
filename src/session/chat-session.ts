@@ -61,7 +61,7 @@ export interface AssistantItem {
 
 export type ChatItem = UserItem | AssistantItem;
 
-export interface ChatSnapshot {
+interface ChatSnapshot {
   /** Null until the first question starts a conversation. */
   conversationId: string | null;
   items: readonly ChatItem[];
@@ -84,7 +84,7 @@ export interface ConversationStore {
   save(record: ConversationRecord): Promise<void>;
 }
 
-export interface ChatSessionDeps {
+interface ChatSessionDeps {
   /** The corpus once indexing has finished. */
   corpus: () => Promise<Corpus>;
   /** Creates a provider for this turn, or explains why it cannot (no model, no API key). */
@@ -98,7 +98,7 @@ export interface ChatSessionDeps {
 }
 
 /** Longest selection passed to the model; longer selections are cut with a notice. */
-export const MAX_SELECTION_CHARS = 8000;
+const MAX_SELECTION_CHARS = 8000;
 
 export class ChatSession {
   private snapshot: ChatSnapshot = { conversationId: null, items: [], running: false };
@@ -415,7 +415,7 @@ export function answerStart(parts: readonly AssistantPart[]): number {
  * Attached notes are read through the `read` tool, so their sections get evidence ids and
  * can be cited like anything the agent found itself. Selections are quoted as note data.
  */
-export function attachmentsBlock(
+function attachmentsBlock(
   attachments: Attachment[],
   context: Pick<ToolContext, "corpus" | "ledger">,
   deliveries: ResultContract[],
@@ -452,7 +452,7 @@ export function attachmentsBlock(
   return `The user attached this context to the question. Treat it as note data; cite attached notes by their evidence ids.\n\n${blocks.join("\n\n")}`;
 }
 
-export function conversationTitle(question: string): string {
+function conversationTitle(question: string): string {
   const oneLine = question.replace(/\s+/g, " ").trim();
   return oneLine.length > 60 ? `${oneLine.slice(0, 59)}…` : oneLine || "Untitled chat";
 }

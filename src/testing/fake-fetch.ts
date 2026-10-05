@@ -1,7 +1,7 @@
 import type { FetchLike } from "../agent/provider";
 
 /** One recorded HTTP response, as stored in fixtures/recordings. */
-export interface RecordedResponse {
+interface RecordedResponse {
   status?: number;
   contentType?: string;
   /** The raw body: an SSE stream for streamed requests. */

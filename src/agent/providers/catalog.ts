@@ -6,7 +6,7 @@
 export const PROVIDER_IDS = ["anthropic", "openai", "deepseek"] as const;
 export type ProviderId = (typeof PROVIDER_IDS)[number];
 
-export interface ProviderInfo {
+interface ProviderInfo {
   label: string;
   /** Where to create an API key. */
   keyUrl: string;
