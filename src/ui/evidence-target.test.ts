@@ -4,6 +4,7 @@ import { evidenceTarget } from "./evidence-target";
 const evidence = {
   id: "E1",
   path: "Z/A/Same.md",
+  linkPath: "Z/A/Same",
   sectionId: "s",
   headingPath: ["Same", "Detail"],
   contentHash: "old",

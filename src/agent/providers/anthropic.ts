@@ -16,22 +16,18 @@ import type {
 } from "../provider";
 import { describeSdkError } from "./errors";
 
-export type Effort = "low" | "medium" | "high";
-
 /** Models that take adaptive thinking, effort and server-side refusal fallbacks. */
 const CURRENT_GENERATION = new Set(["claude-opus-5-5", "claude-sonnet-5-5"]);
 
 export class AnthropicProvider implements ModelProvider {
   readonly provider = "anthropic";
   private readonly client: Anthropic;
-  private readonly effort: Effort;
 
   constructor(
     apiKey: string,
     readonly model: string,
-    options: { effort?: Effort; fetch?: FetchLike } = {},
+    options: { fetch?: FetchLike } = {},
   ) {
-    this.effort = options.effort ?? "medium";
     // Obsidian runs plugins in Electron's renderer; the key only goes to api.anthropic.com.
     this.client = new Anthropic({
       apiKey,
@@ -63,7 +59,7 @@ export class AnthropicProvider implements ModelProvider {
         cache_control: { type: "ephemeral" },
         ...(current && {
           thinking: { type: "adaptive", display: "summarized" },
-          output_config: { effort: this.effort },
+          output_config: { effort: "medium" },
           // On a safety refusal, the API reruns the request on a suitable fallback model.
           betas: ["server-side-fallback-2026-07-01"],
           fallbacks: "default",

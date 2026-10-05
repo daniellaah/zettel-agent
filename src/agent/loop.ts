@@ -140,7 +140,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
   let staleRounds = 0;
   let exhausted = toolChars >= budget.maxToolChars;
   let last: AssistantMessage | null = null;
-  let lastContext: ContextDiagnostics | undefined;
+  let lastContext: ContextDiagnostics;
   /** What the model saw when it wrote `last`; citations are checked against it. */
   let lastRequest: ChatMessage[] = [];
 
@@ -167,7 +167,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
       },
       citationIssues: citationIssues(answer, lastRequest, context.corpus),
       usage,
-      ...(lastContext && { context: lastContext }),
+      context: lastContext,
       ...(error !== undefined && { error }),
     };
   };

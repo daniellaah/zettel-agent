@@ -203,7 +203,7 @@ export function seenPresentation(
       label: "Retrieved",
       tier: "unknown",
       icon: "file-text",
-      description: "This chat was saved before the plugin recorded how much text the model saw.",
+      description: "Retrieved in a discarded attempt; how much text the model saw was not kept.",
     };
   if (source.seen === "body" && source.attached)
     return {

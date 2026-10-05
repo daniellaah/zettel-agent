@@ -15,6 +15,7 @@ const evidence = z.looseObject({
   sectionId: z.string(),
   headingPath: z.array(z.string()),
   contentHash: z.string(),
+  linkPath: z.string(),
 });
 
 const contract = z.looseObject({

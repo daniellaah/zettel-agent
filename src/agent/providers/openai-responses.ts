@@ -27,14 +27,11 @@ export class OpenAIResponsesProvider implements ModelProvider {
   readonly provider = "openai";
   private readonly client: OpenAI;
 
-  private readonly effort: "low" | "medium" | "high";
-
   constructor(
     apiKey: string,
     readonly model: string,
-    options: { effort?: "low" | "medium" | "high"; fetch?: FetchLike } = {},
+    options: { fetch?: FetchLike } = {},
   ) {
-    this.effort = options.effort ?? "medium";
     this.client = new OpenAI({
       apiKey,
       maxRetries: 0,
@@ -61,7 +58,7 @@ export class OpenAIResponsesProvider implements ModelProvider {
           strict: false,
         })),
         tool_choice: request.allowTools ? "auto" : "none",
-        reasoning: { effort: this.effort, summary: "auto" },
+        reasoning: { effort: "medium", summary: "auto" },
         store: false,
         include: ["reasoning.encrypted_content"],
         max_output_tokens: 32_000,

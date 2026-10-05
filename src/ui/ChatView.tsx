@@ -87,8 +87,6 @@ export class ChatView extends ItemView {
     return {
       app,
       component: this,
-      model: () => plugin.settings.models[plugin.settings.provider],
-      providerLabel: () => PROVIDERS[plugin.settings.provider].label,
       configuration: () => {
         const { provider, models, apiKeySecretIds, zettelkastenRoot } = plugin.settings;
         const secretId = apiKeySecretIds[provider];

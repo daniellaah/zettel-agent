@@ -6,12 +6,14 @@ function ledger() {
   const entries = new EvidenceLedger();
   entries.register({
     path: "Z/Permanent/原子性.md",
+    linkPath: "Z/Permanent/原子性",
     sectionId: "a",
     headingPath: ["原子性", "论证"],
     contentHash: "h1",
   });
   entries.register({
     path: "Z/Lit/Book.md",
+    linkPath: "Z/Lit/Book",
     sectionId: "b",
     headingPath: ["Book"],
     contentHash: "h2",
@@ -24,6 +26,7 @@ describe("EvidenceLedger", () => {
     const entries = ledger();
     const again = entries.register({
       path: "Z/Permanent/原子性.md",
+      linkPath: "Z/Permanent/原子性",
       sectionId: "a",
       headingPath: ["原子性", "论证"],
       contentHash: "h1",
@@ -31,6 +34,7 @@ describe("EvidenceLedger", () => {
     expect(again).toMatchObject({ isNew: false, evidence: { id: "E1" } });
     const changed = entries.register({
       path: "Z/Permanent/原子性.md",
+      linkPath: "Z/Permanent/原子性",
       sectionId: "a",
       headingPath: ["原子性", "论证"],
       contentHash: "h3",
@@ -61,7 +65,7 @@ describe("citedIds", () => {
 describe("citationsToLinks", () => {
   it("rewrites citations as note links and keeps unknown ids", () => {
     expect(citationsToLinks("A [E1]. B [E1, E2]. C [E9].", ledger())).toBe(
-      "A [[原子性#论证]]. B [[原子性#论证]] [[Book]]. C [E9].",
+      "A [[Z/Permanent/原子性#论证]]. B [[Z/Permanent/原子性#论证]] [[Z/Lit/Book]]. C [E9].",
     );
   });
 });

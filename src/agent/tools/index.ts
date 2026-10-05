@@ -96,7 +96,7 @@ export function executeTool(name: string, input: unknown, context: ToolContext):
         sectionId: entry.sectionId,
         headingPath: entry.headingPath,
         contentHash: entry.contentHash,
-        ...(entry.linkPath && { linkPath: entry.linkPath }),
+        linkPath: entry.linkPath,
       });
     }
     return result;

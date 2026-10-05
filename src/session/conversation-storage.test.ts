@@ -67,7 +67,7 @@ it("serializes saves and snapshots the record at call time", async () => {
     { id: "chat", title: "two", updatedAt: "2026-10-03", questions: 0 },
   ]);
 });
-it("recovers interrupted replacement and backup; isolates malformed records and index", async () => {
+it("recovers interrupted replacement and backup; isolates malformed records", async () => {
   await Promise.resolve();
   const { store, files, interrupt } = memory();
   await store.save(record());
@@ -75,7 +75,6 @@ it("recovers interrupted replacement and backup; isolates malformed records and 
   await expect(store.save(record("new", "2026-10-03"))).rejects.toThrow("interrupted");
   expect((await store.load("chat"))?.title).toBe("new");
   files.set("plugin/chats/bad.json", "{broken");
-  files.set("plugin/chats/index.json", "[]");
   expect(await store.list()).toHaveLength(1);
   files.set("plugin/chats/chat.json.pending", "broken");
   expect((await store.load("chat"))?.title).toBe("old");

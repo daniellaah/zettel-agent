@@ -471,6 +471,7 @@
 .za-message-footer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--size-4-1);
   min-height: var(--icon-size);
 }
@@ -887,10 +888,6 @@
   color: var(--text-success);
 }
 
-.za-message-footer {
-  flex-wrap: wrap;
-}
-
 .za-research {
   color: var(--text-muted);
   font-size: var(--font-ui-small);
@@ -1235,27 +1232,6 @@
 .za-cite:focus-visible {
   outline: 2px solid var(--interactive-accent);
   outline-offset: 2px;
-}
-
-.za-settings-intro {
-  padding: 0 var(--size-4-4);
-  color: var(--text-muted);
-  font-size: var(--font-ui-small);
-  line-height: var(--line-height-normal);
-}
-
-.za-settings-advanced {
-  margin-top: var(--size-4-6);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
-}
-
-.za-settings-advanced > summary {
-  font-weight: var(--font-semibold);
-}
-
-.za-settings-advanced-body {
-  padding: 0 var(--size-4-3) var(--size-4-3);
 }
 
 @container (max-width: 360px) {

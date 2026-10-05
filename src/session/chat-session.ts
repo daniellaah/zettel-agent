@@ -6,7 +6,7 @@ import { DEFAULT_BUDGET, runTurn, type StopReason, type TurnUsage } from "../age
 import { turnContext } from "../agent/prompt";
 import type { ChatMessage } from "../agent/messages";
 import type { ModelProvider } from "../agent/provider";
-import { executeTool } from "../agent/tools";
+import { executeTool, type ToolContext } from "../agent/tools";
 import { answerProvenance, type AnswerProvenance } from "./provenance";
 import type { Corpus } from "../retrieval/corpus";
 import type { QueryVectors } from "../retrieval/semantic-indexer";
@@ -411,11 +411,11 @@ export class ChatSession {
  */
 export function attachmentsBlock(
   attachments: Attachment[],
-  context: Parameters<typeof executeTool>[2],
-  deliveries: ResultContract[] = [],
+  context: Pick<ToolContext, "corpus" | "ledger">,
+  deliveries: ResultContract[],
 ): string {
   const blocks: string[] = [];
-  let remaining = context.maxChars ?? DEFAULT_BUDGET.maxToolChars;
+  let remaining = DEFAULT_BUDGET.maxToolChars;
   for (const attachment of attachments) {
     if (attachment.kind === "note") {
       const outcome = executeTool(

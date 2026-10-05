@@ -34,7 +34,7 @@ export interface ToolOutcome {
   summary: string;
   evidenceIds: string[];
   newEvidence: number;
-  /** Optional only for historical saved traces and deliberately skipped calls. */
+  /** Absent only for calls the loop deliberately skipped. */
   contract?: ResultContract;
 }
 

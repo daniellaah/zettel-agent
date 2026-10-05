@@ -6,23 +6,46 @@ import type { DeliveredSpan, EvidenceScope, ResultContract } from "../agent/tool
 import { answerProvenance } from "./provenance";
 
 const evidence: Evidence[] = [
-  { id: "E1", path: "Z/Alpha.md", sectionId: "s1", headingPath: ["Alpha"], contentHash: "a" },
+  {
+    id: "E1",
+    path: "Z/Alpha.md",
+    linkPath: "Z/Alpha",
+    sectionId: "s1",
+    headingPath: ["Alpha"],
+    contentHash: "a",
+  },
   {
     id: "E2",
     path: "Z/Beta.md",
+    linkPath: "Z/Beta",
     sectionId: "s2",
     headingPath: ["Beta", "Method"],
     contentHash: "b",
   },
-  { id: "E3", path: "Z/Gamma.md", sectionId: "s3", headingPath: ["Gamma"], contentHash: "c" },
+  {
+    id: "E3",
+    path: "Z/Gamma.md",
+    linkPath: "Z/Gamma",
+    sectionId: "s3",
+    headingPath: ["Gamma"],
+    contentHash: "c",
+  },
   {
     id: "E4",
     path: "Z/Beta.md",
+    linkPath: "Z/Beta",
     sectionId: "s4",
     headingPath: ["Beta", "Limits"],
     contentHash: "b",
   },
-  { id: "E5", path: "Z/Delta.md", sectionId: "s5", headingPath: ["Delta"], contentHash: "d" },
+  {
+    id: "E5",
+    path: "Z/Delta.md",
+    linkPath: "Z/Delta",
+    sectionId: "s5",
+    headingPath: ["Delta"],
+    contentHash: "d",
+  },
 ];
 const ledger = new EvidenceLedger(evidence);
 

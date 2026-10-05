@@ -44,8 +44,7 @@ export class ConversationStorage implements ConversationStore {
       const ids = new Set(
         files.flatMap((file) => {
           const id = FILE.exec(file.slice(this.dir.length + 1))?.[1];
-          // index.json was a shared index in early builds, not a conversation.
-          return file.startsWith(`${this.dir}/`) && id && id !== "index" ? [id] : [];
+          return file.startsWith(`${this.dir}/`) && id ? [id] : [];
         }),
       );
       const summaries: ConversationSummary[] = [];

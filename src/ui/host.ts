@@ -11,8 +11,6 @@ export interface ChatHost {
   app: App;
   /** Owner for MarkdownRenderer children, so they unload with the view. */
   component: Component;
-  model(): string;
-  providerLabel(): string;
   configuration(): ChatConfiguration;
   onConfigurationChange(callback: () => void): () => void;
   openSettings(): void;

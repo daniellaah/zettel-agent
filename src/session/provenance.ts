@@ -26,7 +26,7 @@ export interface SourceView {
   title: string;
   /** The cited section's heading; null for a whole note. */
   heading: string | null;
-  /** The most of it the model was shown; null for chats saved before deliveries were recorded. */
+  /** The most of it the model was shown; null when only a discarded attempt delivered it. */
   seen: EvidenceScope | null;
   /** For `body`: the whole section was delivered, not one page of it. */
   whole: boolean;
