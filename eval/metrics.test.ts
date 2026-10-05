@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { meanMeasured, scoreJudgedOnly, scoreRetrieval } from "./metrics";
+import { meanMeasured, scoreRetrieval } from "./metrics";
 
 describe("graded note retrieval metrics", () => {
   it("uses graded gain and grade-2 reciprocal rank", () => {
@@ -55,10 +55,8 @@ describe("graded note retrieval metrics", () => {
         .mrr,
     ).toBe(0);
   });
-  it("can drop unjudged notes before the cutoff", () => {
-    const ranked = [...Array.from({ length: 10 }, (_, i) => `unjudged${i}`), "lure", "answer"];
-    const grades = { lure: 0, answer: 2 } as const;
-    expect(scoreRetrieval(ranked, grades)).toMatchObject({ mrr: 0, unjudged10: 10 });
-    expect(scoreJudgedOnly(ranked, grades)).toMatchObject({ mrr: 0.5, unjudged10: 0 });
+  it("counts unjudged notes in the top ten", () => {
+    const ranked = [...Array.from({ length: 10 }, (_, i) => `unjudged${i}`), "answer"];
+    expect(scoreRetrieval(ranked, { answer: 2 })).toMatchObject({ mrr: 0, unjudged10: 10 });
   });
 });

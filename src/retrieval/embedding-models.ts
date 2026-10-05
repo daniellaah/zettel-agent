@@ -7,11 +7,11 @@ import { RRF_K } from "./fusion";
  */
 export const DEFAULT_EMBEDDING_MODEL = "bge-m3";
 
-export interface ModelProfile {
+interface ModelProfile {
   model: RegExp;
   /** The query format the model was trained with; documents are always plain text. */
   formatQuery?: (query: string) => string;
-  /** Keyword weight for convex fusion, chosen on the dev split by `npm run eval:sweep`. */
+  /** Keyword weight for convex fusion, chosen on the dev split of the retrieval evaluation. */
   alpha?: number;
 }
 

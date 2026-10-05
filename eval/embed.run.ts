@@ -15,7 +15,7 @@ it("embeds the fixture corpus and every evaluation query with a local Ollama mod
     model,
     ...(process.env.OLLAMA_URL && { baseUrl: process.env.OLLAMA_URL }),
   });
-  const corpus = loadFixtureCorpus("both", { semantic: true });
+  const corpus = loadFixtureCorpus({ semantic: true });
   const sections = corpus.dense!.pending();
   const queries = evaluationQueries();
 

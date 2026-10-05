@@ -15,12 +15,12 @@ import {
 } from "./validate";
 
 describe("frozen evaluation corpus and annotations", () => {
-  it("loads 318 unchanged notes, 20 queries and 12 rubrics without writing the vault", () => {
+  it("loads 318 unchanged notes, 120 queries and 60 rubrics without writing the vault", () => {
     const data = loadEvaluationData();
     const corpus = loadFixtureCorpus();
     expect(corpus.size).toBe(318);
-    expect(data.retrieval.items).toHaveLength(20);
-    expect(data.answers.items).toHaveLength(12);
+    expect(data.retrieval.items).toHaveLength(120);
+    expect(data.answers.items).toHaveLength(60);
     expect(validateSnapshot(data.manifest, readSnapshot(corpus))).toEqual([]);
     expect(validateSets(data.manifest, data.retrieval, data.answers, corpus)).toEqual([]);
     expect(

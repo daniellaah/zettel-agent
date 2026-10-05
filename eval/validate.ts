@@ -4,7 +4,7 @@ import path from "node:path";
 
 import type { Corpus } from "../src/retrieval/corpus";
 import type { ParsedNote } from "../src/retrieval/markdown";
-import { frozenPaths, VAULT_DIR, walk, ZETTELKASTEN_ROOT } from "./fixture-vault";
+import { VAULT_DIR, walk, ZETTELKASTEN_ROOT } from "./fixture-vault";
 import type { AnswerSet, CorpusManifest, RetrievalSet, SnapshotNote } from "./schema";
 
 export function sha256(content: string): string {
@@ -22,16 +22,13 @@ export function snapshotDigest(notes: SnapshotNote[]): string {
 }
 
 export function readSnapshot(corpus: Corpus): SnapshotNote[] {
-  const frozen = frozenPaths();
-  return walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT)).flatMap((file) => {
+  return walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT)).map((file) => {
     const relative = path.relative(VAULT_DIR, file);
-    // Notes added after the freeze are pending, not part of this snapshot.
-    if (!frozen.has(relative)) return [];
     const stage = corpus.stage(relative);
     if (!corpus.get(relative) || (stage !== "literature" && stage !== "permanent")) {
       throw new Error(`Unexpected research note stage: ${relative}`);
     }
-    return [{ path: relative, stage, sha256: sha256(readFileSync(file, "utf8")) }];
+    return { path: relative, stage, sha256: sha256(readFileSync(file, "utf8")) };
   });
 }
 

@@ -1,12 +1,14 @@
 import type { ParsedNote } from "./markdown";
-import { QUERY_STOPWORDS, stripQueryBoilerplate, tokenize, type TokenizerMode } from "./tokenize";
+import { QUERY_STOPWORDS, stripQueryBoilerplate, tokenize } from "./tokenize";
 
 /**
  * Two-level BM25F over parsed notes.
  *
  * Note-level fields (title, aliases, tags) are scored once per note, so their IDF is
  * computed over notes and a long note does not repeat its title in every chunk.
- * Chunk-level fields (headings, body, link targets) are scored per heading section.
+ * Note-level IDF counts every note that uses the term anywhere, as BM25F does: a common word
+ * in one title is not rare. Chunk-level fields (headings, body, link targets) are scored per
+ * heading section; a top heading that repeats the title is scored once, as the title.
  * A chunk's score is its own score plus its note's score; results are collapsed so one
  * note cannot fill every slot.
  */
@@ -16,7 +18,7 @@ const CHUNK_FIELDS = ["headings", "body", "links"] as const;
 type NoteField = (typeof NOTE_FIELDS)[number];
 type ChunkField = (typeof CHUNK_FIELDS)[number];
 
-export const FIELD_WEIGHTS: Record<NoteField | ChunkField, number> = {
+const FIELD_WEIGHTS: Record<NoteField | ChunkField, number> = {
   title: 10,
   aliases: 8,
   headings: 6,
@@ -25,27 +27,7 @@ export const FIELD_WEIGHTS: Record<NoteField | ChunkField, number> = {
   links: 0.25,
 };
 
-/** Switches for retrieval ablations; all are on by default. */
-export interface LexicalOptions {
-  /** Index hyphenated and punctuated compounds whole as well as by their parts. */
-  compounds?: boolean;
-  /** Drop vault-referring words such as "note" and "mentions" from queries. */
-  queryStopwords?: boolean;
-  /** Cut Chinese frames such as "哪篇笔记提到了" from queries before tokenizing. */
-  queryBoilerplate?: boolean;
-  /**
-   * Rate title, alias and tag matches by how many notes use the term anywhere, as BM25F
-   * does, rather than only in those fields: a common word in one title is not rare.
-   */
-  wholeNoteIdf?: boolean;
-  /**
-   * Score a top heading that repeats the note title once, in the title field, instead of
-   * again among section headings.
-   */
-  titleOnce?: boolean;
-}
-
-export interface SearchOptions {
+interface SearchOptions {
   /** Maximum number of hits (default 10). */
   limit?: number;
   /** Maximum chunks returned per note (default 1). */
@@ -86,37 +68,27 @@ export class LexicalIndex {
   private readonly k1 = 1.2;
   private readonly b = 0.75;
 
-  constructor(
-    readonly mode: TokenizerMode = "both",
-    private readonly options: LexicalOptions = {},
-  ) {}
-
-  get noteCount(): number {
-    return this.notes.size;
-  }
-
   upsert(note: ParsedNote): void {
     this.remove(note.path);
     const noteDoc = this.nextDocId++;
     this.noteDocPath.set(noteDoc, note.path);
     addDoc(this.noteLevel, noteDoc, [
-      this.tokens(note.title),
-      this.tokens(note.aliases.join("\n")),
-      this.tokens(note.tags.map((tag) => tag.replace(/[/_-]/g, " ")).join("\n")),
+      tokenize(note.title),
+      tokenize(note.aliases.join("\n")),
+      tokenize(note.tags.map((tag) => tag.replace(/[/_-]/g, " ")).join("\n")),
     ]);
 
     const chunkDocs = note.sections.map((section) => {
       const doc = this.nextDocId++;
       this.chunkDocInfo.set(doc, { path: note.path, sectionId: section.id });
       const headings =
-        this.options.titleOnce !== false &&
         section.headingPath[0]?.trim().toLowerCase() === note.title.trim().toLowerCase()
           ? section.headingPath.slice(1)
           : section.headingPath;
       addDoc(this.chunkLevel, doc, [
-        this.tokens(headings.join("\n")),
-        this.tokens(section.text),
-        this.tokens(section.links.join("\n")),
+        tokenize(headings.join("\n")),
+        tokenize(section.text),
+        tokenize(section.links.join("\n")),
       ]);
       return doc;
     });
@@ -151,7 +123,7 @@ export class LexicalIndex {
     const terms = this.queryTerms(query);
     if (terms.length === 0) return [];
 
-    const noteScores = this.score(this.noteLevel, terms, this.notes.size, this.noteDf);
+    const noteScores = this.score(this.noteLevel, terms, this.notes.size, this.noteFrequency);
     const chunkScores = this.score(this.chunkLevel, terms, this.chunkDocInfo.size);
 
     const byNote = new Map<string, { noteScore: number; chunks: [number, number][] }>();
@@ -207,21 +179,11 @@ export class LexicalIndex {
 
   /** Distinct query terms, without vault-referring words unless nothing else is left. */
   queryTerms(query: string): string[] {
-    const terms = [...new Set(this.tokens(query))];
-    const { queryStopwords, queryBoilerplate } = this.options;
-    if (queryStopwords === false && queryBoilerplate === false) return terms;
-    const text = queryBoilerplate === false ? query : stripQueryBoilerplate(query);
-    const content = [...new Set(this.tokens(text))].filter(
-      (term) => queryStopwords === false || !QUERY_STOPWORDS.has(term),
+    const content = [...new Set(tokenize(stripQueryBoilerplate(query)))].filter(
+      (term) => !QUERY_STOPWORDS.has(term),
     );
-    return content.length ? content : terms;
+    return content.length ? content : [...new Set(tokenize(query))];
   }
-
-  /** Note-level document frequency: whole notes by default, the note fields alone if not. */
-  private readonly noteDf = (term: string): number =>
-    this.options.wholeNoteIdf === false
-      ? (this.noteLevel.postings.get(term)?.size ?? 0)
-      : (this.noteFrequency.get(term) ?? 0);
 
   /**
    * The score a section would reach if every query term saturated both levels. Terms the
@@ -231,7 +193,8 @@ export class LexicalIndex {
   maxScore(query: string): number {
     let max = 0;
     for (const term of this.queryTerms(query)) {
-      if (this.notes.size) max += (this.k1 + 1) * idf(this.notes.size, this.noteDf(term));
+      if (this.notes.size)
+        max += (this.k1 + 1) * idf(this.notes.size, this.noteFrequency.get(term) ?? 0);
       if (this.chunkDocInfo.size)
         max +=
           (this.k1 + 1) *
@@ -240,15 +203,12 @@ export class LexicalIndex {
     return max;
   }
 
-  private tokens(text: string): string[] {
-    return tokenize(text, this.mode, { compounds: this.options.compounds !== false });
-  }
-
   private score<F extends string>(
     level: Level<F>,
     terms: string[],
     docCount: number,
-    documentFrequency: (term: string) => number = (term) => level.postings.get(term)?.size ?? 0,
+    /** Notes using each term anywhere; defaults to this level's own document frequency. */
+    noteFrequency?: ReadonlyMap<string, number>,
   ): Map<number, { score: number; terms: Set<string> }> {
     const scores = new Map<number, { score: number; terms: Set<string> }>();
     if (docCount === 0) return scores;
@@ -258,7 +218,7 @@ export class LexicalIndex {
     for (const term of terms) {
       const postings = level.postings.get(term);
       if (!postings) continue;
-      const termIdf = idf(docCount, documentFrequency(term));
+      const termIdf = idf(docCount, noteFrequency ? (noteFrequency.get(term) ?? 0) : postings.size);
       for (const [doc, frequencies] of postings) {
         const lengths = level.lengths.get(doc)!;
         let weightedTf = 0;

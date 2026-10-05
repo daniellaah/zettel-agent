@@ -1,4 +1,4 @@
-export interface RetrievalScores {
+interface RetrievalScores {
   recall5: number | null;
   recall10: number | null;
   /** Undefined if no single note is sufficient (no grade-2 judgment). */
@@ -41,19 +41,4 @@ export function scoreRetrieval(
 export function meanMeasured(values: (number | null)[]): number | null {
   const measured = values.filter((value): value is number => value !== null);
   return measured.length ? measured.reduce((sum, value) => sum + value, 0) / measured.length : null;
-}
-
-/**
- * The same metrics on judged notes only: unjudged notes are dropped before the cutoff
- * ("condensed lists", Sakai 2007). Fairer to a retriever whose finds were never in the
- * labeling pool, at the cost of ignoring those finds entirely.
- */
-export function scoreJudgedOnly(
-  ranked: string[],
-  grades: Record<string, 0 | 1 | 2>,
-): RetrievalScores {
-  return scoreRetrieval(
-    ranked.filter((path) => grades[path] !== undefined),
-    grades,
-  );
 }

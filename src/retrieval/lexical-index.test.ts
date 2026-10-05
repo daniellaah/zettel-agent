@@ -3,8 +3,8 @@ import { describe, expect, it } from "vitest";
 import { LexicalIndex } from "./lexical-index";
 import { parseNote } from "./markdown";
 
-function indexOf(notes: Record<string, string>, mode: "words" | "bigrams" | "both" = "both") {
-  const index = new LexicalIndex(mode);
+function indexOf(notes: Record<string, string>) {
+  const index = new LexicalIndex();
   for (const [path, content] of Object.entries(notes)) index.upsert(parseNote(path, content));
   return index;
 }
@@ -85,7 +85,6 @@ describe("LexicalIndex", () => {
     expect(local.search("热力学")[0]?.path).toBe("Fleeting/信息论随记.md");
     local.remove("Fleeting/信息论随记.md");
     expect(local.search("热力学")).toEqual([]);
-    expect(local.noteCount).toBe(3);
   });
 
   it("is deterministic across rebuilds", () => {

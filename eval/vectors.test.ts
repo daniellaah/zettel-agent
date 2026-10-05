@@ -1,8 +1,9 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { dot } from "../src/retrieval/embedding";
 import { evaluationFiles, loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
-import { loadRewrites } from "./rewrites";
+import { retrievalSetSchema } from "./schema";
 import { validateSets } from "./validate";
 import {
   applyDocumentVectors,
@@ -31,13 +32,14 @@ describe("cross-lingual suite", () => {
 });
 
 describe("pool extension", () => {
-  it("only adds judgments to never-judged candidates, and can be switched off", () => {
-    const frozen = loadEvaluationData("expanded", "frozen");
-    const extended = loadEvaluationData("expanded", "extended");
-    expect(frozen.files).not.toHaveProperty("poolExtension");
+  it("only adds judgments to never-judged candidates", () => {
+    const extended = loadEvaluationData("expanded");
+    const frozen = retrievalSetSchema.parse(
+      JSON.parse(readFileSync(extended.files.retrieval, "utf8")),
+    );
     let added = 0;
     extended.retrieval.items.forEach((item, i) => {
-      const original = frozen.retrieval.items[i]!.judgments;
+      const original = frozen.items[i]!.judgments;
       for (const [path, judgment] of Object.entries(original))
         expect(item.judgments[path]).toEqual(judgment);
       added += Object.keys(item.judgments).length - Object.keys(original).length;
@@ -46,7 +48,7 @@ describe("pool extension", () => {
     expect(
       validateSets(extended.manifest, extended.retrieval, extended.answers, loadFixtureCorpus()),
     ).toEqual([]);
-    const chinese = loadEvaluationData("crosslingual", "extended");
+    const chinese = loadEvaluationData("crosslingual");
     expect(chinese.retrieval.items.map((item) => item.judgments)).toEqual(
       extended.retrieval.items.map((item) => item.judgments),
     );
@@ -85,28 +87,6 @@ describe("exact-terms suite", () => {
   });
 });
 
-describe("query rewrites", () => {
-  it("restate the expanded, cross-lingual and exact questions in the other language", () => {
-    const queries = (["expanded", "crosslingual", "exact"] as const).flatMap((suite) =>
-      loadEvaluationData(suite).retrieval.items.map((item) => item.query),
-    );
-    for (const source of ["llm", "llama3"] as const) {
-      const rewrites = loadRewrites(source);
-      for (const query of queries) {
-        const rewrite = rewrites.get(query);
-        // The local model failed on some English questions; those are searched as they are.
-        if (source === "llama3" && !rewrite) continue;
-        expect(rewrite, `${source}: ${query}`).toBeTruthy();
-        // Each rewrite switches language: Han characters appear in exactly one of the two.
-        expect(/\p{Script=Han}/u.test(query)).not.toBe(/\p{Script=Han}/u.test(rewrite!));
-      }
-    }
-    const reference = loadRewrites("reference");
-    const english = loadEvaluationData("expanded").retrieval.items[0]!.query;
-    expect(reference.get(reference.get(english)!)).toBe(english);
-  });
-});
-
 describe("frozen evaluation vectors", () => {
   it("cover every frozen section and every evaluation query with unit vectors", () => {
     const sets = loadEvalVectors();
@@ -114,7 +94,7 @@ describe("frozen evaluation vectors", () => {
     const frozen = new Set(loadEvaluationData().manifest.notes.map((note) => note.path));
     for (const set of sets) {
       expect(set.embedder).toMatch(new RegExp(`^ollama:${set.model.replace(/\./g, "\\.")}@`));
-      const corpus = loadFixtureCorpus("both", { semantic: true });
+      const corpus = loadFixtureCorpus({ semantic: true });
       applyDocumentVectors(corpus, set);
       expect(corpus.dense!.coverage()).toEqual({ embedded: frozen.size, total: frozen.size });
       for (const query of evaluationQueries()) {

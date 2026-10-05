@@ -1,13 +1,11 @@
 /**
  * Bilingual tokenizer for BM25.
  *
- * Latin text is split into lower-cased words. CJK runs get two complementary views:
- * dictionary words from Intl.Segmenter (precise, but it splits domain terms such as
- * 双塔 into 双|塔) and overlapping character bigrams (recall for those terms). The mode
- * switch exists for retrieval ablations; the index and the query must use the same mode.
+ * Latin text is split into lower-cased words, and compounds such as "policy-ratio" are also
+ * kept whole. CJK runs get two complementary views: dictionary words from Intl.Segmenter
+ * (precise, but it splits domain terms such as 双塔 into 双|塔) and overlapping character
+ * bigrams (recall for those terms).
  */
-export type TokenizerMode = "words" | "bigrams" | "both";
-
 const CJK = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u;
 const CJK_RUN = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]+/gu;
 
@@ -57,56 +55,31 @@ export function stripQueryBoilerplate(query: string): string {
   return query.replace(QUERY_BOILERPLATE, " ");
 }
 
-export interface TokenizeOptions {
-  /**
-   * Also emit each compound whole, besides its parts, so "policy-ratio" can match only
-   * "policy-ratio" rather than any text with "policy" and "ratio".
-   */
-  compounds?: boolean;
-}
-
-export function tokenize(
-  text: string,
-  mode: TokenizerMode = "both",
-  options: TokenizeOptions = {},
-): string[] {
+export function tokenize(text: string): string[] {
   const normalized = normalizeText(text);
   const tokens: string[] = [];
   const wordSpans = new Set<string>();
 
-  if (mode !== "bigrams") {
-    for (const { segment, index, isWordLike } of segmenter.segment(normalized)) {
-      if (!isWordLike || STOPWORDS.has(segment)) continue;
-      tokens.push(segment);
-      if (CJK.test(segment)) wordSpans.add(`${index}:${segment.length}`);
-    }
-  } else {
-    // Latin words still need splitting when only bigrams are used for CJK.
-    for (const { segment, isWordLike } of segmenter.segment(normalized)) {
-      if (isWordLike && !CJK.test(segment) && !STOPWORDS.has(segment)) tokens.push(segment);
+  for (const { segment, index, isWordLike } of segmenter.segment(normalized)) {
+    if (!isWordLike || STOPWORDS.has(segment)) continue;
+    tokens.push(segment);
+    if (CJK.test(segment)) wordSpans.add(`${index}:${segment.length}`);
+  }
+
+  for (const run of normalized.matchAll(CJK_RUN)) {
+    const chars = [...run[0]];
+    let offset = run.index;
+    for (let i = 0; i + 1 < chars.length; i++) {
+      const bigram = chars[i]! + chars[i + 1]!;
+      // Skip a bigram that the segmenter already emitted as the same two-character word.
+      if (!wordSpans.has(`${offset}:${bigram.length}`)) tokens.push(bigram);
+      offset += chars[i]!.length;
     }
   }
 
-  if (mode !== "words") {
-    for (const run of normalized.matchAll(CJK_RUN)) {
-      const chars = [...run[0]];
-      const start = run.index;
-      if (chars.length === 1 && mode === "bigrams" && !STOPWORDS.has(chars[0]!)) {
-        tokens.push(chars[0]!);
-        continue;
-      }
-      let offset = start;
-      for (let i = 0; i + 1 < chars.length; i++) {
-        const bigram = chars[i]! + chars[i + 1]!;
-        // Skip a bigram that the segmenter already emitted as the same two-character word.
-        if (!wordSpans.has(`${offset}:${bigram.length}`)) tokens.push(bigram);
-        offset += chars[i]!.length;
-      }
-    }
-  }
-
-  if (options.compounds)
-    for (const [compound] of normalized.matchAll(COMPOUND)) tokens.push(compound);
+  // Compounds whole as well as by their parts, so "policy-ratio" can match only
+  // "policy-ratio" rather than any text with "policy" and "ratio".
+  for (const [compound] of normalized.matchAll(COMPOUND)) tokens.push(compound);
 
   return tokens;
 }

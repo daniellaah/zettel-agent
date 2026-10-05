@@ -127,7 +127,8 @@ describe("bounded tool contracts", () => {
     );
     ctx.corpus.upsert("P/Large.md", "x".repeat(500));
     const body = executeTool("read", { target: "Large", max_chars: 100 }, ctx);
-    ctx.corpus.rename("P/Large.md", "P/Renamed.md", "x".repeat(500));
+    ctx.corpus.remove("P/Large.md");
+    ctx.corpus.upsert("P/Renamed.md", "x".repeat(500));
     expect(
       executeTool("read", { target: "Large", max_chars: 100, cursor: body.contract!.cursor }, ctx)
         .isError,

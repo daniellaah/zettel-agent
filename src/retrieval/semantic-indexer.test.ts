@@ -105,7 +105,9 @@ describe("SemanticIndexer", () => {
     const result = await next.instance.queryVectors(["scaling"]);
     expect(result!.vectors.get("scaling")).toHaveLength(32);
     expect(() =>
-      corpus.search("scaling", { mode: "hybrid", queryVector: result!.vectors.get("scaling") }),
+      corpus.search("scaling", {
+        hybrid: { queryVector: result!.vectors.get("scaling")!, fusion: result!.fusion },
+      }),
     ).not.toThrow();
   });
 

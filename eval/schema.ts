@@ -160,4 +160,3 @@ export type SnapshotNote = z.infer<typeof snapshotNoteSchema>;
 export type CorpusManifest = z.infer<typeof manifestSchema>;
 export type RetrievalSet = z.infer<typeof retrievalSetSchema>;
 export type AnswerSet = z.infer<typeof answerSetSchema>;
-export type TranslationSet = z.infer<typeof translationSetSchema>;

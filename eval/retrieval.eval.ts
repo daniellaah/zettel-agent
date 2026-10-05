@@ -4,65 +4,25 @@ import path from "node:path";
 import { format } from "prettier";
 import { describe, expect, it } from "vitest";
 
-import {
-  FUSION_CANDIDATES,
-  type CorpusHit,
-  type CorpusOptions,
-  type CorpusSearchOptions,
-} from "../src/retrieval/corpus";
-import type { LexicalOptions } from "../src/retrieval/lexical-index";
+import { FUSION_CANDIDATES, type CorpusHit, type Fusion } from "../src/retrieval/corpus";
+import type { DenseIndex } from "../src/retrieval/dense-index";
 import { fusionFor } from "../src/retrieval/embedding-models";
 import { RRF_K } from "../src/retrieval/fusion";
-import { loadEvaluationData, loadFixtureCorpus, pendingNotes } from "./fixture-vault";
-import { meanMeasured, scoreJudgedOnly, scoreRetrieval } from "./metrics";
+import { loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
+import { meanMeasured, scoreRetrieval } from "./metrics";
 import { pairedBootstrap } from "./paired-bootstrap";
-import { reportDestination } from "./report-destination";
 import { readSnapshot, sha256, validateSets, validateSnapshot } from "./validate";
 import { applyDocumentVectors, loadEvalVectors, queryVector } from "./vectors";
 
-/** Each keyword-search fix alone on top of the v0.1 index, the round-3 set, then all. */
-const V01: LexicalOptions = {
-  compounds: false,
-  queryStopwords: false,
-  queryBoilerplate: false,
-  wholeNoteIdf: false,
-  titleOnce: false,
-};
-const LEXICAL_VARIANTS: { name: string; options: Pick<CorpusOptions, "lexical" | "phrases"> }[] = [
-  { name: "lexical:v0.1", options: { lexical: V01, phrases: false } },
-  {
-    name: "lexical:+stopwords",
-    options: { lexical: { ...V01, queryStopwords: true }, phrases: false },
-  },
-  {
-    name: "lexical:+boilerplate",
-    options: { lexical: { ...V01, queryBoilerplate: true }, phrases: false },
-  },
-  { name: "lexical:+compounds", options: { lexical: { ...V01, compounds: true }, phrases: false } },
-  { name: "lexical:+phrases", options: { lexical: V01 } },
-  {
-    name: "lexical:+note-idf",
-    options: { lexical: { ...V01, wholeNoteIdf: true }, phrases: false },
-  },
-  {
-    name: "lexical:+title-once",
-    options: { lexical: { ...V01, titleOnce: true }, phrases: false },
-  },
-  {
-    name: "lexical:round3",
-    options: { lexical: { queryBoilerplate: false, wholeNoteIdf: false, titleOnce: false } },
-  },
-  { name: "lexical", options: {} },
-];
-/** What every other retriever is compared against: the BM25F index shipped in v0.1. */
-const BASELINE = "lexical:v0.1";
-/** Convex weight per model from the model profiles, tuned by `npm run eval:sweep` on dev. */
+/** What every other retriever is compared against: keywords alone (BM25F). */
+const BASELINE = "lexical";
+/** Convex weight per model from the model profiles, tuned on the dev split. */
 const tunedAlpha = (model: string) => {
   const fusion = fusionFor(model);
   return fusion.method === "convex" ? fusion.alpha : 0.5;
 };
 const ROOT = path.resolve(import.meta.dirname, "..");
-const SUITE = process.env.EVAL_SUITE ?? "pilot";
+const SUITE = process.env.EVAL_SUITE ?? "expanded";
 
 interface Retriever {
   name: string;
@@ -71,8 +31,7 @@ interface Retriever {
 
 describe("frozen learning corpus retrieval", () => {
   it("validates fixtures and compares lexical, semantic and hybrid retrieval without model calls", async () => {
-    const { manifest, retrieval, answers, files, labels } = loadEvaluationData();
-    const pending = pendingNotes();
+    const { manifest, retrieval, answers, files } = loadEvaluationData();
     const corpus = loadFixtureCorpus();
     expect(validateSnapshot(manifest, readSnapshot(corpus))).toEqual([]);
     expect(validateSets(manifest, retrieval, answers, corpus)).toEqual([]);
@@ -83,31 +42,30 @@ describe("frozen learning corpus retrieval", () => {
     // Semantic retrievers use frozen vectors from `npm run eval:embed`, one set per model.
     const vectorSets = loadEvalVectors();
     const retrievers: Retriever[] = [
-      ...LEXICAL_VARIANTS.map(({ name, options }) => {
-        const index = loadFixtureCorpus("both", options);
-        return {
-          name,
-          search: (query: string) => index.search(query, { limit: FUSION_CANDIDATES }),
-        };
-      }),
+      { name: BASELINE, search: (query) => corpus.search(query, { limit: FUSION_CANDIDATES }) },
       ...vectorSets.flatMap((set) => {
-        const index = loadFixtureCorpus("both", { semantic: true });
+        const index = loadFixtureCorpus({ semantic: true });
         applyDocumentVectors(index, set);
         const alpha = tunedAlpha(set.model);
-        const configs: [string, CorpusSearchOptions][] = [
-          ["semantic", { mode: "semantic" }],
-          ["hybrid-rrf", { mode: "hybrid", fusion: { method: "rrf", k: RRF_K } }],
-          [`hybrid-convex(${alpha})`, { mode: "hybrid", fusion: { method: "convex", alpha } }],
+        const fusions: [string, Fusion][] = [
+          ["hybrid-rrf", { method: "rrf", k: RRF_K }],
+          [`hybrid-convex(${alpha})`, { method: "convex", alpha }],
         ];
-        return configs.map(([name, options]) => ({
-          name: `${name}:${set.model}`,
-          search: (query: string) =>
-            index.search(query, {
-              ...options,
-              queryVector: queryVector(set, query),
-              limit: FUSION_CANDIDATES,
-            }),
-        }));
+        return [
+          // Meaning alone, for diagnosis: the closest section of each note.
+          {
+            name: `semantic:${set.model}`,
+            search: (query: string) => bestSectionPerNote(index.dense!, queryVector(set, query)),
+          },
+          ...fusions.map(([name, fusion]) => ({
+            name: `${name}:${set.model}`,
+            search: (query: string) =>
+              index.search(query, {
+                hybrid: { queryVector: queryVector(set, query), fusion },
+                limit: FUSION_CANDIDATES,
+              }),
+          })),
+        ];
       }),
     ];
 
@@ -129,9 +87,6 @@ describe("frozen learning corpus retrieval", () => {
           answerability: item.answerability,
           relevantCount: Object.values(grades).filter((grade) => grade > 0).length,
           scores: scoreRetrieval(top10, grades),
-          // A term-occurrence pool is complete: every unjudged note lacks the term.
-          judgedOnly:
-            "term" in item.pool ? scoreRetrieval(top10, grades) : scoreJudgedOnly(ranked, grades),
           /** Rank of the first sufficient (grade-2) note within the candidate depth. */
           answerRank: answer === -1 ? null : answer + 1,
           missed10: Object.entries(grades)
@@ -167,8 +122,6 @@ describe("frozen learning corpus retrieval", () => {
           mrr: meanMeasured(rows.map((row) => row.scores.mrr)),
           ndcg10: meanMeasured(rows.map((row) => row.scores.ndcg10)),
           unjudged10: rows.reduce((sum, row) => sum + row.scores.unjudged10, 0),
-          judgedMrr: meanMeasured(rows.map((row) => row.judgedOnly.mrr)),
-          judgedNdcg10: meanMeasured(rows.map((row) => row.judgedOnly.ndcg10)),
         };
       });
       return { retriever: name, groups, queries };
@@ -184,8 +137,6 @@ describe("frozen learning corpus retrieval", () => {
           [
             ["mrr", (q: (typeof run.queries)[number]) => q.scores.mrr],
             ["ndcg10", (q: (typeof run.queries)[number]) => q.scores.ndcg10],
-            ["judged-only mrr", (q: (typeof run.queries)[number]) => q.judgedOnly.mrr],
-            ["judged-only ndcg10", (q: (typeof run.queries)[number]) => q.judgedOnly.ndcg10],
           ] as const
         ).map(([metric, value]) => ({
           retriever: run.retriever,
@@ -208,16 +159,13 @@ describe("frozen learning corpus retrieval", () => {
       corpusHash: manifest.corpusHash,
       node: process.version,
       apiCalls: 0,
-      labels,
       review: retrieval.review,
       status:
         SUITE === "expanded"
           ? "frozen family-separated synthetic evaluation; AI labels, incomplete relevance pools; not agent quality"
           : SUITE === "crosslingual"
             ? "Chinese restatements of the expanded suite (AI-translated); labels inherited; not agent quality"
-            : SUITE === "exact" || SUITE === "exact-terms"
-              ? "exact-term lookups with complete term-occurrence labels; not agent quality"
-              : "development pilot; not a held-out benchmark or agent-quality result",
+            : "exact-term lookups with complete term-occurrence labels; not agent quality",
       implementation: {
         bm25: {
           k1: 1.2,
@@ -233,7 +181,7 @@ describe("frozen learning corpus retrieval", () => {
           rrf: { k: RRF_K },
           convex: {
             alpha: Object.fromEntries(vectorSets.map((set) => [set.model, tunedAlpha(set.model)])),
-            tunedBy: "eval/fusion-sweep.run.ts on the dev split",
+            tunedOn: "dev split",
           },
           candidatesPerRetriever: FUSION_CANDIDATES,
         },
@@ -273,7 +221,6 @@ describe("frozen learning corpus retrieval", () => {
         }).map(([key, file]) => [key, sha256(readFileSync(file, "utf8"))]),
       ),
       noteCount: corpus.size,
-      pendingNotes: pending,
       stages: {
         literature: manifest.notes.filter((note) => note.stage === "literature").length,
         permanent: manifest.notes.filter((note) => note.stage === "permanent").length,
@@ -304,17 +251,13 @@ describe("frozen learning corpus retrieval", () => {
         .filter((g) => g.group === "all" || g.group.startsWith("split:"))
         .map(
           (g) =>
-            `| ${run.retriever} | ${g.group} | ${g.items} | ${pct(g.recall10)} | ${pct(g.mrr)} | ${pct(g.ndcg10)} | ${g.unjudged10} | ${pct(g.judgedMrr)} | ${pct(g.judgedNdcg10)} |`,
+            `| ${run.retriever} | ${g.group} | ${g.items} | ${pct(g.recall10)} | ${pct(g.mrr)} | ${pct(g.ndcg10)} | ${g.unjudged10} |`,
         ),
     );
-    const semanticRuns = runs.filter((run) => !run.retriever.startsWith("lexical"));
-    const improvedLexical = runs.find((run) => run.retriever === "lexical")!;
-    const shown = [baseline, improvedLexical, ...semanticRuns];
-    // Rank changes are listed for the improved keyword index and each tuned hybrid.
-    const explained = [
-      improvedLexical,
-      ...semanticRuns.filter((run) => run.retriever.startsWith("hybrid-convex")),
-    ];
+    const semanticRuns = runs.filter((run) => run !== baseline);
+    const shown = [baseline, ...semanticRuns];
+    // Rank changes are listed for each tuned hybrid.
+    const explained = semanticRuns.filter((run) => run.retriever.startsWith("hybrid-convex"));
     const rankCell = (query: (typeof baseline.queries)[number]) =>
       query.scores.mrr === null
         ? "n/a"
@@ -325,22 +268,22 @@ describe("frozen learning corpus retrieval", () => {
     const lines = [
       `# Retrieval comparison (${SUITE})`,
       "",
-      `Corpus: ${manifest.corpusId}; ${corpus.size} frozen notes (${report.stages.literature} literature, ${report.stages.permanent} permanent).${pending.length ? ` ${pending.length} notes added to the sample vault after the freeze were left out: ${pending.map((file) => path.basename(file, ".md")).join("; ")}.` : ""}`,
+      `Corpus: ${manifest.corpusId}; ${corpus.size} frozen notes (${report.stages.literature} literature, ${report.stages.permanent} permanent).`,
       "",
       `${retrieval.items.length} ${language} synthetic queries with the declared family-separated splits; ${report.judgedPairs} query-note judgments. Review: ${retrieval.review}.${SUITE === "crosslingual" ? " Queries are AI translations of the expanded suite; relevance labels are inherited unchanged." : ""}`,
       "",
-      `Retrievers: the v0.1 BM25F index, each keyword fix alone (English query stopwords, Chinese query frames, whole compounds, quoted phrases first, whole-note IDF, title scored once), the round-3 set and all fixes together; ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${tunedAlpha(set.model)}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
+      `Retrievers: keywords alone (BM25F); ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${tunedAlpha(set.model)}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
       "",
       SUITE === "exact" || SUITE === "exact-terms"
-        ? "Labels are complete: every note containing the looked-up term is grade 2 and every other note is irrelevant, so standard and judged-only metrics agree."
-        : `Labels: ${labels === "extended" ? "frozen labels plus an AI-judged pool extension for unjudged notes that any retriever ranked in its top five" : "frozen labels only"}. The original pools came from lexical runs, so a semantic retriever can surface relevant notes that were never judged; standard metrics count unjudged notes as zero, judged-only metrics drop them before the cutoff. Read both, and the unjudged counts, before concluding.`,
+        ? "Labels are complete: every note containing the looked-up term is grade 2 and every other note is irrelevant."
+        : "Labels: frozen labels plus an AI-judged pool extension for unjudged notes that any retriever ranked in its top five. Unjudged notes still count as zero; check the unjudged counts before concluding.",
       "",
       "Recall counts grades 1 and 2. MRR@10 uses only queries with a grade-2 note. nDCG@10 uses linear graded gain (0, 1, 2). No-answer queries are excluded from quality averages.",
       "",
       "## Summary",
       "",
-      "| Retriever | Group | Items | R@10 | MRR@10 | nDCG@10 | Unjudged top-10 | MRR@10 judged-only | nDCG@10 judged-only |",
-      "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+      "| Retriever | Group | Items | R@10 | MRR@10 | nDCG@10 | Unjudged top-10 |",
+      "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
       ...summaryRows,
       "",
       `## Paired differences against ${BASELINE}`,
@@ -356,14 +299,14 @@ describe("frozen learning corpus retrieval", () => {
       "",
       "## By kind",
       "",
-      "| Retriever | Group | Items | R@10 | MRR@10 | nDCG@10 | MRR@10 judged-only |",
-      "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
+      "| Retriever | Group | Items | R@10 | MRR@10 | nDCG@10 |",
+      "| --- | --- | ---: | ---: | ---: | ---: |",
       ...runs.flatMap((run) =>
         run.groups
           .filter((g) => g.group.startsWith("kind:"))
           .map(
             (g) =>
-              `| ${run.retriever} | ${g.group} | ${g.items} | ${pct(g.recall10)} | ${pct(g.mrr)} | ${pct(g.ndcg10)} | ${pct(g.judgedMrr)} |`,
+              `| ${run.retriever} | ${g.group} | ${g.items} | ${pct(g.recall10)} | ${pct(g.mrr)} | ${pct(g.ndcg10)} |`,
           ),
       ),
       "",
@@ -457,9 +400,8 @@ describe("frozen learning corpus retrieval", () => {
       "Reproduce with `npm run eval` (English), `npm run eval:crosslingual` (Chinese) `npm run eval:exact` (exact terms as questions) or `npm run eval:exact-terms` (the terms alone). Regenerate frozen vectors with `npm run eval:embed`. Machine-readable rankings, configuration hashes and denominators are in the JSON report next to this file.",
       "",
     ];
-    const reportName = SUITE === "pilot" ? "retrieval-baseline" : `retrieval-${SUITE}`;
-    const reportFile = labels === "frozen" ? `${reportName}-frozen-labels` : reportName;
-    const out = reportDestination(import.meta.dirname, process.env.EVAL_REPORT_DIR);
+    const reportFile = `retrieval-${SUITE}`;
+    const out = process.env.EVAL_REPORT_DIR ?? path.join(import.meta.dirname, "reports");
     mkdirSync(out, { recursive: true });
     writeFileSync(
       path.join(out, `${reportFile}.json`),
@@ -472,3 +414,13 @@ describe("frozen learning corpus retrieval", () => {
     console.log(lines.slice(0, lines.indexOf("## By kind")).join("\n"));
   }, 300_000);
 });
+
+/** Semantic search alone, ranked by each note's closest section. */
+function bestSectionPerNote(dense: DenseIndex, vector: Float32Array): CorpusHit[] {
+  const seen = new Set<string>();
+  return dense
+    .search(vector, { limit: Number.MAX_SAFE_INTEGER })
+    .filter((hit) => !seen.has(hit.path) && seen.add(hit.path))
+    .slice(0, FUSION_CANDIDATES)
+    .map((hit, i) => ({ ...hit, matchedTerms: [], lexicalRank: null, semanticRank: i + 1 }));
+}

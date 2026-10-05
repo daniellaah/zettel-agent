@@ -1,12 +1,17 @@
-export interface RankedSection {
+interface RankedSection {
   path: string;
   sectionId: string;
 }
 
-export interface FusedSection extends RankedSection {
+interface FusedSection extends RankedSection {
   score: number;
   /** 1-based rank in each input list, or null where that list did not return the section. */
   ranks: (number | null)[];
+}
+
+/** Identifies a section across result lists. */
+export function sectionKey({ path, sectionId }: RankedSection): string {
+  return `${path}\u0000${sectionId}`;
 }
 
 /** The constant from Cormack et al. (2009); larger values flatten the gap between ranks. */
@@ -21,7 +26,7 @@ export function reciprocalRankFusion(lists: RankedSection[][], k = RRF_K): Fused
   const fused = new Map<string, FusedSection>();
   lists.forEach((list, listIndex) => {
     list.forEach(({ path, sectionId }, i) => {
-      const id = `${path}\u0000${sectionId}`;
+      const id = sectionKey({ path, sectionId });
       let entry = fused.get(id);
       if (!entry) {
         entry = { path, sectionId, score: 0, ranks: lists.map(() => null) };

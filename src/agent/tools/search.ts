@@ -35,7 +35,7 @@ export const searchTool = defineTool({
       ...input,
       perNote: effective.per_note,
       limit: Number.MAX_SAFE_INTEGER,
-      ...(queryVector && { mode: "hybrid", queryVector, fusion: context.semantic!.fusion }),
+      ...(queryVector && { hybrid: { queryVector, fusion: context.semantic!.fusion } }),
     });
     const page = hits.slice(0, effective.limit);
     const delivery = new Delivery(context, "search", effective, "sections");

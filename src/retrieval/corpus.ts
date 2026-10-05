@@ -1,30 +1,19 @@
 import { STAGES, type Stage } from "../settings";
 import { DenseIndex } from "./dense-index";
-import { reciprocalRankFusion, RRF_K } from "./fusion";
+import { reciprocalRankFusion, sectionKey } from "./fusion";
 import { LinkGraph, basenameResolver, type LinkResolver } from "./graph";
-import { LexicalIndex, type LexicalOptions, type SearchHit } from "./lexical-index";
+import { LexicalIndex, type SearchHit } from "./lexical-index";
 import { hash, parseNote, type ParsedNote } from "./markdown";
-import { normalizeText, textLanguage, type TokenizerMode } from "./tokenize";
+import { normalizeText, textLanguage } from "./tokenize";
 
 export interface CorpusOptions {
-  mode?: TokenizerMode;
   /** Stage from the note's folder; a frontmatter `type` naming a stage overrides it. */
   stageForPath: (path: string) => Stage | null;
   /** Link resolution; defaults to basename matching over the corpus's own notes. */
   resolver?: LinkResolver;
-  /** Keep section vectors for semantic and hybrid search. */
+  /** Keep section vectors for hybrid search. */
   semantic?: boolean;
-  /** Keyword-index switches for ablations; all on by default. */
-  lexical?: LexicalOptions;
-  /** In lexical and hybrid search, rank sections containing quoted phrases first. Default on. */
-  phrases?: boolean;
 }
-
-/**
- * lexical: shared words (BM25F). semantic: closeness of meaning (embeddings).
- * hybrid: both candidate lists merged by reciprocal rank fusion.
- */
-export type SearchMode = "lexical" | "semantic" | "hybrid";
 
 /** Sections each retriever contributes before fusion. */
 export const FUSION_CANDIDATES = 50;
@@ -36,8 +25,6 @@ export const FUSION_CANDIDATES = 50;
  */
 export type Fusion = { method: "rrf"; k: number } | { method: "convex"; alpha: number };
 
-export const DEFAULT_FUSION: Fusion = { method: "rrf", k: RRF_K };
-
 export interface CorpusSearchOptions {
   limit?: number | undefined;
   perNote?: number | undefined;
@@ -45,16 +32,12 @@ export interface CorpusSearchOptions {
   /** Vault-relative folder prefix. */
   folder?: string | undefined;
   tag?: string | undefined;
-  /** Default lexical. Semantic and hybrid need `queryVector` and a `semantic` corpus. */
-  mode?: SearchMode | undefined;
-  /** The query embedded with the same embedder as the corpus's sections. */
-  queryVector?: Float32Array | undefined;
-  fusion?: Fusion | undefined;
   /**
-   * The same question in other words or languages, searched together with the query:
-   * keywords from all of them, and each section's closest query vector.
+   * Also rank by closeness of meaning (needs a `semantic` corpus): the query embedded with
+   * the same embedder as the sections, and how to merge that list with the keyword list.
+   * Without it, search uses keywords (BM25F) alone.
    */
-  alternates?: { query: string; queryVector?: Float32Array }[] | undefined;
+  hybrid?: { queryVector: Float32Array; fusion: Fusion } | undefined;
 }
 
 export interface CorpusHit extends SearchHit {
@@ -75,7 +58,7 @@ export class Corpus {
   private cachedResolver: LinkResolver | null = null;
 
   constructor(private readonly options: CorpusOptions) {
-    this.index = new LexicalIndex(options.mode ?? "both", options.lexical);
+    this.index = new LexicalIndex();
     this.denseIndex = options.semantic ? new DenseIndex() : null;
   }
 
@@ -123,10 +106,7 @@ export class Corpus {
 
   /** Bare duplicate names need explicit source context or an exact path. */
   ambiguous(target: string, sourcePath?: string): boolean {
-    const cleaned = target
-      .trim()
-      .replace(/^!?\[\[|\]\]$/g, "")
-      .replace(/[#|^].*$/, "");
+    const cleaned = linkTarget(target);
     const name = cleaned.replace(/\.md$/i, "");
     if (sourcePath || this.notes.has(cleaned) || this.notes.has(`${cleaned}.md`)) return false;
     return (
@@ -154,10 +134,7 @@ export class Corpus {
   upsert(path: string, content: string): ParsedNote {
     const existing = this.notes.get(path);
     const note = parseNote(path, content);
-    const stage =
-      note.type && (STAGES as readonly string[]).includes(note.type)
-        ? note.type
-        : this.options.stageForPath(path);
+    const stage = this.stageOf(path, note);
     // Captures remain in the vault but are outside every research tool's corpus.
     if (stage === "fleeting") {
       this.remove(path);
@@ -180,11 +157,6 @@ export class Corpus {
     this.invalidate();
   }
 
-  rename(oldPath: string, newPath: string, content: string): void {
-    this.remove(oldPath);
-    this.upsert(newPath, content);
-  }
-
   private invalidate(): void {
     this.cachedGraph = null;
     // A custom resolver (Obsidian's) tracks vault changes itself; the fallback must be rebuilt.
@@ -192,7 +164,12 @@ export class Corpus {
   }
 
   stage(path: string): Stage | null {
-    const type = this.notes.get(path)?.type;
+    return this.stageOf(path, this.notes.get(path));
+  }
+
+  /** A frontmatter `type` naming a stage overrides the folder's stage. */
+  private stageOf(path: string, note: ParsedNote | undefined): Stage | null {
+    const type = note?.type;
     if (type && (STAGES as readonly string[]).includes(type)) return type as Stage;
     return this.options.stageForPath(path);
   }
@@ -212,10 +189,7 @@ export class Corpus {
    * Links that resolve to notes outside the corpus count as unresolved.
    */
   resolve(target: string, sourcePath = ""): string | null {
-    const cleaned = target
-      .trim()
-      .replace(/^!?\[\[|\]\]$/g, "")
-      .replace(/[#|^].*$/, "");
+    const cleaned = linkTarget(target);
     if (this.notes.has(cleaned)) return cleaned;
     if (this.notes.has(`${cleaned}.md`)) return `${cleaned}.md`;
     this.cachedResolver ??= this.options.resolver ?? basenameResolver(this.notes.keys());
@@ -225,10 +199,8 @@ export class Corpus {
 
   search(query: string, options: CorpusSearchOptions = {}): CorpusHit[] {
     const filter = (path: string) => this.eligible(path, options);
-    let ranked = this.rank(query, options, filter);
-    // Quotes ask for exact text, which pure semantic search does not promise.
-    const phrases =
-      this.options.phrases === false || options.mode === "semantic" ? [] : quotedPhrases(query);
+    let ranked = this.rank(query, options.hybrid, filter);
+    const phrases = quotedPhrases(query);
     if (phrases.length) ranked = this.phrasesFirst(ranked, phrases, filter);
     // Keep each note's best sections only, after ranking every section.
     const perNote = options.perNote ?? 1;
@@ -245,31 +217,25 @@ export class Corpus {
   /** Every candidate section, best first, with its rank in each retriever's list. */
   private rank(
     query: string,
-    options: CorpusSearchOptions,
+    hybrid: CorpusSearchOptions["hybrid"],
     filter: (path: string) => boolean,
   ): CorpusHit[] {
-    const { mode = "lexical", queryVector, fusion = DEFAULT_FUSION } = options;
     const all = { limit: Number.MAX_SAFE_INTEGER, perNote: Number.MAX_SAFE_INTEGER, filter };
-    const alternates = options.alternates ?? [];
-    const keywords = [query, ...alternates.map((alternate) => alternate.query)].join("\n");
-    const lexical = mode === "semantic" ? [] : this.index.search(keywords, all);
-    if (mode === "lexical")
+    const lexical = this.index.search(query, all);
+    if (!hybrid)
       return lexical.map((hit, i) => ({ ...hit, lexicalRank: i + 1, semanticRank: null }));
-    if (!this.dense || !queryVector)
-      throw new Error(`A ${mode} search needs a semantic corpus and a query vector.`);
     const dense = this.dense;
-    const vectors = [
-      queryVector,
-      ...alternates.flatMap((a) => (a.queryVector ? [a.queryVector] : [])),
-    ];
-    const semantic = dense.search(vectors, all);
+    if (!dense) throw new Error("A hybrid search needs a semantic corpus.");
+    const { queryVector, fusion } = hybrid;
+    const semantic = dense.search(queryVector, all);
 
-    const id = (hit: { path: string; sectionId: string }) => `${hit.path}\u0000${hit.sectionId}`;
-    const lexicalRanks = new Map(lexical.map((hit, i) => [id(hit), { hit, rank: i + 1 }]));
-    const semanticRanks = new Map(semantic.map((hit, i) => [id(hit), { hit, rank: i + 1 }]));
+    const lexicalRanks = new Map(lexical.map((hit, i) => [sectionKey(hit), { hit, rank: i + 1 }]));
+    const semanticRanks = new Map(
+      semantic.map((hit, i) => [sectionKey(hit), { hit, rank: i + 1 }]),
+    );
     const matchedTerms = new Map(lexical.map((hit) => [hit.path, hit.matchedTerms]));
     const describe = (path: string, sectionId: string, score: number): CorpusHit => {
-      const key = id({ path, sectionId });
+      const key = sectionKey({ path, sectionId });
       return {
         path,
         sectionId,
@@ -279,9 +245,6 @@ export class Corpus {
         semanticRank: semanticRanks.get(key)?.rank ?? null,
       };
     };
-    // Semantic alone keeps the cosine similarity as its score.
-    if (mode === "semantic")
-      return semantic.map((hit) => describe(hit.path, hit.sectionId, hit.score));
 
     const top = [lexical, semantic].map((list) => list.slice(0, FUSION_CANDIDATES));
     if (fusion.method === "rrf")
@@ -291,14 +254,14 @@ export class Corpus {
 
     // Convex combination: BM25 divided by the query's highest possible score, so keywords
     // weigh in only as far as the query's terms actually matched, plus cosine similarity.
-    const max = this.index.maxScore(keywords) || 1;
-    const candidates = new Map(top.flat().map((hit) => [id(hit), hit]));
+    const max = this.index.maxScore(query) || 1;
+    const candidates = new Map(top.flat().map((hit) => [sectionKey(hit), hit]));
     return [...candidates.values()]
       .map(({ path, sectionId }) => {
-        const key = id({ path, sectionId });
+        const key = sectionKey({ path, sectionId });
         const keyword = (lexicalRanks.get(key)?.hit.score ?? 0) / max;
         const meaning =
-          semanticRanks.get(key)?.hit.score ?? dense.similarity(vectors, path, sectionId) ?? 0;
+          semanticRanks.get(key)?.hit.score ?? dense.similarity(queryVector, path, sectionId) ?? 0;
         return describe(path, sectionId, fusion.alpha * keyword + (1 - fusion.alpha) * meaning);
       })
       .sort(
@@ -321,11 +284,11 @@ export class Corpus {
       return phrases.every((phrase) => normalized.includes(phrase));
     };
     const first = ranked.filter((hit) => contains(hit.path, hit.sectionId));
-    const seen = new Set(first.map((hit) => `${hit.path}\u0000${hit.sectionId}`));
+    const seen = new Set(first.map(sectionKey));
     for (const path of this.paths()) {
       if (!filter(path)) continue;
       for (const section of this.notes.get(path)!.sections)
-        if (!seen.has(`${path}\u0000${section.id}`) && contains(path, section.id))
+        if (!seen.has(sectionKey({ path, sectionId: section.id })) && contains(path, section.id))
           first.push({
             path,
             sectionId: section.id,
@@ -348,4 +311,12 @@ export function quotedPhrases(query: string): string[] {
 
 function normalizePhrase(text: string): string {
   return normalizeText(text).replace(/\s+/g, " ").trim();
+}
+
+/** A vault path, title or `[[link]]` without brackets, heading, block or alias. */
+function linkTarget(target: string): string {
+  return target
+    .trim()
+    .replace(/^!?\[\[|\]\]$/g, "")
+    .replace(/[#|^].*$/, "");
 }

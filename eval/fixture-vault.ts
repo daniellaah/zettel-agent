@@ -2,7 +2,6 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 import { Corpus, type CorpusOptions } from "../src/retrieval/corpus";
-import type { TokenizerMode } from "../src/retrieval/tokenize";
 import { resolveSettings, stageForPath } from "../src/settings";
 import {
   answerSetSchema,
@@ -17,20 +16,16 @@ export const VAULT_DIR = path.resolve(import.meta.dirname, "../fixtures/vault");
 export const ZETTELKASTEN_ROOT = "02-Zettelkasten";
 
 /**
- * pilot and expanded are English; crosslingual asks the expanded questions in Chinese;
- * exact looks up rare terms and phrases, the case keyword search exists for, as questions;
- * exact-terms sends only the term or phrase, as an agent's search call usually does.
+ * expanded is English; crosslingual asks the expanded questions in Chinese; exact looks up
+ * rare terms and phrases, the case keyword search exists for, as questions; exact-terms
+ * sends only the term or phrase, as an agent's search call usually does.
  */
-export const SUITES = ["pilot", "expanded", "crosslingual", "exact", "exact-terms"] as const;
+export const SUITES = ["expanded", "crosslingual", "exact", "exact-terms"] as const;
 
-/** "frozen" reproduces the original labels; "extended" adds the AI-judged pool extension. */
-export type LabelSet = "frozen" | "extended";
-
-export function evaluationFiles(suite = "pilot", labels: LabelSet = "extended") {
+export function evaluationFiles(suite = "expanded") {
   if (!(SUITES as readonly string[]).includes(suite))
     throw new Error(`Unknown evaluation suite: ${suite}`);
-  const dir =
-    suite === "pilot" ? import.meta.dirname : path.join(import.meta.dirname, "suites/expanded");
+  const dir = path.join(import.meta.dirname, "suites/expanded");
   return {
     retrieval:
       suite === "exact" || suite === "exact-terms"
@@ -41,23 +36,19 @@ export function evaluationFiles(suite = "pilot", labels: LabelSet = "extended") 
     ...(suite === "crosslingual" && {
       translations: path.join(import.meta.dirname, "suites/crosslingual/queries.json"),
     }),
-    ...(labels === "extended" &&
-      (suite === "expanded" || suite === "crosslingual") && {
-        poolExtension: path.join(import.meta.dirname, "suites/pool-extension/judgments.json"),
-      }),
+    ...((suite === "expanded" || suite === "crosslingual") && {
+      // AI judgments of candidates the original labels never judged.
+      poolExtension: path.join(import.meta.dirname, "suites/pool-extension/judgments.json"),
+    }),
   };
 }
 
-export function loadEvaluationData(
-  suite = process.env.EVAL_SUITE ?? "pilot",
-  labels: LabelSet = process.env.EVAL_LABELS === "frozen" ? "frozen" : "extended",
-) {
-  const files = evaluationFiles(suite, labels);
+export function loadEvaluationData(suite = process.env.EVAL_SUITE ?? "expanded") {
+  const files = evaluationFiles(suite);
   let retrieval = retrievalSetSchema.parse(JSON.parse(readFileSync(files.retrieval, "utf8")));
   if (files.poolExtension) retrieval = extendPool(retrieval, files.poolExtension);
   return {
     manifest: manifestSchema.parse(readJson("corpus-manifest.json")),
-    labels,
     retrieval: files.translations
       ? translate(retrieval, files.translations)
       : suite === "exact-terms"
@@ -122,29 +113,12 @@ export function frozenPaths(): Set<string> {
   return new Set(manifestSchema.parse(readJson("corpus-manifest.json")).notes.map((n) => n.path));
 }
 
-/**
- * Notes added to the sample vault after the freeze. They wait outside the evaluation corpus
- * until the next freeze adds them to the manifest, vectors and labels together.
- */
-export function pendingNotes(): string[] {
-  const frozen = frozenPaths();
-  return walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT))
-    .map((file) => path.relative(VAULT_DIR, file))
-    .filter((file) => !frozen.has(file));
-}
-
-/** Loads the frozen notes of the fixture vault's Zettelkasten folder the way the plugin does. */
-export function loadFixtureCorpus(
-  mode: TokenizerMode = "both",
-  options: Pick<CorpusOptions, "semantic" | "lexical" | "phrases"> = {},
-): Corpus {
+/** Loads the fixture vault's Zettelkasten folder the way the plugin does. */
+export function loadFixtureCorpus(options: Pick<CorpusOptions, "semantic"> = {}): Corpus {
   const settings = resolveSettings({ zettelkastenRoot: ZETTELKASTEN_ROOT });
-  const corpus = new Corpus({ mode, stageForPath: (p) => stageForPath(p, settings), ...options });
-  const frozen = frozenPaths();
-  for (const file of walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT))) {
-    const relative = path.relative(VAULT_DIR, file);
-    if (frozen.has(relative)) corpus.upsert(relative, readFileSync(file, "utf8"));
-  }
+  const corpus = new Corpus({ stageForPath: (p) => stageForPath(p, settings), ...options });
+  for (const file of walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT)))
+    corpus.upsert(path.relative(VAULT_DIR, file), readFileSync(file, "utf8"));
   return corpus;
 }
 

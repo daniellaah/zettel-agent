@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { resolveSettings, stageForPath } from "../settings";
 import { FakeEmbedder } from "../testing/fake-embedder";
-import { Corpus, quotedPhrases } from "./corpus";
+import { Corpus, quotedPhrases, type Fusion } from "./corpus";
+import { RRF_K } from "./fusion";
 import { stripQueryBoilerplate } from "./tokenize";
 
 function makeCorpus() {
@@ -60,13 +61,6 @@ describe("Corpus", () => {
     ).toBe(before);
   });
 
-  it("moves a note on rename", () => {
-    const corpus = makeCorpus();
-    corpus.rename("Z/Fleeting/raw.md", "Z/Permanent/raw.md", "one more idea");
-    expect(corpus.get("Z/Fleeting/raw.md")).toBeUndefined();
-    expect(corpus.stage("Z/Permanent/raw.md")).toBe("permanent");
-  });
-
   it("excludes captures from storage, resolution and the link graph", () => {
     const corpus = makeCorpus();
     corpus.upsert("Z/Fleeting/raw.md", "OnlyCaptureTerm [[Linking]]");
@@ -101,7 +95,8 @@ describe("Corpus", () => {
 
   it("excludes an indexed note after it moves into the fleeting folder", () => {
     const corpus = makeCorpus();
-    corpus.rename("Z/Permanent/Atomic notes.md", "Z/Fleeting/raw.md", "Atomic [[Linking]]");
+    corpus.remove("Z/Permanent/Atomic notes.md");
+    corpus.upsert("Z/Fleeting/raw.md", "Atomic [[Linking]]");
     expect(corpus.resolve("Atomic notes")).toBeNull();
     expect(corpus.resolve("raw")).toBeNull();
     expect(corpus.search("atomic")).toEqual([]);
@@ -123,11 +118,13 @@ it("shares empty stage semantics and binds revision to path/content/stage change
   expect(corpus.revision).toBe(revision);
   stage = "literature";
   expect(corpus.revision).not.toBe(revision);
-  corpus.rename("P/A.md", "P/New.md", "alpha");
+  corpus.remove("P/A.md");
+  corpus.upsert("P/New.md", "alpha");
   expect(corpus.eligible("P/A.md")).toBe(false);
 });
 
-describe("semantic and hybrid search", () => {
+describe("hybrid search", () => {
+  const RRF: Fusion = { method: "rrf", k: RRF_K };
   // The fake model knows "standardization" and "标准化" mean what the note calls "scaling".
   const embedder = new FakeEmbedder({ standardization: "scaling", 标准化: "scaling" });
   const PREPROCESSING = "Z/Permanent/Preprocessing must respect the fold boundary.md";
@@ -163,25 +160,25 @@ describe("semantic and hybrid search", () => {
     const corpus = await semanticCorpus();
     const query = "standardization before cross-validation";
     expect(corpus.search(query).map((h) => h.path)).toEqual([FOLDS]);
-    const semantic = corpus.search("标准化", {
-      mode: "semantic",
-      queryVector: await vector("标准化"),
+    const hits = corpus.search("标准化", {
+      hybrid: { queryVector: await vector("标准化"), fusion: RRF },
     });
-    expect(semantic[0]).toMatchObject({
+    expect(hits[0]).toMatchObject({
       path: PREPROCESSING,
       lexicalRank: null,
       semanticRank: 1,
       matchedTerms: [],
     });
-    expect(semantic[0]!.score).toBeGreaterThan(0);
+    expect(hits[0]!.score).toBeGreaterThan(0);
     // Fleeting captures stay out of semantic results too.
-    expect(semantic.map((h) => h.path)).not.toContain("Z/Fleeting/scaling.md");
+    expect(hits.map((h) => h.path)).not.toContain("Z/Fleeting/scaling.md");
   });
 
   it("merges keyword and semantic candidates and reports where each came from", async () => {
     const corpus = await semanticCorpus();
     const query = "standardization before cross-validation";
-    const hits = corpus.search(query, { mode: "hybrid", queryVector: await vector(query) });
+    const hybrid = { queryVector: await vector(query), fusion: RRF };
+    const hits = corpus.search(query, { hybrid });
     const byPath = new Map(hits.map((h) => [h.path, h]));
     expect(byPath.get(FOLDS)).toMatchObject({
       lexicalRank: 1,
@@ -189,14 +186,8 @@ describe("semantic and hybrid search", () => {
     });
     expect(byPath.get(PREPROCESSING)).toMatchObject({ lexicalRank: null, semanticRank: 1 });
     expect(hits[0]!.score).toBeLessThanOrEqual(2 / 61);
-    expect(
-      corpus.search(query, { mode: "hybrid", queryVector: await vector(query), limit: 1 }),
-    ).toHaveLength(1);
-    expect(
-      corpus
-        .search(query, { mode: "hybrid", queryVector: await vector(query), folder: "Z/Other" })
-        .map((h) => h.path),
-    ).toEqual([]);
+    expect(corpus.search(query, { hybrid, limit: 1 })).toHaveLength(1);
+    expect(corpus.search(query, { hybrid, folder: "Z/Other" }).map((h) => h.path)).toEqual([]);
   });
 
   it("can fuse by a convex combination of normalized BM25 and cosine similarity", async () => {
@@ -205,13 +196,11 @@ describe("semantic and hybrid search", () => {
     const queryVector = await vector(query);
     const search = (alpha: number) =>
       corpus.search(query, {
-        mode: "hybrid",
-        queryVector,
-        fusion: { method: "convex", alpha },
+        hybrid: { queryVector, fusion: { method: "convex", alpha } },
         limit: 3,
       });
     expect(search(0).map((h) => h.path)).toEqual(
-      corpus.search(query, { mode: "semantic", queryVector, limit: 3 }).map((h) => h.path),
+      corpus.dense!.search(queryVector, { limit: 3 }).map((h) => h.path),
     );
     expect(search(1)[0]!.path).toBe(FOLDS);
     // Normalized BM25 never exceeds 1, so alpha = 1 scores stay in [0, 1].
@@ -237,73 +226,34 @@ describe("semantic and hybrid search", () => {
       "document",
     );
     pending.forEach(({ key }, i) => corpus.dense!.set(key, vectors[i]!));
-    const queryVector = await vector("standardization");
-    const one = corpus.search("standardization", { mode: "semantic", queryVector });
+    const hybrid = { queryVector: await vector("standardization"), fusion: RRF };
+    const one = corpus.search("standardization", { hybrid });
     expect(one.filter((h) => h.path === PREPROCESSING)).toHaveLength(1);
-    const two = corpus.search("standardization", { mode: "semantic", queryVector, perNote: 2 });
+    const two = corpus.search("standardization", { hybrid, perNote: 2 });
     expect(two.filter((h) => h.path === PREPROCESSING)).toHaveLength(2);
   });
 
-  it("leaves quoted phrases to lexical and hybrid search", async () => {
+  it("ranks quoted phrases first in hybrid search too", async () => {
     const corpus = await semanticCorpus();
     const quoted = "standardization “One idea per note”";
-    const queryVector = await vector(quoted);
-    const paths = (query: string, mode: "semantic" | "hybrid") =>
-      corpus.search(query, { mode, queryVector, limit: 5 }).map((h) => h.path);
-    expect(paths(quoted, "hybrid")[0]).toBe("Z/Permanent/Atomic notes.md");
-    expect(paths(quoted, "semantic")).toEqual(paths(quoted.replace(/[“”]/g, ""), "semantic"));
-  });
-
-  it("searches a question together with its rewrites in other languages", async () => {
-    const corpus = await semanticCorpus();
-    // Chinese keywords match nothing in English notes; the English rewrite does.
-    expect(corpus.search("交叉验证")).toEqual([]);
-    const both = corpus.search("交叉验证", { alternates: [{ query: "cross-validation" }] });
-    expect(both[0]!.path).toBe(FOLDS);
-    // Semantic search scores each section by its closest query vector.
-    const unrelated = await vector("atomic idea");
-    const rewrite = await vector("standardization");
-    const hits = corpus.search("某个问题", {
-      mode: "semantic",
-      queryVector: unrelated,
-      alternates: [{ query: "standardization", queryVector: rewrite }],
-      limit: 3,
-    });
-    const cosine = corpus.dense!.similarity(
-      [unrelated, rewrite],
-      PREPROCESSING,
-      hits.find((h) => h.path === PREPROCESSING)!.sectionId,
-    )!;
-    expect(cosine).toBeCloseTo(
-      Math.max(
-        corpus.dense!.similarity(
-          unrelated,
-          PREPROCESSING,
-          hits.find((h) => h.path === PREPROCESSING)!.sectionId,
-        )!,
-        corpus.dense!.similarity(
-          rewrite,
-          PREPROCESSING,
-          hits.find((h) => h.path === PREPROCESSING)!.sectionId,
-        )!,
-      ),
+    const hybrid = { queryVector: await vector(quoted), fusion: RRF };
+    expect(corpus.search(quoted, { hybrid, limit: 5 })[0]!.path).toBe(
+      "Z/Permanent/Atomic notes.md",
     );
   });
 
-  it("needs a query vector and a semantic corpus", async () => {
-    const corpus = await semanticCorpus();
-    expect(() => corpus.search("x", { mode: "hybrid" })).toThrow("needs a semantic corpus");
+  it("needs a semantic corpus", () => {
     const lexicalOnly = new Corpus({ stageForPath: () => "permanent" });
     expect(lexicalOnly.dense).toBeNull();
     expect(() =>
-      lexicalOnly.search("x", { mode: "semantic", queryVector: new Float32Array(1) }),
+      lexicalOnly.search("x", { hybrid: { queryVector: new Float32Array(1), fusion: RRF } }),
     ).toThrow("needs a semantic corpus");
   });
 });
 
 describe("keyword search details", () => {
-  function corpusWith(options: Partial<ConstructorParameters<typeof Corpus>[0]> = {}) {
-    const corpus = new Corpus({ stageForPath: () => "permanent", ...options });
+  function corpusWith() {
+    const corpus = new Corpus({ stageForPath: () => "permanent" });
     corpus.upsert("P/Zettelkasten note system.md", "# Zettelkasten note system\n\nOne idea each.");
     corpus.upsert("P/QLoRA precision.md", "# QLoRA precision\n\nFour-bit NormalFloat storage.");
     corpus.upsert("P/GRPO.md", "# GRPO\n\nIts objective includes clipped policy-ratio terms.");
@@ -316,20 +266,18 @@ describe("keyword search details", () => {
   it("ignores words that refer to the vault itself", () => {
     const query = "Which note mentions NormalFloat?";
     expect(corpusWith().search(query)[0]!.path).toBe("P/QLoRA precision.md");
+    // A query of nothing else still searches for those words.
     expect(corpusWith().search("note")[0]!.path).toBe("P/Zettelkasten note system.md");
-    const off = corpusWith({ lexical: { queryStopwords: false } });
-    expect(off.search(query)[0]!.path).toBe("P/Zettelkasten note system.md");
   });
 
   it("matches a hyphenated term whole before its parts", () => {
+    // P/Checks.md repeats "policy" and "ratio" apart, which alone would rank it first.
     expect(corpusWith().search("policy-ratio")[0]!.path).toBe("P/GRPO.md");
-    const off = corpusWith({ lexical: { compounds: false } });
-    expect(off.search("policy-ratio")[0]!.path).toBe("P/Checks.md");
   });
 
   it("rates title words by how many whole notes use them", () => {
-    const build = (wholeNoteIdf: boolean) => {
-      const corpus = new Corpus({ stageForPath: () => "permanent", lexical: { wholeNoteIdf } });
+    const build = () => {
+      const corpus = new Corpus({ stageForPath: () => "permanent" });
       corpus.upsert("P/Where interaction can occur.md", "# Where interaction can occur\n\nLate.");
       for (const n of [1, 2, 3, 4, 5])
         corpus.upsert(`P/Other ${n}.md`, `# Other ${n}\n\nSee where it goes, where it ends.`);
@@ -337,18 +285,15 @@ describe("keyword search details", () => {
       return corpus;
     };
     // "where" is in one title but in six notes, so it is not rare.
-    expect(build(true).search("where MapReduce")[0]!.path).toBe("P/Swing.md");
-    expect(build(false).search("where MapReduce")[0]!.path).toBe(
-      "P/Where interaction can occur.md",
-    );
+    expect(build().search("where MapReduce")[0]!.path).toBe("P/Swing.md");
   });
 
   it("scores a top heading that repeats the title only once", () => {
-    const score = (titleOnce: boolean, query: string) => {
-      const corpus = new Corpus({ stageForPath: () => "permanent", lexical: { titleOnce } });
+    const score = (heading: string, query: string) => {
+      const corpus = new Corpus({ stageForPath: () => "permanent" });
       corpus.upsert(
         "P/Base model costs.md",
-        "# Base model costs\n\nTraining still runs it.\n\n## Memory\n\nAdapters.",
+        `${heading}Training still runs it.\n\n## Memory\n\nAdapters.`,
       );
       corpus.upsert(
         "P/Interest count.md",
@@ -357,11 +302,12 @@ describe("keyword search details", () => {
       corpus.upsert("P/Other.md", "# Other\n\nUnrelated text here.");
       return corpus.search(query, { perNote: 2 }).filter((h) => h.path === "P/Base model costs.md");
     };
-    // The title still counts once, but no longer a second time as the H1 heading.
-    expect(score(true, "base")[0]!.score).toBeLessThan(score(false, "base")[0]!.score);
-    expect(score(true, "base")[0]!.score).toBeGreaterThan(0);
+    // The title counts once: an H1 repeating it scores like the same line without "#".
+    const repeated = score("# Base model costs\n\n", "base")[0]!.score;
+    expect(repeated).toBeGreaterThan(0);
+    expect(repeated).toBeCloseTo(score("Base model costs\n\n", "base")[0]!.score);
     // Lower headings are still section headings.
-    expect(score(true, "memory")).toHaveLength(1);
+    expect(score("# Base model costs\n\n", "memory")).toHaveLength(1);
   });
 
   it("drops Chinese frames that ask where something is written", () => {
@@ -376,15 +322,6 @@ describe("keyword search details", () => {
     expect(index.maxScore("哪篇笔记提到了 NormalFloat？")).toBeCloseTo(
       index.maxScore("NormalFloat"),
     );
-    const off = new Corpus({
-      stageForPath: () => "permanent",
-      lexical: { queryBoilerplate: false },
-    });
-    const offIndex = (off as unknown as { index: { maxScore(q: string): number } }).index;
-    off.upsert("P/QLoRA precision.md", "# QLoRA precision\n\nFour-bit NormalFloat storage.");
-    expect(offIndex.maxScore("哪篇笔记提到了 NormalFloat？")).toBeGreaterThan(
-      offIndex.maxScore("NormalFloat"),
-    );
   });
 
   it("ranks sections with every quoted phrase first", () => {
@@ -396,8 +333,8 @@ describe("keyword search details", () => {
     const corpus = corpusWith();
     expect(corpus.search("“survives the average”")[0]!.path).toBe("P/Trees.md");
     expect(corpus.search("“survives the average”", { folder: "Other" })).toEqual([]);
-    const off = corpusWith({ phrases: false });
-    expect(off.search("“survives the average”")[0]!.path).toBe("P/Average.md");
+    // Without the quotes, P/Average.md's repeated words rank it first.
+    expect(corpus.search("survives the average")[0]!.path).toBe("P/Average.md");
   });
 
   it("bounds normalized keyword scores by the query's highest possible score", () => {

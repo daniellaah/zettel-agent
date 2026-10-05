@@ -5,14 +5,13 @@ import type { Corpus } from "../src/retrieval/corpus";
 import { hash } from "../src/retrieval/markdown";
 import { decodeVectors, type VectorFile } from "../src/retrieval/vector-file";
 import { loadEvaluationData, SUITES } from "./fixture-vault";
-import { loadRewrites, rewriteFile } from "./rewrites";
 
 /**
  * Frozen embeddings of the fixture corpus and every evaluation query, one file per model,
  * made by `npm run eval:embed` and committed, so retrieval evaluation stays offline and
  * reproducible.
  */
-export const VECTORS_DIR = path.join(import.meta.dirname, "embeddings");
+const VECTORS_DIR = path.join(import.meta.dirname, "embeddings");
 
 export interface EvalVectors extends VectorFile {
   model: string;
@@ -27,16 +26,12 @@ export function vectorFilePath(model: string): string {
 export const documentKey = (key: string) => `d:${key}`;
 export const queryKey = (query: string) => `q:${hash(query)}`;
 
-/** Every query any retrieval suite asks, and every frozen rewrite of one, once. */
+/** Every query any retrieval suite asks, once. */
 export function evaluationQueries(): string[] {
   const queries = SUITES.flatMap((suite) =>
     loadEvaluationData(suite).retrieval.items.map((item) => item.query),
   );
-  // Reference rewrites are suite queries already; model rewrites are frozen files.
-  const rewrites = (["llm", "llama3"] as const)
-    .filter((source) => existsSync(rewriteFile(source)))
-    .flatMap((source) => [...loadRewrites(source).values()]);
-  return [...new Set([...queries, ...rewrites])];
+  return [...new Set(queries)];
 }
 
 export function loadEvalVectors(): EvalVectors[] {
