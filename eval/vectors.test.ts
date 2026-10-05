@@ -92,7 +92,6 @@ describe("frozen evaluation vectors", () => {
     for (const set of sets) {
       expect(set.embedder).toMatch(new RegExp(`^ollama:${set.model.replace(/\./g, "\\.")}@`));
       const corpus = loadFixtureCorpus("both", { semantic: true });
-      for (const path of corpus.paths()) if (!frozen.has(path)) corpus.remove(path);
       applyDocumentVectors(corpus, set);
       expect(corpus.dense!.coverage()).toEqual({ embedded: frozen.size, total: frozen.size });
       for (const query of evaluationQueries()) {

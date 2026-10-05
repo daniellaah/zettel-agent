@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { resolveSettings, stageForPath } from "../settings";
 import { FakeEmbedder } from "../testing/fake-embedder";
 import { Corpus, quotedPhrases } from "./corpus";
+import { stripQueryBoilerplate } from "./tokenize";
 
 function makeCorpus() {
   const settings = resolveSettings({ zettelkastenRoot: "Z" });
@@ -243,6 +244,16 @@ describe("semantic and hybrid search", () => {
     expect(two.filter((h) => h.path === PREPROCESSING)).toHaveLength(2);
   });
 
+  it("leaves quoted phrases to lexical and hybrid search", async () => {
+    const corpus = await semanticCorpus();
+    const quoted = "standardization “One idea per note”";
+    const queryVector = await vector(quoted);
+    const paths = (query: string, mode: "semantic" | "hybrid") =>
+      corpus.search(query, { mode, queryVector, limit: 5 }).map((h) => h.path);
+    expect(paths(quoted, "hybrid")[0]).toBe("Z/Permanent/Atomic notes.md");
+    expect(paths(quoted, "semantic")).toEqual(paths(quoted.replace(/[“”]/g, ""), "semantic"));
+  });
+
   it("needs a query vector and a semantic corpus", async () => {
     const corpus = await semanticCorpus();
     expect(() => corpus.search("x", { mode: "hybrid" })).toThrow("needs a semantic corpus");
@@ -278,6 +289,66 @@ describe("keyword search details", () => {
     expect(corpusWith().search("policy-ratio")[0]!.path).toBe("P/GRPO.md");
     const off = corpusWith({ lexical: { compounds: false } });
     expect(off.search("policy-ratio")[0]!.path).toBe("P/Checks.md");
+  });
+
+  it("rates title words by how many whole notes use them", () => {
+    const build = (wholeNoteIdf: boolean) => {
+      const corpus = new Corpus({ stageForPath: () => "permanent", lexical: { wholeNoteIdf } });
+      corpus.upsert("P/Where interaction can occur.md", "# Where interaction can occur\n\nLate.");
+      for (const n of [1, 2, 3, 4, 5])
+        corpus.upsert(`P/Other ${n}.md`, `# Other ${n}\n\nSee where it goes, where it ends.`);
+      corpus.upsert("P/Swing.md", "# Swing\n\nConstruction runs on a MapReduce framework.");
+      return corpus;
+    };
+    // "where" is in one title but in six notes, so it is not rare.
+    expect(build(true).search("where MapReduce")[0]!.path).toBe("P/Swing.md");
+    expect(build(false).search("where MapReduce")[0]!.path).toBe(
+      "P/Where interaction can occur.md",
+    );
+  });
+
+  it("scores a top heading that repeats the title only once", () => {
+    const score = (titleOnce: boolean, query: string) => {
+      const corpus = new Corpus({ stageForPath: () => "permanent", lexical: { titleOnce } });
+      corpus.upsert(
+        "P/Base model costs.md",
+        "# Base model costs\n\nTraining still runs it.\n\n## Memory\n\nAdapters.",
+      );
+      corpus.upsert(
+        "P/Interest count.md",
+        "# Interest count\n\nA base-two logarithm sets the count.",
+      );
+      corpus.upsert("P/Other.md", "# Other\n\nUnrelated text here.");
+      return corpus.search(query, { perNote: 2 }).filter((h) => h.path === "P/Base model costs.md");
+    };
+    // The title still counts once, but no longer a second time as the H1 heading.
+    expect(score(true, "base")[0]!.score).toBeLessThan(score(false, "base")[0]!.score);
+    expect(score(true, "base")[0]!.score).toBeGreaterThan(0);
+    // Lower headings are still section headings.
+    expect(score(true, "memory")).toHaveLength(1);
+  });
+
+  it("drops Chinese frames that ask where something is written", () => {
+    expect(stripQueryBoilerplate("哪篇笔记提到了 NormalFloat？").trim()).toBe("NormalFloat？");
+    expect(stripQueryBoilerplate("我在哪里写过 TREC？").trim()).toBe("TREC？");
+    expect(stripQueryBoilerplate("笔记里出现了 cross-encoder").trim()).toBe("cross-encoder");
+    // On their own, 笔记 and 卡片 can be the topic.
+    expect(stripQueryBoilerplate("卡片盒笔记法")).toBe("卡片盒笔记法");
+    const corpus = corpusWith();
+    expect(corpus.search("哪篇笔记提到了 NormalFloat？")[0]!.path).toBe("P/QLoRA precision.md");
+    const index = (corpus as unknown as { index: { maxScore(q: string): number } }).index;
+    expect(index.maxScore("哪篇笔记提到了 NormalFloat？")).toBeCloseTo(
+      index.maxScore("NormalFloat"),
+    );
+    const off = new Corpus({
+      stageForPath: () => "permanent",
+      lexical: { queryBoilerplate: false },
+    });
+    const offIndex = (off as unknown as { index: { maxScore(q: string): number } }).index;
+    off.upsert("P/QLoRA precision.md", "# QLoRA precision\n\nFour-bit NormalFloat storage.");
+    expect(offIndex.maxScore("哪篇笔记提到了 NormalFloat？")).toBeGreaterThan(
+      offIndex.maxScore("NormalFloat"),
+    );
   });
 
   it("ranks sections with every quoted phrase first", () => {

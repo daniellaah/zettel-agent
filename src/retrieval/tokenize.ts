@@ -38,6 +38,18 @@ const COMPOUND = /[\p{Script=Latin}\p{N}]+(?:[-:./@][\p{Script=Latin}\p{N}]+)+/g
  */
 export const QUERY_STOPWORDS = new Set(["note", "notes", "mention", "mentions", "mentioned"]);
 
+/**
+ * Chinese frames that ask where something is written ("哪篇笔记提到了", "我在哪里写过").
+ * They are cut from the query text before tokenizing, because bigrams would cut across
+ * them; "笔记" and "卡片" on their own stay, since they can be the topic.
+ */
+const QUERY_BOILERPLATE =
+  /哪[一几]?[篇些张条](?:笔记|卡片)?|我?在哪[里儿]?|(?:笔记|卡片)[里中]|(?:有没有|是否)?(?:提到|提及|写过|写到|说过|讲过|谈到|记过|记录过|出现)[了过]?/gu;
+
+export function stripQueryBoilerplate(query: string): string {
+  return query.replace(QUERY_BOILERPLATE, " ");
+}
+
 export interface TokenizeOptions {
   /**
    * Also emit each compound whole, besides its parts, so "policy-ratio" can match only

@@ -51,7 +51,13 @@ it("sweeps hybrid fusion on the dev split", async () => {
     });
 
   const v01 = loadFixtureCorpus("both", {
-    lexical: { compounds: false, queryStopwords: false },
+    lexical: {
+      compounds: false,
+      queryStopwords: false,
+      queryBoilerplate: false,
+      wholeNoteIdf: false,
+      titleOnce: false,
+    },
     phrases: false,
   });
   add(

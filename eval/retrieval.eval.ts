@@ -10,23 +10,47 @@ import {
   type CorpusOptions,
   type CorpusSearchOptions,
 } from "../src/retrieval/corpus";
+import type { LexicalOptions } from "../src/retrieval/lexical-index";
 import { RRF_K } from "../src/retrieval/fusion";
-import { loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
+import { loadEvaluationData, loadFixtureCorpus, pendingNotes } from "./fixture-vault";
 import { meanMeasured, scoreJudgedOnly, scoreRetrieval } from "./metrics";
 import { pairedBootstrap } from "./paired-bootstrap";
 import { reportDestination } from "./report-destination";
 import { readSnapshot, sha256, validateSets, validateSnapshot } from "./validate";
 import { applyDocumentVectors, loadEvalVectors, queryVector } from "./vectors";
 
-/** Each keyword-search fix alone on top of the v0.1 index, then all of them. */
+/** Each keyword-search fix alone on top of the v0.1 index, the round-3 set, then all. */
+const V01: LexicalOptions = {
+  compounds: false,
+  queryStopwords: false,
+  queryBoilerplate: false,
+  wholeNoteIdf: false,
+  titleOnce: false,
+};
 const LEXICAL_VARIANTS: { name: string; options: Pick<CorpusOptions, "lexical" | "phrases"> }[] = [
+  { name: "lexical:v0.1", options: { lexical: V01, phrases: false } },
   {
-    name: "lexical:v0.1",
-    options: { lexical: { compounds: false, queryStopwords: false }, phrases: false },
+    name: "lexical:+stopwords",
+    options: { lexical: { ...V01, queryStopwords: true }, phrases: false },
   },
-  { name: "lexical:+stopwords", options: { lexical: { compounds: false }, phrases: false } },
-  { name: "lexical:+compounds", options: { lexical: { queryStopwords: false }, phrases: false } },
-  { name: "lexical:+phrases", options: { lexical: { compounds: false, queryStopwords: false } } },
+  {
+    name: "lexical:+boilerplate",
+    options: { lexical: { ...V01, queryBoilerplate: true }, phrases: false },
+  },
+  { name: "lexical:+compounds", options: { lexical: { ...V01, compounds: true }, phrases: false } },
+  { name: "lexical:+phrases", options: { lexical: V01 } },
+  {
+    name: "lexical:+note-idf",
+    options: { lexical: { ...V01, wholeNoteIdf: true }, phrases: false },
+  },
+  {
+    name: "lexical:+title-once",
+    options: { lexical: { ...V01, titleOnce: true }, phrases: false },
+  },
+  {
+    name: "lexical:round3",
+    options: { lexical: { queryBoilerplate: false, wholeNoteIdf: false, titleOnce: false } },
+  },
   { name: "lexical", options: {} },
 ];
 /** What every other retriever is compared against: the BM25F index shipped in v0.1. */
@@ -44,6 +68,7 @@ interface Retriever {
 describe("frozen learning corpus retrieval", () => {
   it("validates fixtures and compares lexical, semantic and hybrid retrieval without model calls", async () => {
     const { manifest, retrieval, answers, files, labels } = loadEvaluationData();
+    const pending = pendingNotes();
     const corpus = loadFixtureCorpus();
     expect(validateSnapshot(manifest, readSnapshot(corpus))).toEqual([]);
     expect(validateSets(manifest, retrieval, answers, corpus)).toEqual([]);
@@ -241,6 +266,7 @@ describe("frozen learning corpus retrieval", () => {
         }).map(([key, file]) => [key, sha256(readFileSync(file, "utf8"))]),
       ),
       noteCount: corpus.size,
+      pendingNotes: pending,
       stages: {
         literature: manifest.notes.filter((note) => note.stage === "literature").length,
         permanent: manifest.notes.filter((note) => note.stage === "permanent").length,
@@ -292,11 +318,11 @@ describe("frozen learning corpus retrieval", () => {
     const lines = [
       `# Retrieval comparison (${SUITE})`,
       "",
-      `Corpus: ${manifest.corpusId}; ${corpus.size} frozen notes (${report.stages.literature} literature, ${report.stages.permanent} permanent).`,
+      `Corpus: ${manifest.corpusId}; ${corpus.size} frozen notes (${report.stages.literature} literature, ${report.stages.permanent} permanent).${pending.length ? ` ${pending.length} notes added to the sample vault after the freeze were left out: ${pending.map((file) => path.basename(file, ".md")).join("; ")}.` : ""}`,
       "",
       `${retrieval.items.length} ${language} synthetic queries with the declared family-separated splits; ${report.judgedPairs} query-note judgments. Review: ${retrieval.review}.${SUITE === "crosslingual" ? " Queries are AI translations of the expanded suite; relevance labels are inherited unchanged." : ""}`,
       "",
-      `Retrievers: the v0.1 BM25F index, each keyword fix alone (query stopwords, whole compounds, quoted phrases first) and all fixes together; ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${TUNED_ALPHA[set.model] ?? 0.5}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
+      `Retrievers: the v0.1 BM25F index, each keyword fix alone (English query stopwords, Chinese query frames, whole compounds, quoted phrases first, whole-note IDF, title scored once), the round-3 set and all fixes together; ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${TUNED_ALPHA[set.model] ?? 0.5}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
       "",
       SUITE === "exact" || SUITE === "exact-terms"
         ? "Labels are complete: every note containing the looked-up term is grade 2 and every other note is irrelevant, so standard and judged-only metrics agree."
@@ -437,5 +463,5 @@ describe("frozen learning corpus retrieval", () => {
       await format(lines.join("\n"), { parser: "markdown" }),
     );
     console.log(lines.slice(0, lines.indexOf("## By kind")).join("\n"));
-  });
+  }, 300_000);
 });

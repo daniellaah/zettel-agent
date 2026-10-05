@@ -4,7 +4,7 @@ import { it } from "vitest";
 
 import { DEFAULT_EMBEDDING_MODEL, OllamaEmbedder } from "../src/retrieval/ollama";
 import { encodeVectors } from "../src/retrieval/vector-file";
-import { loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
+import { loadFixtureCorpus } from "./fixture-vault";
 import { documentKey, evaluationQueries, queryKey, vectorFilePath } from "./vectors";
 
 // Free but machine-dependent: run on demand with a local Ollama, then commit the file.
@@ -14,10 +14,7 @@ it("embeds the fixture corpus and every evaluation query with a local Ollama mod
     model,
     ...(process.env.OLLAMA_URL && { baseUrl: process.env.OLLAMA_URL }),
   });
-  // Only the frozen corpus: a note added to the sample vault later is not evaluation data.
-  const frozen = new Set(loadEvaluationData().manifest.notes.map((note) => note.path));
   const corpus = loadFixtureCorpus("both", { semantic: true });
-  for (const note of corpus.paths()) if (!frozen.has(note)) corpus.remove(note);
   const sections = corpus.dense!.pending();
   const queries = evaluationQueries();
 

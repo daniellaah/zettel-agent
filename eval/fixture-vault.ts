@@ -117,15 +117,33 @@ function readJson(file: string): unknown {
   return JSON.parse(readFileSync(path.join(import.meta.dirname, file), "utf8"));
 }
 
-/** Loads the fixture vault's Zettelkasten folder the way the plugin does. */
+/** Vault-relative paths of the frozen evaluation corpus. */
+export function frozenPaths(): Set<string> {
+  return new Set(manifestSchema.parse(readJson("corpus-manifest.json")).notes.map((n) => n.path));
+}
+
+/**
+ * Notes added to the sample vault after the freeze. They wait outside the evaluation corpus
+ * until the next freeze adds them to the manifest, vectors and labels together.
+ */
+export function pendingNotes(): string[] {
+  const frozen = frozenPaths();
+  return walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT))
+    .map((file) => path.relative(VAULT_DIR, file))
+    .filter((file) => !frozen.has(file));
+}
+
+/** Loads the frozen notes of the fixture vault's Zettelkasten folder the way the plugin does. */
 export function loadFixtureCorpus(
   mode: TokenizerMode = "both",
   options: Pick<CorpusOptions, "semantic" | "lexical" | "phrases"> = {},
 ): Corpus {
   const settings = resolveSettings({ zettelkastenRoot: ZETTELKASTEN_ROOT });
   const corpus = new Corpus({ mode, stageForPath: (p) => stageForPath(p, settings), ...options });
+  const frozen = frozenPaths();
   for (const file of walk(path.join(VAULT_DIR, ZETTELKASTEN_ROOT))) {
-    corpus.upsert(path.relative(VAULT_DIR, file), readFileSync(file, "utf8"));
+    const relative = path.relative(VAULT_DIR, file);
+    if (frozen.has(relative)) corpus.upsert(relative, readFileSync(file, "utf8"));
   }
   return corpus;
 }

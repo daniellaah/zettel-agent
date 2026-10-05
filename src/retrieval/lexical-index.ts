@@ -1,5 +1,5 @@
 import type { ParsedNote } from "./markdown";
-import { QUERY_STOPWORDS, tokenize, type TokenizerMode } from "./tokenize";
+import { QUERY_STOPWORDS, stripQueryBoilerplate, tokenize, type TokenizerMode } from "./tokenize";
 
 /**
  * Two-level BM25F over parsed notes.
@@ -29,8 +29,20 @@ export const FIELD_WEIGHTS: Record<NoteField | ChunkField, number> = {
 export interface LexicalOptions {
   /** Index hyphenated and punctuated compounds whole as well as by their parts. */
   compounds?: boolean;
-  /** Drop vault-referring words such as "note" from queries. */
+  /** Drop vault-referring words such as "note" and "mentions" from queries. */
   queryStopwords?: boolean;
+  /** Cut Chinese frames such as "哪篇笔记提到了" from queries before tokenizing. */
+  queryBoilerplate?: boolean;
+  /**
+   * Rate title, alias and tag matches by how many notes use the term anywhere, as BM25F
+   * does, rather than only in those fields: a common word in one title is not rare.
+   */
+  wholeNoteIdf?: boolean;
+  /**
+   * Score a top heading that repeats the note title once, in the title field, instead of
+   * again among section headings.
+   */
+  titleOnce?: boolean;
 }
 
 export interface SearchOptions {
@@ -67,6 +79,9 @@ export class LexicalIndex {
   private readonly chunkDocInfo = new Map<number, { path: string; sectionId: string }>();
   private readonly noteLevel = createLevel(NOTE_FIELDS);
   private readonly chunkLevel = createLevel(CHUNK_FIELDS);
+  /** term -> notes that contain it in any field; note path -> its distinct terms. */
+  private readonly noteFrequency = new Map<string, number>();
+  private readonly noteTerms = new Map<string, string[]>();
 
   private readonly k1 = 1.2;
   private readonly b = 0.75;
@@ -93,14 +108,24 @@ export class LexicalIndex {
     const chunkDocs = note.sections.map((section) => {
       const doc = this.nextDocId++;
       this.chunkDocInfo.set(doc, { path: note.path, sectionId: section.id });
+      const headings =
+        this.options.titleOnce !== false &&
+        section.headingPath[0]?.trim().toLowerCase() === note.title.trim().toLowerCase()
+          ? section.headingPath.slice(1)
+          : section.headingPath;
       addDoc(this.chunkLevel, doc, [
-        this.tokens(section.headingPath.join("\n")),
+        this.tokens(headings.join("\n")),
         this.tokens(section.text),
         this.tokens(section.links.join("\n")),
       ]);
       return doc;
     });
     this.notes.set(note.path, { noteDoc, chunkDocs });
+    const terms = new Set(this.noteLevel.docTerms.get(noteDoc));
+    for (const doc of chunkDocs)
+      for (const term of this.chunkLevel.docTerms.get(doc)!) terms.add(term);
+    for (const term of terms) this.noteFrequency.set(term, (this.noteFrequency.get(term) ?? 0) + 1);
+    this.noteTerms.set(note.path, [...terms]);
   }
 
   remove(path: string): void {
@@ -113,6 +138,12 @@ export class LexicalIndex {
       this.chunkDocInfo.delete(doc);
     }
     this.notes.delete(path);
+    for (const term of this.noteTerms.get(path) ?? []) {
+      const count = this.noteFrequency.get(term)! - 1;
+      if (count) this.noteFrequency.set(term, count);
+      else this.noteFrequency.delete(term);
+    }
+    this.noteTerms.delete(path);
   }
 
   search(query: string, options: SearchOptions = {}): SearchHit[] {
@@ -120,7 +151,7 @@ export class LexicalIndex {
     const terms = this.queryTerms(query);
     if (terms.length === 0) return [];
 
-    const noteScores = this.score(this.noteLevel, terms, this.notes.size);
+    const noteScores = this.score(this.noteLevel, terms, this.notes.size, this.noteDf);
     const chunkScores = this.score(this.chunkLevel, terms, this.chunkDocInfo.size);
 
     const byNote = new Map<string, { noteScore: number; chunks: [number, number][] }>();
@@ -177,10 +208,20 @@ export class LexicalIndex {
   /** Distinct query terms, without vault-referring words unless nothing else is left. */
   queryTerms(query: string): string[] {
     const terms = [...new Set(this.tokens(query))];
-    if (this.options.queryStopwords === false) return terms;
-    const content = terms.filter((term) => !QUERY_STOPWORDS.has(term));
+    const { queryStopwords, queryBoilerplate } = this.options;
+    if (queryStopwords === false && queryBoilerplate === false) return terms;
+    const text = queryBoilerplate === false ? query : stripQueryBoilerplate(query);
+    const content = [...new Set(this.tokens(text))].filter(
+      (term) => queryStopwords === false || !QUERY_STOPWORDS.has(term),
+    );
     return content.length ? content : terms;
   }
+
+  /** Note-level document frequency: whole notes by default, the note fields alone if not. */
+  private readonly noteDf = (term: string): number =>
+    this.options.wholeNoteIdf === false
+      ? (this.noteLevel.postings.get(term)?.size ?? 0)
+      : (this.noteFrequency.get(term) ?? 0);
 
   /**
    * The score a section would reach if every query term saturated both levels. Terms the
@@ -190,11 +231,11 @@ export class LexicalIndex {
   maxScore(query: string): number {
     let max = 0;
     for (const term of this.queryTerms(query)) {
-      for (const [level, count] of [
-        [this.noteLevel, this.notes.size],
-        [this.chunkLevel, this.chunkDocInfo.size],
-      ] as const)
-        if (count) max += (this.k1 + 1) * idf(count, level.postings.get(term)?.size ?? 0);
+      if (this.notes.size) max += (this.k1 + 1) * idf(this.notes.size, this.noteDf(term));
+      if (this.chunkDocInfo.size)
+        max +=
+          (this.k1 + 1) *
+          idf(this.chunkDocInfo.size, this.chunkLevel.postings.get(term)?.size ?? 0);
     }
     return max;
   }
@@ -207,6 +248,7 @@ export class LexicalIndex {
     level: Level<F>,
     terms: string[],
     docCount: number,
+    documentFrequency: (term: string) => number = (term) => level.postings.get(term)?.size ?? 0,
   ): Map<number, { score: number; terms: Set<string> }> {
     const scores = new Map<number, { score: number; terms: Set<string> }>();
     if (docCount === 0) return scores;
@@ -216,7 +258,7 @@ export class LexicalIndex {
     for (const term of terms) {
       const postings = level.postings.get(term);
       if (!postings) continue;
-      const termIdf = idf(docCount, postings.size);
+      const termIdf = idf(docCount, documentFrequency(term));
       for (const [doc, frequencies] of postings) {
         const lengths = level.lengths.get(doc)!;
         let weightedTf = 0;

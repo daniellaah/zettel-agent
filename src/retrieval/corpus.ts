@@ -16,7 +16,7 @@ export interface CorpusOptions {
   semantic?: boolean;
   /** Keyword-index switches for ablations; all on by default. */
   lexical?: LexicalOptions;
-  /** Rank sections that contain a query's quoted phrases first. Default on. */
+  /** In lexical and hybrid search, rank sections containing quoted phrases first. Default on. */
   phrases?: boolean;
 }
 
@@ -199,7 +199,9 @@ export class Corpus {
   search(query: string, options: CorpusSearchOptions = {}): CorpusHit[] {
     const filter = (path: string) => this.eligible(path, options);
     let ranked = this.rank(query, options, filter);
-    const phrases = this.options.phrases === false ? [] : quotedPhrases(query);
+    // Quotes ask for exact text, which pure semantic search does not promise.
+    const phrases =
+      this.options.phrases === false || options.mode === "semantic" ? [] : quotedPhrases(query);
     if (phrases.length) ranked = this.phrasesFirst(ranked, phrases, filter);
     // Keep each note's best sections only, after ranking every section.
     const perNote = options.perNote ?? 1;
