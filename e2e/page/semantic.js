@@ -11,9 +11,7 @@ const semantic = await plugin.semantic?.queryVectors([query]);
 const corpus = plugin.vaultCorpus.current;
 const hits = semantic
   ? corpus.search(query, {
-      mode: "hybrid",
-      queryVector: semantic.vectors.get(query),
-      fusion: semantic.fusion,
+      hybrid: { queryVector: semantic.vectors.get(query), fusion: semantic.fusion },
       limit: 10,
     })
   : [];
