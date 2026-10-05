@@ -1,5 +1,11 @@
 import { EvidenceLedger, type Evidence } from "../src/agent/evidence";
-import { DEFAULT_BUDGET, runTurn, type Budget, type TurnResult } from "../src/agent/loop";
+import {
+  DEFAULT_BUDGET,
+  runTurn,
+  type Budget,
+  type TurnOptions,
+  type TurnResult,
+} from "../src/agent/loop";
 import type { ChatMessage } from "../src/agent/messages";
 import { turnContext } from "../src/agent/prompt";
 import type { ModelProvider } from "../src/agent/provider";
@@ -66,7 +72,7 @@ export interface AgentRun {
 
 /** No gold excerpts or expected answers are supplied to the agent. */
 export async function runAgentCase(options: {
-  item: AnswerItem;
+  item: Pick<AnswerItem, "id" | "question" | "history" | "activeNote">;
   corpus: Corpus;
   provider: ModelProvider;
   trial: number;
@@ -74,6 +80,8 @@ export async function runAgentCase(options: {
   budget?: Budget;
   signal?: AbortSignal;
   beforeTurn?: (corpus: Corpus, index: number) => void;
+  /** Embeds search queries for hybrid search, as the plugin does; absent means keywords. */
+  queryVectors?: TurnOptions["queryVectors"];
 }): Promise<AgentRun> {
   const { item, corpus, provider } = options;
   const budget = options.budget ?? DEFAULT_BUDGET;
@@ -96,6 +104,7 @@ export async function runAgentCase(options: {
       userContent: `${turnContext(corpus, item.activeNote)}\n\n${question}`,
       budget,
       ...(options.signal && { signal: options.signal }),
+      ...(options.queryVectors && { queryVectors: options.queryVectors }),
       events: {
         onRequest: (index) => {
           request = index;

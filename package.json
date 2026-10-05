@@ -24,6 +24,7 @@
     "eval:exact-terms": "EVAL_SUITE=exact-terms vitest run --config eval/vitest.config.ts --project retrieval",
     "eval:sweep": "vitest run --config eval/vitest.config.ts --project sweep",
     "eval:rewrite": "vitest run --config eval/vitest.config.ts --project rewrite",
+    "eval:agent-smoke": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config eval/vitest.config.ts --project agent-smoke",
     "e2e": "vitest run --config e2e/vitest.config.ts",
     "e2e:live": "E2E_LIVE=1 vitest run --config e2e/vitest.config.ts e2e/agent.e2e.ts",
     "eval:full": "node --env-file-if-exists=.env.eval.local node_modules/vitest/vitest.mjs run --config eval/vitest.config.ts --project full",
