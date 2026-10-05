@@ -4,7 +4,7 @@ import { reciprocalRankFusion, RRF_K } from "./fusion";
 import { LinkGraph, basenameResolver, type LinkResolver } from "./graph";
 import { LexicalIndex, type LexicalOptions, type SearchHit } from "./lexical-index";
 import { hash, parseNote, type ParsedNote } from "./markdown";
-import { normalizeText, type TokenizerMode } from "./tokenize";
+import { normalizeText, textLanguage, type TokenizerMode } from "./tokenize";
 
 export interface CorpusOptions {
   mode?: TokenizerMode;
@@ -70,6 +70,8 @@ export class Corpus {
   private readonly index: LexicalIndex;
   /** Section vectors; null unless the corpus was created with `semantic`. */
   readonly dense: DenseIndex | null;
+  /** Each note's main language, so the agent can search in the language the notes use. */
+  private readonly languages = new Map<string, "zh" | "en">();
   private cachedGraph: LinkGraph | null = null;
   private cachedResolver: LinkResolver | null = null;
 
@@ -123,6 +125,13 @@ export class Corpus {
     );
   }
 
+  /** How many notes are mainly Chinese and how many mainly English. */
+  languageCounts(): { zh: number; en: number } {
+    const counts = { zh: 0, en: 0 };
+    for (const language of this.languages.values()) counts[language]++;
+    return counts;
+  }
+
   paths(): string[] {
     return [...this.notes.keys()].sort();
   }
@@ -145,6 +154,7 @@ export class Corpus {
     }
     if (existing?.contentHash === note.contentHash) return existing;
     this.notes.set(path, note);
+    this.languages.set(path, textLanguage(note.sections.map((section) => section.text).join("\n")));
     this.index.upsert(note);
     this.dense?.upsert(note);
     this.invalidate();
@@ -153,6 +163,7 @@ export class Corpus {
 
   remove(path: string): void {
     if (!this.notes.delete(path)) return;
+    this.languages.delete(path);
     this.index.remove(path);
     this.dense?.remove(path);
     this.invalidate();

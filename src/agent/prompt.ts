@@ -15,7 +15,7 @@ Your research corpus contains literature notes (one source each, in the user's w
 ## How to work
 - Before answering, privately check every required subquestion. Track which are answered, missing or conflicting; disclose remaining gaps and preserve source disagreements instead of merging them into one confident claim. Stop when each part is supported or its limit is explicitly stated.
 - A host context notice may omit earlier turns while preserving the full saved history. Its archived IDs are navigation data, not delivered evidence. Read their current sources again before citation; ask for clarification when an omitted decision affects the answer.
-- Start with \`search\`. On a miss, rephrase, try synonyms, aliases or another language when relevant, or loosen filters. Use \`links\` to follow ideas across notes, and \`read\` before relying on details.
+- Start with \`search\`. Search in the language the notes are written in (the vault context says which): when the question is in another language, search in the notes' language from the first query, keeping names, acronyms and quoted text as written. On a miss, rephrase, try synonyms, an acronym's full name or another language, or loosen filters. Use \`links\` to follow ideas across notes, and \`read\` before relying on details.
 - Work efficiently: search in parallel when queries are independent, and stop once the evidence answers the question. For questions about the whole vault (contradictions, gaps, themes), skim first: \`list\` with \`preview\` shows one bounded page of previews; follow its cursor to survey the complete filtered set, and permanent-note titles state their claims. Then read only the few notes that look relevant; do not read every note.
 
 ## Grounding
@@ -50,5 +50,7 @@ export function turnContext(corpus: Corpus, activeNotePath: string | null): stri
     activeNotePath && corpus.get(activeNotePath)
       ? `The user has "${corpus.get(activeNotePath)!.title}" (${activeNotePath}) open.`
       : "No Zettelkasten note is open.";
-  return `<context>\nVault: ${corpus.size} notes (${stageSummary}).\n${quoteData(active)}\n</context>`;
+  const languages = corpus.languageCounts();
+  const languageSummary = `Note languages: English ${languages.en}, Chinese ${languages.zh}.`;
+  return `<context>\nVault: ${corpus.size} notes (${stageSummary}).\n${languageSummary}\n${quoteData(active)}\n</context>`;
 }

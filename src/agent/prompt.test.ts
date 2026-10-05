@@ -19,4 +19,18 @@ describe("research scope in the prompt", () => {
     expect(turnContext(corpus, "Z/Permanent/Claim.md")).toContain('"Claim"');
     expect(SYSTEM_PROMPT).toContain("Fleeting captures are excluded from every research tool.");
   });
+
+  it("tells the agent which languages the notes are written in", () => {
+    const corpus = new Corpus({ stageForPath: () => "permanent" });
+    corpus.upsert("P/Atomic.md", "# Atomic notes\n\nOne idea per note.");
+    corpus.upsert("P/卡片.md", "# 卡片盒\n\n每张卡片只写一个想法，用 BM25 也能找到。");
+    corpus.upsert(
+      "P/Mixed.md",
+      "# Two-tower\n\n双塔召回 needs LogQ correction for sampled negatives.",
+    );
+    expect(turnContext(corpus, null)).toContain("Note languages: English 2, Chinese 1.");
+    corpus.remove("P/卡片.md");
+    expect(turnContext(corpus, null)).toContain("Note languages: English 2, Chinese 0.");
+    expect(SYSTEM_PROMPT).toContain("search in the notes' language from the first query");
+  });
 });

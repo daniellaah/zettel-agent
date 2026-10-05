@@ -46,6 +46,13 @@ export const QUERY_STOPWORDS = new Set(["note", "notes", "mention", "mentions", 
 const QUERY_BOILERPLATE =
   /哪[一几]?[篇些张条](?:笔记|卡片)?|我?在哪[里儿]?|(?:笔记|卡片)[里中]|(?:有没有|是否)?(?:提到|提及|写过|写到|说过|讲过|谈到|记过|记录过|出现)[了过]?/gu;
 
+/** Chinese when Han characters outnumber Latin letters, otherwise English. */
+export function textLanguage(text: string): "zh" | "en" {
+  const han = text.match(/\p{Script=Han}/gu)?.length ?? 0;
+  const latin = text.match(/\p{Script=Latin}/gu)?.length ?? 0;
+  return han > latin ? "zh" : "en";
+}
+
 export function stripQueryBoilerplate(query: string): string {
   return query.replace(QUERY_BOILERPLATE, " ");
 }
