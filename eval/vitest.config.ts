@@ -8,6 +8,7 @@ const entries: Record<string, string> = {
   "trace-report": "eval/trace-report.run.ts",
   embed: "eval/embed.run.ts",
   sweep: "eval/fusion-sweep.run.ts",
+  rewrite: "eval/rewrite.run.ts",
 };
 
 // Retrieval reads the expanded suite unless EVAL_SUITE says otherwise.

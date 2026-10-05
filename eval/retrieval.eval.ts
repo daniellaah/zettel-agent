@@ -11,6 +11,7 @@ import {
   type CorpusSearchOptions,
 } from "../src/retrieval/corpus";
 import type { LexicalOptions } from "../src/retrieval/lexical-index";
+import { fusionFor } from "../src/retrieval/embedding-models";
 import { RRF_K } from "../src/retrieval/fusion";
 import { loadEvaluationData, loadFixtureCorpus, pendingNotes } from "./fixture-vault";
 import { meanMeasured, scoreJudgedOnly, scoreRetrieval } from "./metrics";
@@ -55,8 +56,11 @@ const LEXICAL_VARIANTS: { name: string; options: Pick<CorpusOptions, "lexical" |
 ];
 /** What every other retriever is compared against: the BM25F index shipped in v0.1. */
 const BASELINE = "lexical:v0.1";
-/** Convex fusion weights chosen per model by `npm run eval:sweep` on the dev split only. */
-const TUNED_ALPHA: Record<string, number> = { "bge-m3": 0.4, "qwen3-embedding:0.6b": 0.6 };
+/** Convex weight per model from the model profiles, tuned by `npm run eval:sweep` on dev. */
+const tunedAlpha = (model: string) => {
+  const fusion = fusionFor(model);
+  return fusion.method === "convex" ? fusion.alpha : 0.5;
+};
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SUITE = process.env.EVAL_SUITE ?? "pilot";
 
@@ -89,7 +93,7 @@ describe("frozen learning corpus retrieval", () => {
       ...vectorSets.flatMap((set) => {
         const index = loadFixtureCorpus("both", { semantic: true });
         applyDocumentVectors(index, set);
-        const alpha = TUNED_ALPHA[set.model] ?? 0.5;
+        const alpha = tunedAlpha(set.model);
         const configs: [string, CorpusSearchOptions][] = [
           ["semantic", { mode: "semantic" }],
           ["hybrid-rrf", { mode: "hybrid", fusion: { method: "rrf", k: RRF_K } }],
@@ -227,7 +231,10 @@ describe("frozen learning corpus retrieval", () => {
         },
         fusion: {
           rrf: { k: RRF_K },
-          convex: { alpha: TUNED_ALPHA, tunedBy: "eval/fusion-sweep.run.ts on the dev split" },
+          convex: {
+            alpha: Object.fromEntries(vectorSets.map((set) => [set.model, tunedAlpha(set.model)])),
+            tunedBy: "eval/fusion-sweep.run.ts on the dev split",
+          },
           candidatesPerRetriever: FUSION_CANDIDATES,
         },
         embeddings: vectorSets.map((set) => ({
@@ -322,7 +329,7 @@ describe("frozen learning corpus retrieval", () => {
       "",
       `${retrieval.items.length} ${language} synthetic queries with the declared family-separated splits; ${report.judgedPairs} query-note judgments. Review: ${retrieval.review}.${SUITE === "crosslingual" ? " Queries are AI translations of the expanded suite; relevance labels are inherited unchanged." : ""}`,
       "",
-      `Retrievers: the v0.1 BM25F index, each keyword fix alone (English query stopwords, Chinese query frames, whole compounds, quoted phrases first, whole-note IDF, title scored once), the round-3 set and all fixes together; ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${TUNED_ALPHA[set.model] ?? 0.5}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
+      `Retrievers: the v0.1 BM25F index, each keyword fix alone (English query stopwords, Chinese query frames, whole compounds, quoted phrases first, whole-note IDF, title scored once), the round-3 set and all fixes together; ${vectorSets.length ? vectorSets.map((set) => `semantic, hybrid-rrf and hybrid-convex (alpha ${tunedAlpha(set.model)}, tuned on dev) with ${set.model} (${set.dimensions} dimensions, frozen vectors)`).join("; ") : "no frozen embeddings found, so no semantic runs"}. Hybrid takes ${FUSION_CANDIDATES} section candidates from each retriever; rrf fuses ranks (k=${RRF_K}), convex adds alpha × BM25 / the query's highest possible BM25 and (1 − alpha) × cosine similarity. API calls: 0.`,
       "",
       SUITE === "exact" || SUITE === "exact-terms"
         ? "Labels are complete: every note containing the looked-up term is grade 2 and every other note is irrelevant, so standard and judged-only metrics agree."

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { FetchLike } from "../agent/provider";
+import { DEFAULT_EMBEDDING_MODEL, fusionFor } from "./embedding-models";
 import { OllamaEmbedder, OllamaError } from "./ollama";
 
 const TAGS = {
@@ -27,7 +28,10 @@ function fakeOllama(requests: { url: string; body: unknown }[] = []): FetchLike 
 
 describe("OllamaEmbedder", () => {
   it("pins the model digest and query format in its id", async () => {
-    const qwen = await OllamaEmbedder.connect({ fetch: fakeOllama() });
+    const qwen = await OllamaEmbedder.connect({
+      model: "qwen3-embedding:0.6b",
+      fetch: fakeOllama(),
+    });
     const bge = await OllamaEmbedder.connect({ model: "bge-m3", fetch: fakeOllama() });
     expect(qwen.id).toMatch(/^ollama:qwen3-embedding:0\.6b@ac6da0dfba84:q[0-9a-f]+$/);
     expect(bge.id).toMatch(/^ollama:bge-m3@790764642607:q/);
@@ -37,6 +41,7 @@ describe("OllamaEmbedder", () => {
   it("adds the instruction to Qwen3 queries only, batches, and normalizes", async () => {
     const requests: { url: string; body: unknown }[] = [];
     const embedder = await OllamaEmbedder.connect({
+      model: "qwen3-embedding:0.6b",
       fetch: fakeOllama(requests),
       baseUrl: "http://127.0.0.1:11434/",
       batchSize: 2,
@@ -60,6 +65,7 @@ describe("OllamaEmbedder", () => {
       OllamaEmbedder.connect({ model: "nomic-embed-text", fetch: fakeOllama() }),
     ).rejects.toThrow("Run: ollama pull nomic-embed-text");
     const refused: FetchLike = () => Promise.reject(new TypeError("fetch failed"));
+    expect((await OllamaEmbedder.connect({ fetch: fakeOllama() })).model).toBe("bge-m3");
     await expect(OllamaEmbedder.connect({ fetch: refused })).rejects.toThrow(
       "Cannot reach Ollama at http://localhost:11434",
     );
@@ -82,5 +88,15 @@ describe("OllamaEmbedder", () => {
     const embedder = await OllamaEmbedder.connect({ fetch: aborting });
     controller.abort(new DOMException("stopped", "AbortError"));
     await expect(embedder.embed(["x"], "document", controller.signal)).rejects.toThrow("stopped");
+  });
+});
+
+describe("embedding model profiles", () => {
+  it("fuses measured models by their tuned convex weight and others by RRF", () => {
+    expect(fusionFor("bge-m3")).toEqual({ method: "convex", alpha: 0.4 });
+    expect(fusionFor("bge-m3:latest")).toEqual({ method: "convex", alpha: 0.4 });
+    expect(fusionFor("qwen3-embedding:0.6b")).toEqual({ method: "convex", alpha: 0.6 });
+    expect(fusionFor("nomic-embed-text")).toEqual({ method: "rrf", k: 60 });
+    expect(DEFAULT_EMBEDDING_MODEL).toBe("bge-m3");
   });
 });

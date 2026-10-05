@@ -50,6 +50,11 @@ export interface CorpusSearchOptions {
   /** The query embedded with the same embedder as the corpus's sections. */
   queryVector?: Float32Array | undefined;
   fusion?: Fusion | undefined;
+  /**
+   * The same question in other words or languages, searched together with the query:
+   * keywords from all of them, and each section's closest query vector.
+   */
+  alternates?: { query: string; queryVector?: Float32Array }[] | undefined;
 }
 
 export interface CorpusHit extends SearchHit {
@@ -223,13 +228,19 @@ export class Corpus {
   ): CorpusHit[] {
     const { mode = "lexical", queryVector, fusion = DEFAULT_FUSION } = options;
     const all = { limit: Number.MAX_SAFE_INTEGER, perNote: Number.MAX_SAFE_INTEGER, filter };
-    const lexical = mode === "semantic" ? [] : this.index.search(query, all);
+    const alternates = options.alternates ?? [];
+    const keywords = [query, ...alternates.map((alternate) => alternate.query)].join("\n");
+    const lexical = mode === "semantic" ? [] : this.index.search(keywords, all);
     if (mode === "lexical")
       return lexical.map((hit, i) => ({ ...hit, lexicalRank: i + 1, semanticRank: null }));
     if (!this.dense || !queryVector)
       throw new Error(`A ${mode} search needs a semantic corpus and a query vector.`);
     const dense = this.dense;
-    const semantic = dense.search(queryVector, all);
+    const vectors = [
+      queryVector,
+      ...alternates.flatMap((a) => (a.queryVector ? [a.queryVector] : [])),
+    ];
+    const semantic = dense.search(vectors, all);
 
     const id = (hit: { path: string; sectionId: string }) => `${hit.path}\u0000${hit.sectionId}`;
     const lexicalRanks = new Map(lexical.map((hit, i) => [id(hit), { hit, rank: i + 1 }]));
@@ -258,14 +269,14 @@ export class Corpus {
 
     // Convex combination: BM25 divided by the query's highest possible score, so keywords
     // weigh in only as far as the query's terms actually matched, plus cosine similarity.
-    const max = this.index.maxScore(query) || 1;
+    const max = this.index.maxScore(keywords) || 1;
     const candidates = new Map(top.flat().map((hit) => [id(hit), hit]));
     return [...candidates.values()]
       .map(({ path, sectionId }) => {
         const key = id({ path, sectionId });
         const keyword = (lexicalRanks.get(key)?.hit.score ?? 0) / max;
         const meaning =
-          semanticRanks.get(key)?.hit.score ?? dense.similarity(queryVector, path, sectionId) ?? 0;
+          semanticRanks.get(key)?.hit.score ?? dense.similarity(vectors, path, sectionId) ?? 0;
         return describe(path, sectionId, fusion.alpha * keyword + (1 - fusion.alpha) * meaning);
       })
       .sort(

@@ -78,25 +78,27 @@ export class DenseIndex {
   }
 
   /** Cosine similarity of one section, or null if it has no vector yet. */
-  similarity(query: Float32Array, path: string, sectionId: string): number | null {
+  similarity(query: Queries, path: string, sectionId: string): number | null {
     const key = this.notes.get(path)?.find((entry) => entry.sectionId === sectionId)?.key;
     const vector = key === undefined ? undefined : this.vectors.get(key);
-    return vector ? dot(query, vector) : null;
+    return vector ? closest(query, vector) : null;
   }
 
+  /** With several queries (one question in several languages), a section scores its best. */
   search(
-    query: Float32Array,
+    query: Queries,
     options: { limit?: number; filter?: (path: string) => boolean } = {},
   ): DenseHit[] {
     const { limit = 10, filter } = options;
-    if (this.dimensions !== null && query.length !== this.dimensions)
-      throw new Error(`Query has ${query.length} dimensions; the index has ${this.dimensions}.`);
+    for (const vector of queryList(query))
+      if (this.dimensions !== null && vector.length !== this.dimensions)
+        throw new Error(`Query has ${vector.length} dimensions; the index has ${this.dimensions}.`);
     const hits: (DenseHit & { order: number })[] = [];
     for (const [path, entries] of this.notes) {
       if (filter && !filter(path)) continue;
       entries.forEach(({ sectionId, key }, order) => {
         const vector = this.vectors.get(key);
-        if (vector) hits.push({ path, sectionId, score: dot(query, vector), order });
+        if (vector) hits.push({ path, sectionId, score: closest(query, vector), order });
       });
     }
     // Deterministic order: score, then path, then position in the note.
@@ -109,4 +111,14 @@ export class DenseIndex {
   private *keys(): Iterable<string> {
     for (const entries of this.notes.values()) for (const { key } of entries) yield key;
   }
+}
+
+type Queries = Float32Array | readonly Float32Array[];
+
+function queryList(query: Queries): readonly Float32Array[] {
+  return query instanceof Float32Array ? [query] : query;
+}
+
+function closest(query: Queries, vector: Float32Array): number {
+  return Math.max(...queryList(query).map((q) => dot(q, vector)));
 }

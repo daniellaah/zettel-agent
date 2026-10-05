@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { dot } from "../src/retrieval/embedding";
 import { evaluationFiles, loadEvaluationData, loadFixtureCorpus } from "./fixture-vault";
+import { loadRewrites } from "./rewrites";
 import { validateSets } from "./validate";
 import {
   applyDocumentVectors,
@@ -81,6 +82,28 @@ describe("exact-terms suite", () => {
     expect(
       validateSets(terms.manifest, terms.retrieval, terms.answers, loadFixtureCorpus()),
     ).toEqual([]);
+  });
+});
+
+describe("query rewrites", () => {
+  it("restate the expanded, cross-lingual and exact questions in the other language", () => {
+    const queries = (["expanded", "crosslingual", "exact"] as const).flatMap((suite) =>
+      loadEvaluationData(suite).retrieval.items.map((item) => item.query),
+    );
+    for (const source of ["llm", "llama3"] as const) {
+      const rewrites = loadRewrites(source);
+      for (const query of queries) {
+        const rewrite = rewrites.get(query);
+        // The local model failed on some English questions; those are searched as they are.
+        if (source === "llama3" && !rewrite) continue;
+        expect(rewrite, `${source}: ${query}`).toBeTruthy();
+        // Each rewrite switches language: Han characters appear in exactly one of the two.
+        expect(/\p{Script=Han}/u.test(query)).not.toBe(/\p{Script=Han}/u.test(rewrite!));
+      }
+    }
+    const reference = loadRewrites("reference");
+    const english = loadEvaluationData("expanded").retrieval.items[0]!.query;
+    expect(reference.get(reference.get(english)!)).toBe(english);
   });
 });
 

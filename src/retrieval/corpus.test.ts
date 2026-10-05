@@ -254,6 +254,42 @@ describe("semantic and hybrid search", () => {
     expect(paths(quoted, "semantic")).toEqual(paths(quoted.replace(/[“”]/g, ""), "semantic"));
   });
 
+  it("searches a question together with its rewrites in other languages", async () => {
+    const corpus = await semanticCorpus();
+    // Chinese keywords match nothing in English notes; the English rewrite does.
+    expect(corpus.search("交叉验证")).toEqual([]);
+    const both = corpus.search("交叉验证", { alternates: [{ query: "cross-validation" }] });
+    expect(both[0]!.path).toBe(FOLDS);
+    // Semantic search scores each section by its closest query vector.
+    const unrelated = await vector("atomic idea");
+    const rewrite = await vector("standardization");
+    const hits = corpus.search("某个问题", {
+      mode: "semantic",
+      queryVector: unrelated,
+      alternates: [{ query: "standardization", queryVector: rewrite }],
+      limit: 3,
+    });
+    const cosine = corpus.dense!.similarity(
+      [unrelated, rewrite],
+      PREPROCESSING,
+      hits.find((h) => h.path === PREPROCESSING)!.sectionId,
+    )!;
+    expect(cosine).toBeCloseTo(
+      Math.max(
+        corpus.dense!.similarity(
+          unrelated,
+          PREPROCESSING,
+          hits.find((h) => h.path === PREPROCESSING)!.sectionId,
+        )!,
+        corpus.dense!.similarity(
+          rewrite,
+          PREPROCESSING,
+          hits.find((h) => h.path === PREPROCESSING)!.sectionId,
+        )!,
+      ),
+    );
+  });
+
   it("needs a query vector and a semantic corpus", async () => {
     const corpus = await semanticCorpus();
     expect(() => corpus.search("x", { mode: "hybrid" })).toThrow("needs a semantic corpus");

@@ -1,23 +1,9 @@
 import type { FetchLike } from "../agent/provider";
 import { unitVector, type Embedder, type EmbeddingKind } from "./embedding";
+import { DEFAULT_EMBEDDING_MODEL, modelProfile } from "./embedding-models";
 import { hash } from "./markdown";
 
 export const DEFAULT_OLLAMA_URL = "http://localhost:11434";
-export const DEFAULT_EMBEDDING_MODEL = "qwen3-embedding:0.6b";
-
-/**
- * Query formats that models were trained with; documents are always embedded as plain text.
- * Qwen3-Embedding expects a one-line task instruction before each query. Without it,
- * Chinese questions about English notes lose recall.
- */
-const QUERY_FORMATS: { model: RegExp; format: (query: string) => string }[] = [
-  {
-    model: /^qwen3-embedding\b/i,
-    format: (query) =>
-      `Instruct: Given a question, retrieve notes from a personal knowledge base that answer it\nQuery:${query}`,
-  },
-];
-
 /** A problem the user can fix: Ollama not running, model not downloaded, or a bad response. */
 export class OllamaError extends Error {
   override readonly name = "OllamaError";
@@ -44,7 +30,7 @@ export class OllamaEmbedder implements Embedder {
     private readonly fetch: FetchLike,
     private readonly batchSize: number,
   ) {
-    this.formatQuery = QUERY_FORMATS.find((entry) => entry.model.test(model))?.format ?? ((q) => q);
+    this.formatQuery = modelProfile(model)?.formatQuery ?? ((q) => q);
     // A changed query instruction changes every query vector, so it is part of the space.
     this.id = `ollama:${model}@${digest.slice(0, 12)}:q${hash(this.formatQuery("{query}"))}`;
   }

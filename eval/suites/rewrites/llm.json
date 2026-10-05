@@ -1,0 +1,1095 @@
+{
+  "schema": 1,
+  "source": "llm",
+  "method": "Claude subagents translated each Chinese query into English and each English query into Chinese, seeing only the list of queries to translate (not the suites, notes or labels). Instructions: faithful, natural search-query wording; keep technical names, numbers and quoted text; do not answer.",
+  "items": [
+    {
+      "query": "4-bit 的 QLoRA 权重存储，是否意味着矩阵计算也是 4-bit 的？",
+      "rewrite": "Does storing QLoRA weights in 4-bit mean the matrix computations are also done in 4-bit?"
+    },
+    {
+      "query": "为什么一对用户共同点击过的物品很多时，他们对 Swing 物品相似度的贡献反而更小？",
+      "rewrite": "Why does a pair of users contribute less to Swing item similarity when they have co-clicked many items?"
+    },
+    {
+      "query": "ColBERT 的 MaxSim 里，最大值是在 query token 上求和，还是在文档 token 上求和？",
+      "rewrite": "In ColBERT's MaxSim, are the maxima summed over query tokens or over document tokens?"
+    },
+    {
+      "query": "对于按交互采样得到的 batch 内负样本，LogQ 需要估计的是哪个概率？",
+      "rewrite": "For in-batch negatives sampled according to interactions, which probability does LogQ need to estimate?"
+    },
+    {
+      "query": "如果一个注意力实现在数学上是精确的，它一定能得到逐位相同的浮点结果吗？",
+      "rewrite": "If an attention implementation is mathematically exact, is it guaranteed to produce bitwise-identical floating-point results?"
+    },
+    {
+      "query": "做交叉验证之前，应该先在全部样本上拟合一次标准化的统计量吗？",
+      "rewrite": "Before cross-validation, should the standardization statistics be fit once on all samples?"
+    },
+    {
+      "query": "如果第一阶段召回漏掉了一个相关物品，一个完美的第二阶段排序模型能把它找回来吗？",
+      "rewrite": "If first-stage retrieval misses a relevant item, can a perfect second-stage ranking model recover it?"
+    },
+    {
+      "query": "bootstrap 样本里同一个观测被重复抽到，算不算新增了独立的证据？",
+      "rewrite": "When the same observation is drawn multiple times in a bootstrap sample, does that count as additional independent evidence?"
+    },
+    {
+      "query": "上下文压缩和外部任务笔记怎样保存进度？为什么它们不能保证后面一定会用上需要的细节？",
+      "rewrite": "How do context compaction and external task notes preserve progress, and why can't they guarantee that the needed details will be used later?"
+    },
+    {
+      "query": "把预处理和 TFX 模型一起导出，就能保证训练和线上服务完全一致吗？",
+      "rewrite": "Does exporting the preprocessing together with the TFX model guarantee that training and online serving are fully consistent?"
+    },
+    {
+      "query": "为什么把 Flink 的输入标记为 idle 时，必须同时考虑迟到事件的处理策略？",
+      "rewrite": "Why do you also have to consider the late-event handling policy when marking a Flink input as idle?"
+    },
+    {
+      "query": "IVF 多探查几个列表，能不能同时消除乘积量化带来的距离近似误差？",
+      "rewrite": "Can probing more lists in IVF also eliminate the distance approximation error introduced by product quantization?"
+    },
+    {
+      "query": "DPO 不训练单独的奖励网络，就能说它不需要参考模型吗？",
+      "rewrite": "Since DPO doesn't train a separate reward network, can we say it doesn't need a reference model?"
+    },
+    {
+      "query": "提高 HNSW 查询时的搜索宽度，能代替构图阶段选出的图连接吗？",
+      "rewrite": "Can increasing the HNSW search width at query time substitute for the graph connections selected during graph construction?"
+    },
+    {
+      "query": "一个回答事实正确、又带了引用标记，就能算是有依据的吗？",
+      "rewrite": "If an answer is factually correct and includes citation markers, does it count as grounded?"
+    },
+    {
+      "query": "QLoRA 的分页优化器和 vLLM 的 PagedAttention，管理的是同一类张量和负载吗？",
+      "rewrite": "Do QLoRA's paged optimizers and vLLM's PagedAttention manage the same kinds of tensors and workloads?"
+    },
+    {
+      "query": "在我们的线上服务里，测出来哪个草稿 lookahead 的延迟最低？",
+      "rewrite": "In our production service, which draft lookahead was measured to have the lowest latency?"
+    },
+    {
+      "query": "这些笔记里有没有记录我上线 SASRec 之后的线上 CTR 提升？",
+      "rewrite": "Do these notes record the online CTR lift after I launched SASRec?"
+    },
+    {
+      "query": "我自己的 BPR 生产训练用的学习率是多少？",
+      "rewrite": "What learning rate did I use for my own BPR production training?"
+    },
+    {
+      "query": "我的 GRPO 训练实验用了什么型号的 GPU、多大的集群？",
+      "rewrite": "What GPU model and what cluster size did my GRPO training experiments use?"
+    },
+    {
+      "query": "LoRA 会让预训练权重矩阵变成低秩的吗？为什么初始的适配量是零？",
+      "rewrite": "Does LoRA make the pretrained weight matrix low-rank? Why is the initial adaptation zero?"
+    },
+    {
+      "query": "LoRA 的秩限制的是存储的基础矩阵，还是学到的增量？",
+      "rewrite": "Does the LoRA rank constrain the stored base matrix or the learned update?"
+    },
+    {
+      "query": "部署时合并 LoRA adapter 会改变什么？什么时候保持分开更有用？",
+      "rewrite": "What changes when you merge a LoRA adapter at deployment time? When is it more useful to keep it separate?"
+    },
+    {
+      "query": "比较合并后的 LoRA 权重，和共享同一个基础模型、动态选择 adapter 这两种做法。",
+      "rewrite": "Compare merged LoRA weights with sharing a single base model and dynamically selecting adapters."
+    },
+    {
+      "query": "QLoRA 的双重量化，除了 4-bit 权重编码之外还压缩了什么？",
+      "rewrite": "Besides the 4-bit weight encoding, what else does QLoRA's double quantization compress?"
+    },
+    {
+      "query": "为什么对量化缩放常数再做一次量化，可以减少 QLoRA 的存储，却不改变基础编码的位宽？",
+      "rewrite": "Why does quantizing the quantization scaling constants a second time reduce QLoRA's storage without changing the bit width of the base encoding?"
+    },
+    {
+      "query": "FlashAttention 不再存储注意力矩阵，是否也就去掉了平方级的计算量？",
+      "rewrite": "Since FlashAttention no longer stores the attention matrix, does it also remove the quadratic compute?"
+    },
+    {
+      "query": "把 FlashAttention 的计算量、额外内存和显存带宽流量分开，解释成三种不同的资源上界。",
+      "rewrite": "Separate FlashAttention's compute, extra memory, and GPU memory bandwidth traffic, and explain them as three different resource bounds."
+    },
+    {
+      "query": "FlashAttention 在反向传播里做了更多计算，为什么论文里它反而跑得更快？",
+      "rewrite": "FlashAttention does more computation in the backward pass, so why does it run faster in the paper?"
+    },
+    {
+      "query": "为什么重算注意力块是在用计算换内存流量，而不只是浪费算力？",
+      "rewrite": "Why is recomputing attention blocks a trade of compute for memory traffic rather than just wasted compute?"
+    },
+    {
+      "query": "投机解码怎样验证草稿提出的 token，同时保留已经被接受的前缀？",
+      "rewrite": "How does speculative decoding verify the tokens proposed by the draft while keeping the already-accepted prefix?"
+    },
+    {
+      "query": "草稿 token 的接受率是什么？为什么验证在第一次拒绝时就停下？",
+      "rewrite": "What is the draft token acceptance rate, and why does verification stop at the first rejection?"
+    },
+    {
+      "query": "草稿被拒绝后直接从目标模型采样，为什么不等于笔记里说的残差修正？",
+      "rewrite": "Why is sampling directly from the target model after a draft rejection not the same as the residual correction described in the notes?"
+    },
+    {
+      "query": "投机解码里一个 token 被拒绝后，替换它的 token 从什么分布里采样？",
+      "rewrite": "In speculative decoding, after a token is rejected, from what distribution is the replacement token sampled?"
+    },
+    {
+      "query": "vLLM 什么时候可以共享 KV cache 块，什么时候必须复制？",
+      "rewrite": "When can vLLM share KV cache blocks, and when must it copy them?"
+    },
+    {
+      "query": "生成的后续内容出现分叉时，写时复制怎样保护共享的 prompt 状态？",
+      "rewrite": "When generated continuations diverge, how does copy-on-write protect the shared prompt state?"
+    },
+    {
+      "query": "SASRec 的采样 HR@10 和 NDCG@10 评估的是一个什么样的排序问题？",
+      "rewrite": "What kind of ranking problem do SASRec's sampled HR@10 and NDCG@10 evaluate?"
+    },
+    {
+      "query": "SASRec 用一个正样本加一百个采样负样本得到的结果，能当成全量物品库上的排序分数吗？",
+      "rewrite": "Can SASRec results computed from one positive plus one hundred sampled negatives be treated as ranking scores over the full item catalog?"
+    },
+    {
+      "query": "为什么按观看时长加权以后，YouTube 的逻辑回归排序模型就不再是普通的 CTR 预估模型？",
+      "rewrite": "Why is YouTube's logistic regression ranking model no longer an ordinary CTR prediction model once it is weighted by watch time?"
+    },
+    {
+      "query": "加权后的逻辑回归 odds 在什么假设下近似等于期望观看时长？",
+      "rewrite": "Under what assumptions do the weighted logistic regression odds approximate the expected watch time?"
+    },
+    {
+      "query": "为什么 YouTube 的召回用之前的行为来预测未来的观看，并且限制每个用户的样本数？",
+      "rewrite": "Why does YouTube's candidate generation use earlier behavior to predict future watches and cap the number of training examples per user?"
+    },
+    {
+      "query": "从剩余历史里预测一个随机留出的观看，会带来哪些信息泄漏和用户权重问题？",
+      "rewrite": "What information leakage and user weighting problems arise from predicting a randomly held-out watch from the rest of the history?"
+    },
+    {
+      "query": "MIND 共享从行为到兴趣的映射时，为什么要随机初始化路由 logits？",
+      "rewrite": "Why does MIND randomly initialize the routing logits when the behavior-to-interest mapping is shared?"
+    },
+    {
+      "query": "解释一下，如果路由变换是共享的，为什么 MIND 可能得到完全相同的兴趣胶囊。",
+      "rewrite": "Explain why MIND could end up with identical interest capsules if the routing transformation is shared."
+    },
+    {
+      "query": "MIND 的兴趣个数是发现出来的真实偏好数量，还是一种分配上的启发式规则？",
+      "rewrite": "Is MIND's number of interests a discovered count of true preferences, or an allocation heuristic?"
+    },
+    {
+      "query": "MIND 怎样根据行为历史的长度来分配兴趣胶囊的数量？",
+      "rewrite": "How does MIND allocate the number of interest capsules based on the length of the behavior history?"
+    },
+    {
+      "query": "Swing 物品相似度的一次贡献，由哪些证据和热度控制项决定？",
+      "rewrite": "What evidence and popularity-control terms determine a single contribution to Swing item similarity?"
+    },
+    {
+      "query": "一对用户共同点击的物品数，以及每个用户各自的活跃度，怎样影响 Swing 的贡献？",
+      "rewrite": "How do the number of items co-clicked by a user pair and each user's own activity level affect the Swing contribution?"
+    },
+    {
+      "query": "和更简单的物品近邻方法相比，为什么 Swing 的离线构建可能更费工夫？",
+      "rewrite": "Compared with simpler item-neighborhood methods, why can Swing's offline construction take more effort?"
+    },
+    {
+      "query": "Swing 构图时额外加了什么度数因子，用了什么样的并行处理方式？",
+      "rewrite": "What extra degree factor does Swing add when building the graph, and what kind of parallel processing does it use?"
+    },
+    {
+      "query": "ColBERT 的 MaxSim 在哪个 token 维度上聚合得分？哪些部分可以预先计算？",
+      "rewrite": "Over which token dimension does ColBERT's MaxSim aggregate scores, and which parts can be precomputed?"
+    },
+    {
+      "query": "解释 ColBERT 后期交互里“先在文档 token 上取最大，再在 query token 上求和”的过程。",
+      "rewrite": "Explain the “take the max over document tokens first, then sum over query tokens” process in ColBERT late interaction."
+    },
+    {
+      "query": "ColBERT 的近似 token 检索，和对候选文档做完整打分，有什么区别？",
+      "rewrite": "What is the difference between ColBERT's approximate token retrieval and full scoring of candidate documents?"
+    },
+    {
+      "query": "从按每个 query token 做向量检索，到最终给 ColBERT 文档打分，中间发生了什么？",
+      "rewrite": "What happens between the per-query-token vector search and the final ColBERT document scoring?"
+    },
+    {
+      "query": "Faiss 对乘积量化后的数据库残差算距离时，“非对称”体现在哪里？",
+      "rewrite": "When Faiss computes distances to product-quantized database residuals, where does the “asymmetric” part come in?"
+    },
+    {
+      "query": "把依赖 query 的码本查表距离加起来，能精确还原每一个原始数据库向量吗？",
+      "rewrite": "Does summing the query-dependent codebook lookup-table distances exactly recover each original database vector?"
+    },
+    {
+      "query": "DPO 去掉了单独训练的奖励网络，为什么仍然是相对参考模型的？",
+      "rewrite": "DPO removes the separately trained reward network, so why is it still relative to a reference model?"
+    },
+    {
+      "query": "DPO 偏好目标背后有哪些假设，用到了哪些策略模型与参考模型的概率比？",
+      "rewrite": "What assumptions underlie the DPO preference objective, and which policy-to-reference probability ratios does it use?"
+    },
+    {
+      "query": "DPO 的离线偏好对和固定的参考模型，怎样共同决定一次更新？",
+      "rewrite": "How do DPO's offline preference pairs and fixed reference model jointly determine an update?"
+    },
+    {
+      "query": "DPO 的更新是不是只是在提高被偏好回答的似然，而不考虑被拒绝的回答和参考模型？",
+      "rewrite": "Does a DPO update just increase the likelihood of the preferred response, without regard to the rejected response and the reference model?"
+    },
+    {
+      "query": "R1-Zero 的准确性奖励和格式奖励分别检查什么？为什么它们不是通用的推理验证器？",
+      "rewrite": "What do R1-Zero's accuracy reward and format reward each check, and why aren't they general-purpose reasoning verifiers?"
+    },
+    {
+      "query": "把 DeepSeek R1-Zero 里可按任务验证的规则奖励和格式奖励区分开。",
+      "rewrite": "Distinguish the task-verifiable rule-based rewards from the format reward in DeepSeek R1-Zero."
+    },
+    {
+      "query": "为什么 DeepSeek-R1 的训练流程不能和 R1-Zero 或蒸馏模型的流程互相替换？",
+      "rewrite": "Why can't the DeepSeek-R1 training pipeline be used interchangeably with the R1-Zero or distilled-model pipelines?"
+    },
+    {
+      "query": "冷启动监督和 80 万条样本的蒸馏数据集，怎样把 R1 和 R1-Zero 区分开？",
+      "rewrite": "How do the cold-start supervision and the 800K-sample distillation dataset distinguish R1 from R1-Zero?"
+    },
+    {
+      "query": "GRPO 不训练价值模型，是怎样构造结果优势的？",
+      "rewrite": "Without training a value model, how does GRPO construct outcome advantages?"
+    },
+    {
+      "query": "GRPO 用组内奖励统计量代替 critic 之后，还保留了什么参考模型正则？",
+      "rewrite": "After GRPO replaces the critic with within-group reward statistics, what reference-model regularization does it still keep?"
+    },
+    {
+      "query": "Qwen3 的推理 token 预算用完时，是怎样结束思考段落的？",
+      "rewrite": "How does Qwen3 end the thinking section when the reasoning token budget runs out?"
+    },
+    {
+      "query": "Qwen3 的思考 token 预算，和最终回答 token 的上限是一回事吗？",
+      "rewrite": "Is Qwen3's thinking token budget the same thing as the limit on final answer tokens?"
+    },
+    {
+      "query": "DPR 的 batch 内负样本和 BM25 难负样本，分别提供了什么样的训练对比项？",
+      "rewrite": "What kind of training contrasts do DPR's in-batch negatives and BM25 hard negatives each provide?"
+    },
+    {
+      "query": "DPR 考虑了哪些负样本段落？batch 里的段落向量是怎样复用的？",
+      "rewrite": "Which negative passages does DPR consider, and how are the passage embeddings in a batch reused?"
+    },
+    {
+      "query": "RAG-Sequence 和 RAG-Token 有什么区别？报告的训练中，检索器的哪些部分参与了更新？",
+      "rewrite": "What is the difference between RAG-Sequence and RAG-Token, and which parts of the retriever were updated in the reported training?"
+    },
+    {
+      "query": "这些笔记里的 RAG 联合训练，是否意味着每次更新都要重建文档向量？",
+      "rewrite": "Does the joint RAG training in these notes mean the document embeddings must be rebuilt at every update?"
+    },
+    {
+      "query": "ReAct 在动作和观察之间加入的推理起了什么作用？评测时用的是什么检索接口？",
+      "rewrite": "What role does the reasoning that ReAct inserts between actions and observations play, and what retrieval interface was used in the evaluation?"
+    },
+    {
+      "query": "为什么不应该把最初 ReAct 用的 Wikipedia 工具说成是最先进的检索器？",
+      "rewrite": "Why shouldn't the Wikipedia tool used in the original ReAct be described as a state-of-the-art retriever?"
+    },
+    {
+      "query": "预定义的工作流和 agent 的区别在于什么决策？更多的自主性会带来哪些成本？",
+      "rewrite": "What decision distinguishes a predefined workflow from an agent, and what costs does more autonomy bring?"
+    },
+    {
+      "query": "把 LLM 放进一个固定的步骤序列里，这个序列就成了自主 agent 吗？",
+      "rewrite": "If you put an LLM into a fixed sequence of steps, does that sequence become an autonomous agent?"
+    },
+    {
+      "query": "一个 SWE-bench 补丁要算作已解决，除了解释得合理之外还需要满足什么？",
+      "rewrite": "For a SWE-bench patch to count as resolved, what does it need to satisfy beyond having a plausible explanation?"
+    },
+    {
+      "query": "为什么 SWE-bench 的判定要包括回归测试，而不只是检查新的失败测试？",
+      "rewrite": "Why does SWE-bench evaluation include regression tests rather than only checking the new failing tests?"
+    },
+    {
+      "query": "一个每句都带引用的回答，为什么引用精确率和召回率仍能暴露出不同的问题？",
+      "rewrite": "If every sentence in an answer has a citation, why can citation precision and citation recall still expose different problems?"
+    },
+    {
+      "query": "ALCE 怎样处理多个段落共同支持的情况，以及不必要的引用？",
+      "rewrite": "How does ALCE handle cases where multiple passages jointly provide support, and unnecessary citations?"
+    },
+    {
+      "query": "为什么增加尝试次数，对“至少成功一次”和“每次都成功”的影响不一样？",
+      "rewrite": "Why does increasing the number of attempts affect “succeeds at least once” and “succeeds every time” differently?"
+    },
+    {
+      "query": "best-of-k 的成功率，能当作面向客户的每一次尝试都会成功的保证吗？",
+      "rewrite": "Can a best-of-k success rate be treated as a guarantee that every customer-facing attempt will succeed?"
+    },
+    {
+      "query": "改变 BM25 的参数时，词频饱和和长度归一化会发生什么变化？",
+      "rewrite": "What happens to term frequency saturation and length normalization when you change the BM25 parameters?"
+    },
+    {
+      "query": "把 BM25 的文档长度参数设成零，会不会把词频饱和也一起去掉？",
+      "rewrite": "Does setting the BM25 document length parameter to zero also remove term frequency saturation?"
+    },
+    {
+      "query": "倒数排名融合怎样合并原始分数不可比的多个系统？论文里报告的常数是普遍最优的吗？",
+      "rewrite": "How does reciprocal rank fusion combine multiple systems whose raw scores aren't comparable, and is the constant reported in the paper universally optimal?"
+    },
+    {
+      "query": "为什么 RRF 丢掉了分数大小，仍然能有效聚合检索排名？",
+      "rewrite": "Why can RRF still aggregate retrieval rankings effectively even though it discards score magnitudes?"
+    },
+    {
+      "query": "Adam 跟踪了哪些矩估计？为什么零初始化需要做偏差修正？",
+      "rewrite": "Which moment estimates does Adam track, and why does zero initialization require bias correction?"
+    },
+    {
+      "query": "做了偏差修正的 Adam，是不是就不需要选择或调整学习率了？",
+      "rewrite": "With bias correction, does Adam no longer require choosing or tuning a learning rate?"
+    },
+    {
+      "query": "为什么 dropout 不等于把每一个可能的子网络都独立训练一遍？",
+      "rewrite": "Why is dropout not equivalent to independently training every possible subnetwork?"
+    },
+    {
+      "query": "解释 dropout 掩码和独立训练的集成成员在参数共享上的区别。",
+      "rewrite": "Explain the difference in parameter sharing between dropout masks and independently trained ensemble members."
+    },
+    {
+      "query": "SimCLR 用哪些变换构造正样本对？它的图像实验对变换组合有什么结论？",
+      "rewrite": "Which transformations does SimCLR use to construct positive pairs, and what do its image experiments conclude about combining transformations?"
+    },
+    {
+      "query": "SimCLR 的两个增强视图共享的是哪个原始样本？哪种增强组合比较重要？",
+      "rewrite": "Which original example do SimCLR's two augmented views share, and which augmentation combinations matter?"
+    },
+    {
+      "query": "SimCLR 训练完以后用的是哪一层表示？它对投影头的比较说明了什么？",
+      "rewrite": "Which layer's representation does SimCLR use after training, and what does its comparison of projection heads show?"
+    },
+    {
+      "query": "为什么优化对比学习的投影输出，不等于选出了下游任务该用的表示？",
+      "rewrite": "Why does optimizing the contrastive projection output not amount to choosing the representation that should be used for downstream tasks?"
+    },
+    {
+      "query": "树结构固定时，XGBoost 的叶子权重由哪些统计量和正则项决定？",
+      "rewrite": "With a fixed tree structure, which statistics and regularization terms determine XGBoost's leaf weights?"
+    },
+    {
+      "query": "为什么在考虑 Hessian 和正则之后，XGBoost 的叶子更新不只是残差的平均值？",
+      "rewrite": "Why is XGBoost's leaf update not just the average of the residuals once the Hessian and regularization are taken into account?"
+    },
+    {
+      "query": "XGBoost 怎样不扫描每个稠密条目就处理缺失的稀疏值？",
+      "rewrite": "How does XGBoost handle missing sparse values without scanning every dense entry?"
+    },
+    {
+      "query": "特征缺失时走的默认分支，是全局固定的，还是每次分裂单独学出来的？",
+      "rewrite": "Is the default branch taken when a feature is missing fixed globally, or learned separately for each split?"
+    },
+    {
+      "query": "二阶因子分解机怎样对稀疏特征之间的交互进行参数化？",
+      "rewrite": "How does a second-order factorization machine parameterize interactions between sparse features?"
+    },
+    {
+      "query": "FM 是给每一对特征学一个独立系数，还是共享隐向量？",
+      "rewrite": "Does FM learn an independent coefficient for each feature pair, or share latent vectors?"
+    },
+    {
+      "query": "FM 怎样在不枚举所有特征对的情况下计算两两交互？",
+      "rewrite": "How does FM compute pairwise interactions without enumerating all feature pairs?"
+    },
+    {
+      "query": "词表远大于活跃特征数时，稀疏 FM 的预测开销由什么决定？",
+      "rewrite": "When the vocabulary is much larger than the number of active features, what determines the prediction cost of a sparse FM?"
+    },
+    {
+      "query": "ComiRec-SA 怎样形成多个兴趣，又怎样把过去行为的顺序考虑进去？",
+      "rewrite": "How does ComiRec-SA form multiple interests, and how does it take the order of past behaviors into account?"
+    },
+    {
+      "query": "位置向量和按兴趣分别做候选检索，在 ComiRec-SA 里起什么作用？",
+      "rewrite": "What roles do positional embeddings and per-interest candidate retrieval play in ComiRec-SA?"
+    },
+    {
+      "query": "ComiRec 的评测协议用了什么样的泛化边界和召回加权方式？",
+      "rewrite": "What kind of generalization boundary and recall weighting does the ComiRec evaluation protocol use?"
+    },
+    {
+      "query": "按用户划分数据集并按用户算召回，和只留出部分交互有什么区别？",
+      "rewrite": "How does splitting the dataset by user and computing recall per user differ from holding out only some interactions?"
+    },
+    {
+      "query": "为什么在解读实验提升之前，要先排查样本比例不匹配？",
+      "rewrite": "Why should you check for sample ratio mismatch before interpreting an experiment's lift?"
+    },
+    {
+      "query": "处理组的指标显著，能弥补分流比例本身的问题吗？",
+      "rewrite": "Can a significant metric in the treatment group make up for a problem with the traffic split ratio itself?"
+    },
+    {
+      "query": "为什么在实验期间按用户活跃度分群，会扭曲实验对比？",
+      "rewrite": "Why does segmenting users by activity level during an experiment distort the experiment comparison?"
+    },
+    {
+      "query": "比较实验前定义的活跃度分群，和处理开始后按活跃度定义的分群。",
+      "rewrite": "Compare activity segments defined before the experiment with segments defined by activity after the treatment starts."
+    },
+    {
+      "query": "Flink 的数据源要支持什么，才能在 checkpoint 恢复时保持 exactly-once 语义？",
+      "rewrite": "What must a Flink source support to preserve exactly-once semantics when recovering from a checkpoint?"
+    },
+    {
+      "query": "Flink 恢复时，数据源的读取位置和算子状态是怎样配合的？",
+      "rewrite": "During Flink recovery, how do the source read positions and operator state work together?"
+    },
+    {
+      "query": "两个机器学习系统之间没有显式的数据依赖，为什么也会形成反馈回路？",
+      "rewrite": "Why can a feedback loop form between two machine learning systems even when there is no explicit data dependency between them?"
+    },
+    {
+      "query": "区分直接的训练数据选择反馈，和通过用户与现实世界间接产生的相互影响。",
+      "rewrite": "Distinguish direct feedback through training data selection from indirect interactions that arise through users and the real world."
+    },
+    {
+      "query": "BPR 从隐式交互里推断出了哪些偏好？哪些比较是没有规定的？",
+      "rewrite": "Which preferences does BPR infer from implicit interactions, and which comparisons are left unspecified?"
+    },
+    {
+      "query": "在 BPR 里，每一个未观测到的用户-物品对都算明确的负偏好吗？",
+      "rewrite": "In BPR, is every unobserved user-item pair treated as an explicit negative preference?"
+    },
+    {
+      "query": "我的服务在什么 batch size 和实测延迟下，投机 lookahead 是最优的？",
+      "rewrite": "At what batch size and measured latency is the speculative lookahead optimal for my service?"
+    },
+    {
+      "query": "哪个 A/B 实验报告了我的 SASRec CTR 提升？",
+      "rewrite": "Which A/B experiment reported my SASRec CTR lift?"
+    },
+    {
+      "query": "我的 BPR 模型在生产环境用的学习率具体是多少？",
+      "rewrite": "What exactly is the learning rate my BPR model uses in production?"
+    },
+    {
+      "query": "我自己的 GRPO 实验实际用了什么型号的 GPU、几台机器？",
+      "rewrite": "What GPU model and how many machines did my own GRPO experiments actually use?"
+    },
+    {
+      "query": "哪篇笔记提到了 policy-ratio？",
+      "rewrite": "Which note mentions policy-ratio?"
+    },
+    {
+      "query": "我在哪里写过 TREC？",
+      "rewrite": "Where have I written about TREC?"
+    },
+    {
+      "query": "哪篇笔记提到了 miscalibrations？",
+      "rewrite": "Which note mentions miscalibrations?"
+    },
+    {
+      "query": "哪篇笔记里出现了 cross-encoder？",
+      "rewrite": "Which note contains cross-encoder?"
+    },
+    {
+      "query": "哪些笔记提到了 high-bandwidth memory？",
+      "rewrite": "Which notes mention high-bandwidth memory?"
+    },
+    {
+      "query": "哪篇笔记提到了 coarse representatives？",
+      "rewrite": "Which note mentions coarse representatives?"
+    },
+    {
+      "query": "哪篇笔记写到了 one-unit 的预测变量变化？",
+      "rewrite": "Which note discusses a one-unit change in a predictor variable?"
+    },
+    {
+      "query": "哪篇笔记提到了 oscillation？",
+      "rewrite": "Which note mentions oscillation?"
+    },
+    {
+      "query": "Does four-bit QLoRA weight storage imply four-bit matrix computation?",
+      "rewrite": "QLoRA 用 4-bit 存储权重，是否意味着矩阵计算也是 4-bit 的？"
+    },
+    {
+      "query": "Why does a user pair with a broad shared click history contribute less to Swing item similarity?",
+      "rewrite": "为什么共同点击历史很宽泛的用户对，对 Swing 物品相似度的贡献更小？"
+    },
+    {
+      "query": "In ColBERT MaxSim, are maxima summed over query tokens or document tokens?",
+      "rewrite": "ColBERT 的 MaxSim 中，最大值是在查询 token 上求和，还是在文档 token 上求和？"
+    },
+    {
+      "query": "Which probability must LogQ estimate for interaction-sampled minibatch negatives?",
+      "rewrite": "对于按交互采样得到的 minibatch 负样本，LogQ 需要估计哪个概率？"
+    },
+    {
+      "query": "If an attention implementation is mathematically exact, must it produce bit-for-bit identical floating-point results?",
+      "rewrite": "如果一种注意力实现在数学上是精确的，它是否一定会产生逐位完全相同的浮点结果？"
+    },
+    {
+      "query": "Should standardization statistics be fitted once on all examples before running cross-validation?",
+      "rewrite": "在做交叉验证之前，是否应该先在全部样本上一次性拟合标准化的统计量？"
+    },
+    {
+      "query": "Can a perfect second-stage ranker recover a relevant item omitted by the first-stage retriever?",
+      "rewrite": "一个完美的第二阶段排序器，能否找回被第一阶段召回器漏掉的相关物品？"
+    },
+    {
+      "query": "Does drawing the same observation repeatedly in a bootstrap sample create new independent evidence?",
+      "rewrite": "在 bootstrap 样本中重复抽到同一个观测，是否产生了新的独立证据？"
+    },
+    {
+      "query": "How can compaction and external task notes preserve progress without guaranteeing that needed details will be used later?",
+      "rewrite": "为什么压缩（compaction）和外部任务笔记能保留进度，却无法保证所需的细节之后一定会被用到？"
+    },
+    {
+      "query": "Does exporting preprocessing with a TFX model establish complete training-serving parity?",
+      "rewrite": "把预处理随 TFX 模型一起导出，是否就实现了完全的训练-服务一致性？"
+    },
+    {
+      "query": "Why must marking a Flink input idle be considered together with the late-event policy?",
+      "rewrite": "为什么将 Flink 输入标记为空闲（idle）时，必须同时考虑迟到事件的处理策略？"
+    },
+    {
+      "query": "Does probing more IVF lists also eliminate the distance approximation introduced by product quantization?",
+      "rewrite": "探查更多的 IVF 列表，能否同时消除乘积量化引入的距离近似？"
+    },
+    {
+      "query": "Is DPO reference-free just because it does not train a separate reward network?",
+      "rewrite": "DPO 不单独训练奖励网络，是否就意味着它不依赖参考模型（reference-free）？"
+    },
+    {
+      "query": "Can increasing HNSW query search breadth substitute for the graph connections selected during construction?",
+      "rewrite": "增大 HNSW 查询时的搜索宽度，能否替代建图阶段选出的图连接？"
+    },
+    {
+      "query": "Is an answer grounded merely because it is factually correct and contains citation markers?",
+      "rewrite": "一个回答仅仅因为事实正确且带有引用标记，就算是有依据（grounded）的吗？"
+    },
+    {
+      "query": "Do QLoRA paged optimizers and vLLM PagedAttention manage the same tensors and workload?",
+      "rewrite": "QLoRA 的分页优化器（paged optimizers）和 vLLM 的 PagedAttention 管理的是同样的张量和工作负载吗？"
+    },
+    {
+      "query": "Which draft lookahead was measured to give the lowest latency in our production service?",
+      "rewrite": "在我们的生产服务中，实测哪个草稿前瞻长度（draft lookahead）的延迟最低？"
+    },
+    {
+      "query": "Do these notes record the online CTR uplift from my SASRec deployment?",
+      "rewrite": "这些笔记里有没有记录我部署 SASRec 后的线上 CTR 提升？"
+    },
+    {
+      "query": "What learning rate did I choose for my own BPR production training run?",
+      "rewrite": "我自己的 BPR 生产环境训练选用了多大的学习率？"
+    },
+    {
+      "query": "Which GPU model and cluster size did I use for my GRPO training experiment?",
+      "rewrite": "我的 GRPO 训练实验用的是什么型号的 GPU、多大规模的集群？"
+    },
+    {
+      "query": "Does LoRA make the pretrained weight matrix low rank, and why is the initial adaptation zero?",
+      "rewrite": "LoRA 会让预训练权重矩阵变成低秩吗？为什么初始的适配量为零？"
+    },
+    {
+      "query": "Is LoRA rank a restriction on the stored base matrix or on its learned increment?",
+      "rewrite": "LoRA 的秩约束的是存储的基础权重矩阵，还是学到的增量？"
+    },
+    {
+      "query": "What does merging a LoRA adapter change at deployment, and when is keeping it separate useful?",
+      "rewrite": "部署时合并 LoRA adapter 会改变什么？什么情况下保持 adapter 分离更有用？"
+    },
+    {
+      "query": "Compare merged LoRA weights with choosing adapters dynamically while sharing a base model.",
+      "rewrite": "比较合并后的 LoRA 权重与共享基座模型、动态选择 adapter 这两种方式。"
+    },
+    {
+      "query": "What does QLoRA double quantization compress beyond the four-bit weight codes?",
+      "rewrite": "除了 4-bit 权重编码之外，QLoRA 的双重量化还压缩了什么？"
+    },
+    {
+      "query": "Why can quantizing quantization scales reduce QLoRA storage without changing the base code width?",
+      "rewrite": "为什么对量化缩放因子再做量化，可以在不改变基础编码位宽的情况下减少 QLoRA 的存储？"
+    },
+    {
+      "query": "Does FlashAttention remove quadratic arithmetic when it removes the stored attention matrix?",
+      "rewrite": "FlashAttention 不再存储注意力矩阵，是否也就去掉了二次方的计算量？"
+    },
+    {
+      "query": "Explain FlashAttention arithmetic, auxiliary memory and high-bandwidth-memory traffic as separate resource bounds.",
+      "rewrite": "请把 FlashAttention 的计算量、额外内存和高带宽内存（HBM）读写量作为不同的资源约束分别解释。"
+    },
+    {
+      "query": "How can FlashAttention perform extra backward arithmetic and still run faster in the paper?",
+      "rewrite": "论文中 FlashAttention 在反向传播中做了额外计算，为什么还能跑得更快？"
+    },
+    {
+      "query": "Why does recomputing attention blocks trade arithmetic for memory traffic rather than just wasting work?",
+      "rewrite": "为什么重计算注意力块是在用计算量换取内存读写量，而不只是浪费计算？"
+    },
+    {
+      "query": "How does speculative decoding verify proposed tokens while preserving an accepted prefix?",
+      "rewrite": "投机解码如何在保留已接受前缀的同时，验证草稿提出的 token？"
+    },
+    {
+      "query": "What is the draft-token acceptance ratio and why does verification stop at the first rejection?",
+      "rewrite": "草稿 token 的接受比率是什么？为什么验证在第一次拒绝时就停止？"
+    },
+    {
+      "query": "Why is sampling from the target directly after a draft rejection not the residual correction described in these notes?",
+      "rewrite": "为什么草稿被拒绝后直接从目标模型采样，并不是这些笔记中描述的残差校正？"
+    },
+    {
+      "query": "What distribution supplies the replacement after a rejected speculative token?",
+      "rewrite": "投机解码中某个 token 被拒绝后，替代 token 来自哪个分布？"
+    },
+    {
+      "query": "When can vLLM share KV-cache blocks and when must it copy them?",
+      "rewrite": "vLLM 什么时候可以共享 KV-cache 块，什么时候必须复制它们？"
+    },
+    {
+      "query": "How does copy-on-write preserve shared prompt state when generated continuations diverge?",
+      "rewrite": "当生成的续写出现分叉时，写时复制（copy-on-write）如何保住共享的 prompt 状态？"
+    },
+    {
+      "query": "What ranking problem do SASRec sampled HR@10 and NDCG@10 evaluate?",
+      "rewrite": "SASRec 基于采样计算的 HR@10 和 NDCG@10 评估的是什么样的排序问题？"
+    },
+    {
+      "query": "Can SASRec results with one positive and one hundred sampled negatives be treated as full-catalog ranking scores?",
+      "rewrite": "SASRec 用 1 个正样本加 100 个采样负样本得到的结果，能当作全量物品库排序的分数吗？"
+    },
+    {
+      "query": "Why does watch-time weighting change a YouTube logistic ranker from an ordinary CTR predictor?",
+      "rewrite": "为什么按观看时长加权会让 YouTube 的逻辑回归排序模型不同于普通的 CTR 预估模型？"
+    },
+    {
+      "query": "Under what assumption do the weighted logistic odds approximate expected watch time?",
+      "rewrite": "在什么假设下，加权逻辑回归的几率（odds）近似于期望观看时长？"
+    },
+    {
+      "query": "Why does YouTube retrieval use earlier actions for a future-watch label and limit examples per user?",
+      "rewrite": "为什么 YouTube 召回用较早的行为来预测未来观看的标签，并限制每个用户的样本数？"
+    },
+    {
+      "query": "What leakage and user-weighting issues arise when predicting a randomly held-out watch from the remaining history?",
+      "rewrite": "用剩余的历史去预测随机留出的一次观看，会带来哪些信息泄露和用户加权问题？"
+    },
+    {
+      "query": "Why does MIND randomize routing logits when it shares the behavior-to-interest mapping?",
+      "rewrite": "MIND 在共享行为到兴趣的映射时，为什么要对路由 logits 做随机化？"
+    },
+    {
+      "query": "Explain how shared routing transformations could otherwise produce identical MIND interest capsules.",
+      "rewrite": "请解释如果不这样做，共享的路由变换为什么会产生完全相同的 MIND 兴趣胶囊。"
+    },
+    {
+      "query": "Is MIND interest count a discovered ground-truth preference count or an allocation heuristic?",
+      "rewrite": "MIND 的兴趣数量是发现出来的真实偏好数量，还是一种分配上的启发式规则？"
+    },
+    {
+      "query": "How does MIND allocate interest capsules from behavior-history length?",
+      "rewrite": "MIND 如何根据行为历史长度来分配兴趣胶囊？"
+    },
+    {
+      "query": "What evidence and popularity controls define a Swing item-similarity contribution?",
+      "rewrite": "Swing 物品相似度的贡献由哪些证据和流行度控制项决定？"
+    },
+    {
+      "query": "How do shared clicked items between a user pair and each user activity affect Swing contributions?",
+      "rewrite": "用户对之间共同点击的物品以及每个用户的活跃度，如何影响 Swing 的贡献？"
+    },
+    {
+      "query": "Why can Swing have extra offline construction work compared with a simpler item-neighborhood method?",
+      "rewrite": "与更简单的物品近邻方法相比，为什么 Swing 的离线构建会有额外的工作量？"
+    },
+    {
+      "query": "What additional degree factor and parallel processing pattern appear in Swing graph construction?",
+      "rewrite": "Swing 构图过程中出现了哪些额外的度因子和并行处理模式？"
+    },
+    {
+      "query": "Over which token axis does ColBERT MaxSim aggregate its score, and what can be precomputed?",
+      "rewrite": "ColBERT MaxSim 是沿哪个 token 维度聚合得分的？哪些部分可以预先计算？"
+    },
+    {
+      "query": "Explain max over document tokens followed by sum over query tokens in ColBERT late interaction.",
+      "rewrite": "解释 ColBERT 延迟交互（late interaction）中先对文档 token 取最大值、再对查询 token 求和的过程。"
+    },
+    {
+      "query": "How do ColBERT approximate token retrieval and exhaustive candidate document scoring differ?",
+      "rewrite": "ColBERT 的近似 token 检索与对候选文档的穷举打分有什么区别？"
+    },
+    {
+      "query": "What happens between per-query-token vector search and final ColBERT document scoring?",
+      "rewrite": "从逐个查询 token 的向量检索到最终的 ColBERT 文档打分，中间发生了什么？"
+    },
+    {
+      "query": "What is asymmetric about Faiss distance computation with product-quantized database residuals?",
+      "rewrite": "Faiss 对乘积量化后的数据库残差计算距离时，哪里是非对称的？"
+    },
+    {
+      "query": "Does summing query-dependent codebook lookup distances reconstruct every original database vector exactly?",
+      "rewrite": "把依赖查询的码本查表距离相加，能精确重建每个原始数据库向量吗？"
+    },
+    {
+      "query": "Why is DPO still reference-relative even though it removes a separately trained reward network?",
+      "rewrite": "DPO 虽然去掉了单独训练的奖励网络，为什么仍然是相对于参考模型的？"
+    },
+    {
+      "query": "What assumptions and policy-to-reference ratios underlie the DPO preference objective?",
+      "rewrite": "DPO 偏好目标背后有哪些假设，以及策略相对参考模型的比值？"
+    },
+    {
+      "query": "How do DPO offline preference pairs and its fixed reference determine the update?",
+      "rewrite": "DPO 的离线偏好对和固定的参考模型如何决定参数更新？"
+    },
+    {
+      "query": "Does a DPO update simply maximize preferred-response likelihood without considering the rejected response or reference?",
+      "rewrite": "DPO 的更新是否只是最大化偏好回答的似然，而不考虑被拒绝的回答或参考模型？"
+    },
+    {
+      "query": "What do accuracy and format rewards check in R1-Zero, and why are these not universal reasoning validators?",
+      "rewrite": "R1-Zero 中的准确性奖励和格式奖励分别检查什么？为什么它们不是通用的推理验证器？"
+    },
+    {
+      "query": "Separate task-verifiable rule rewards from formatting rewards in DeepSeek R1-Zero.",
+      "rewrite": "区分 DeepSeek R1-Zero 中可按任务验证的规则奖励与格式奖励。"
+    },
+    {
+      "query": "Why is DeepSeek-R1 training not interchangeable with the R1-Zero or distilled-model pipelines?",
+      "rewrite": "为什么 DeepSeek-R1 的训练与 R1-Zero 或蒸馏模型的流程不能互换？"
+    },
+    {
+      "query": "How do cold-start supervision and the 800000-example distillation collection distinguish R1 from R1-Zero?",
+      "rewrite": "冷启动监督和 800000 条样本的蒸馏数据集如何让 R1 区别于 R1-Zero？"
+    },
+    {
+      "query": "How does GRPO construct an outcome advantage without training a value model?",
+      "rewrite": "GRPO 如何在不训练价值模型的情况下构造结果优势（outcome advantage）？"
+    },
+    {
+      "query": "What reference regularization remains when GRPO replaces a critic with group reward statistics?",
+      "rewrite": "GRPO 用组内奖励统计量替代 critic 后，还保留了什么样的参考模型正则化？"
+    },
+    {
+      "query": "How does Qwen3 stop a thinking segment when a reasoning-token budget is reached?",
+      "rewrite": "当达到推理 token 预算时，Qwen3 如何终止思考段？"
+    },
+    {
+      "query": "Is a thinking-token budget the same as a bound on the final-answer tokens in Qwen3?",
+      "rewrite": "在 Qwen3 中，思考 token 预算等同于对最终回答 token 数的上限吗？"
+    },
+    {
+      "query": "How do DPR in-batch negatives and a BM25 hard negative contribute different training alternatives?",
+      "rewrite": "DPR 的批内负样本和 BM25 难负样本分别为训练提供了怎样不同的备选项？"
+    },
+    {
+      "query": "Which negative passages were considered in DPR and how are batch passage embeddings reused?",
+      "rewrite": "DPR 考虑了哪些负例段落？批内的段落嵌入是如何被复用的？"
+    },
+    {
+      "query": "How do RAG-Sequence and RAG-Token differ, and which retriever components moved during the reported training?",
+      "rewrite": "RAG-Sequence 和 RAG-Token 有什么区别？在报告的训练中，检索器的哪些组件被更新了？"
+    },
+    {
+      "query": "Does joint RAG training in these notes imply rebuilding document embeddings on every update?",
+      "rewrite": "这些笔记中的 RAG 联合训练是否意味着每次更新都要重建文档嵌入？"
+    },
+    {
+      "query": "What does ReAct reasoning add between actions and observations, and what retrieval interface was evaluated?",
+      "rewrite": "ReAct 在动作与观察之间加入的推理带来了什么？评估时用的是什么检索接口？"
+    },
+    {
+      "query": "Why should the original ReAct Wikipedia tools not be described as a state-of-the-art retriever?",
+      "rewrite": "为什么不应把原始 ReAct 的 Wikipedia 工具说成是最先进的检索器？"
+    },
+    {
+      "query": "What decision separates a predefined workflow from an agent, and what costs come with added autonomy?",
+      "rewrite": "区分预定义工作流与 agent 的是哪一项决策？增加自主性会带来哪些代价？"
+    },
+    {
+      "query": "Does placing an LLM inside a fixed sequence make that sequence an autonomous agent?",
+      "rewrite": "把 LLM 放进一个固定的流程序列中，是否就让这个序列成了自主 agent？"
+    },
+    {
+      "query": "What must happen for a SWE-bench patch to count as resolved, beyond a plausible explanation?",
+      "rewrite": "除了给出看似合理的解释之外，SWE-bench 的补丁还要满足什么条件才算已解决（resolved）？"
+    },
+    {
+      "query": "Why are regression tests part of SWE-bench resolution instead of checking only the newly failing test?",
+      "rewrite": "为什么 SWE-bench 判定是否解决时要包括回归测试，而不只检查新的失败测试？"
+    },
+    {
+      "query": "Why can citation precision and recall reveal different failures in an otherwise fully cited answer?",
+      "rewrite": "对于一个引用看似完整的回答，为什么引用精确率和引用召回率能揭示不同的问题？"
+    },
+    {
+      "query": "How does ALCE consider support from multiple passages and unnecessary references?",
+      "rewrite": "ALCE 如何考虑多个段落共同提供的支持以及多余的引用？"
+    },
+    {
+      "query": "Why does increasing attempts affect at-least-one success differently from every-trial reliability?",
+      "rewrite": "为什么增加尝试次数对至少成功一次的概率和每次试验都成功的可靠性影响不同？"
+    },
+    {
+      "query": "Can best-of-k success be reported as a guarantee that every customer-facing trial succeeds?",
+      "rewrite": "能否把 best-of-k 成功率当作每次面向客户的试验都会成功的保证来报告？"
+    },
+    {
+      "query": "What happens to term-frequency saturation and length normalization when BM25 parameters change?",
+      "rewrite": "BM25 参数变化时，词频饱和与长度归一化会怎样变化？"
+    },
+    {
+      "query": "Does setting the BM25 document-length parameter to zero remove the term-frequency saturation too?",
+      "rewrite": "把 BM25 的文档长度参数设为 0，是否也会去掉词频饱和？"
+    },
+    {
+      "query": "How does reciprocal rank fusion combine systems with incomparable raw scores, and is its reported constant a universal optimum?",
+      "rewrite": "倒数排名融合（RRF）如何组合原始分数不可比的多个系统？它报告的常数是普遍最优的吗？"
+    },
+    {
+      "query": "Why can RRF discard score magnitudes and still aggregate ranked retrieval results?",
+      "rewrite": "为什么 RRF 丢弃了分数的大小，仍然能聚合排序后的检索结果？"
+    },
+    {
+      "query": "Which moments does Adam track and why does zero initialization require bias correction?",
+      "rewrite": "Adam 跟踪哪些矩？为什么零初始化需要偏差校正？"
+    },
+    {
+      "query": "Does bias-corrected Adam remove the need to choose or adjust a learning rate?",
+      "rewrite": "做了偏差校正的 Adam 是否就不需要选择或调整学习率了？"
+    },
+    {
+      "query": "Why is dropout not independent training of every possible subnetwork?",
+      "rewrite": "为什么 dropout 并不是对每个可能的子网络进行独立训练？"
+    },
+    {
+      "query": "Explain the parameter-sharing difference between dropout masks and independently fitted ensemble members.",
+      "rewrite": "解释 dropout 掩码与独立拟合的集成成员在参数共享上的区别。"
+    },
+    {
+      "query": "Which transformations create a SimCLR positive pair, and what did its image experiments say about composition?",
+      "rewrite": "SimCLR 用哪些变换构造正样本对？其图像实验对变换组合得出了什么结论？"
+    },
+    {
+      "query": "What original example do two SimCLR augmented views share, and which augmentation composition was important?",
+      "rewrite": "SimCLR 的两个增强视图共享的是哪个原始样本？哪种增强组合很重要？"
+    },
+    {
+      "query": "Which representation is used after SimCLR training and what did its projection-head comparison show?",
+      "rewrite": "SimCLR 训练完成后使用的是哪个表示？投影头的对比实验说明了什么？"
+    },
+    {
+      "query": "Why is optimizing the contrastive projected output not the same as choosing the downstream representation?",
+      "rewrite": "为什么优化对比学习的投影输出，并不等同于选择下游使用的表示？"
+    },
+    {
+      "query": "What statistics and regularization determine an XGBoost leaf weight for a fixed structure?",
+      "rewrite": "在树结构固定时，哪些统计量和正则项决定了 XGBoost 的叶子权重？"
+    },
+    {
+      "query": "Why is an XGBoost leaf update not just the average residual when Hessians and regularization matter?",
+      "rewrite": "在考虑 Hessian 和正则化时，为什么 XGBoost 的叶子更新值不只是残差的平均？"
+    },
+    {
+      "query": "How does XGBoost route a missing sparse value without scanning every dense entry?",
+      "rewrite": "XGBoost 如何在不扫描所有稠密条目的情况下，决定缺失的稀疏值走哪个分支？"
+    },
+    {
+      "query": "Is the default branch for an absent feature fixed globally or learned for each split?",
+      "rewrite": "特征缺失时的默认分支是全局固定的，还是在每个分裂点上学习得到的？"
+    },
+    {
+      "query": "How does a second-order factorization machine parameterize interactions in sparse features?",
+      "rewrite": "二阶因子分解机（FM）如何对稀疏特征的交互进行参数化？"
+    },
+    {
+      "query": "Does an FM learn an independent coefficient for every pair or share latent feature factors?",
+      "rewrite": "FM 是为每个特征对学习独立的系数，还是共享特征的隐因子？"
+    },
+    {
+      "query": "How does an FM evaluate pair interactions without enumerating all feature pairs?",
+      "rewrite": "FM 如何在不枚举所有特征对的情况下计算两两交互？"
+    },
+    {
+      "query": "What determines sparse FM prediction cost when the vocabulary is much larger than active features?",
+      "rewrite": "当特征词表远大于激活特征数时，稀疏 FM 的预测开销由什么决定？"
+    },
+    {
+      "query": "How does ComiRec-SA form several interests and incorporate the order of past behaviors?",
+      "rewrite": "ComiRec-SA 如何生成多个兴趣，又如何融入历史行为的顺序？"
+    },
+    {
+      "query": "What role do positional embeddings and per-interest candidate searches play in ComiRec-SA?",
+      "rewrite": "位置嵌入和按每个兴趣分别进行的候选检索在 ComiRec-SA 中起什么作用？"
+    },
+    {
+      "query": "What generalization boundary and recall weighting does the ComiRec evaluation protocol use?",
+      "rewrite": "ComiRec 的评估协议采用了怎样的泛化边界和召回率加权方式？"
+    },
+    {
+      "query": "How do user-disjoint splits and per-user recall differ from holding out only interactions?",
+      "rewrite": "按用户不相交划分并按用户计算召回率，与只留出交互记录有什么不同？"
+    },
+    {
+      "query": "Why should sample-ratio mismatch be investigated before interpreting an experiment uplift?",
+      "rewrite": "为什么在解读实验提升之前，应该先排查样本比例不匹配（SRM）？"
+    },
+    {
+      "query": "Does a significant treatment metric repair an invalid allocation ratio?",
+      "rewrite": "实验组指标显著，能否弥补无效的流量分配比例？"
+    },
+    {
+      "query": "Why can segmenting by activity during treatment distort an experiment comparison?",
+      "rewrite": "为什么在实验进行期间按活跃度分群，会扭曲实验对比？"
+    },
+    {
+      "query": "Compare pre-experiment activity segments with activity-defined segments after treatment starts.",
+      "rewrite": "比较实验前按活跃度划分的分群与实验开始后按活跃度定义的分群。"
+    },
+    {
+      "query": "What must a Flink source support for checkpoint recovery to maintain exactly-once processing semantics?",
+      "rewrite": "Flink 的 source 必须支持什么，才能让 checkpoint 恢复保持 exactly-once 处理语义？"
+    },
+    {
+      "query": "How do source positions and operator state combine during Flink recovery?",
+      "rewrite": "Flink 恢复时，source 的读取位置和算子状态是如何配合的？"
+    },
+    {
+      "query": "How can two ML systems create a feedback loop without an explicit data dependency?",
+      "rewrite": "两个 ML 系统在没有显式数据依赖的情况下，如何形成反馈回路？"
+    },
+    {
+      "query": "Distinguish direct training-data selection feedback from interactions mediated through users and the world.",
+      "rewrite": "区分直接的训练数据选择反馈，与通过用户和外部世界间接产生的交互影响。"
+    },
+    {
+      "query": "What preferences does BPR infer from implicit interactions, and which comparisons remain unspecified?",
+      "rewrite": "BPR 从隐式交互中推断出哪些偏好？哪些比较关系仍然是未确定的？"
+    },
+    {
+      "query": "Is every unobserved user-item pair an explicit negative preference in BPR?",
+      "rewrite": "在 BPR 中，每个未观测到的用户-物品对都是明确的负向偏好吗？"
+    },
+    {
+      "query": "What batch size and measured latency made speculative lookahead optimal for my service?",
+      "rewrite": "是什么样的 batch size 和实测延迟，使得投机解码的前瞻长度在我的服务中最优？"
+    },
+    {
+      "query": "Which A/B experiment reports my SASRec CTR lift?",
+      "rewrite": "哪个 A/B 实验报告了我的 SASRec CTR 提升？"
+    },
+    {
+      "query": "What was the exact production learning rate for my BPR model?",
+      "rewrite": "我的 BPR 模型在生产环境中的确切学习率是多少？"
+    },
+    {
+      "query": "What GPU model and number of machines did my own GRPO experiment actually use?",
+      "rewrite": "我自己的 GRPO 实验实际用了什么型号的 GPU、多少台机器？"
+    },
+    {
+      "query": "Which note mentions NormalFloat?",
+      "rewrite": "哪条笔记提到了 NormalFloat？"
+    },
+    {
+      "query": "Where did I write about BFloat16?",
+      "rewrite": "我在哪里写过 BFloat16？"
+    },
+    {
+      "query": "Which note mentions an IVFPQ index?",
+      "rewrite": "哪条笔记提到了 IVFPQ 索引？"
+    },
+    {
+      "query": "Which note refers to the LETOR combinations?",
+      "rewrite": "哪条笔记提到了 LETOR 的组合？"
+    },
+    {
+      "query": "Where does MapReduce come up in my notes?",
+      "rewrite": "我的笔记中哪里提到了 MapReduce？"
+    },
+    {
+      "query": "Which note is about LearnBPR?",
+      "rewrite": "哪条笔记是关于 LearnBPR 的？"
+    },
+    {
+      "query": "Which note talks about FLOP count?",
+      "rewrite": "哪条笔记讲到了 FLOP 数？"
+    },
+    {
+      "query": "Which note relates a training criterion to AUC?",
+      "rewrite": "哪条笔记把某个训练准则与 AUC 联系起来？"
+    },
+    {
+      "query": "Which note mentions 100-word passages?",
+      "rewrite": "哪条笔记提到了 100 词的段落？"
+    },
+    {
+      "query": "Which note uses the word “dequantizes”?",
+      "rewrite": "哪条笔记用到了“dequantizes”这个词？"
+    },
+    {
+      "query": "Which note mentions an uncentered moment?",
+      "rewrite": "哪条笔记提到了非中心矩？"
+    },
+    {
+      "query": "Which note talks about exponentiating the model output?",
+      "rewrite": "哪条笔记讲到了对模型输出取指数？"
+    },
+    {
+      "query": "Which note uses a base-two logarithm?",
+      "rewrite": "哪条笔记用到了以 2 为底的对数？"
+    },
+    {
+      "query": "Which note mentions non-presence?",
+      "rewrite": "哪条笔记提到了不存在（non-presence）？"
+    },
+    {
+      "query": "Which note mentions a tree-complexity penalty?",
+      "rewrite": "哪条笔记提到了树复杂度惩罚？"
+    },
+    {
+      "query": "Which note mentions linear-evaluation results?",
+      "rewrite": "哪条笔记提到了线性评估（linear evaluation）的结果？"
+    },
+    {
+      "query": "Which note says “changes the meaning of the score even when the resulting values”?",
+      "rewrite": "哪条笔记里写了“changes the meaning of the score even when the resulting values”？"
+    },
+    {
+      "query": "Find the note containing “differs from cutting off the entire generation”.",
+      "rewrite": "找出包含“differs from cutting off the entire generation”的笔记。"
+    },
+    {
+      "query": "Which note says the residual distribution “compensates for probability mass already supplied”?",
+      "rewrite": "哪条笔记说残差分布“compensates for probability mass already supplied”？"
+    },
+    {
+      "query": "Find the note with the phrase “allowing observations of related interactions to influence”.",
+      "rewrite": "找出含有“allowing observations of related interactions to influence”这句话的笔记。"
+    },
+    {
+      "query": "Which note mentions an 8:1:1 ratio?",
+      "rewrite": "哪条笔记提到了 8:1:1 的比例？"
+    },
+    {
+      "query": "Which note says “shared variation survives the average”?",
+      "rewrite": "哪条笔记里写了“shared variation survives the average”？"
+    },
+    {
+      "query": "Find the note that says removing a feature can “simplify future migrations”.",
+      "rewrite": "找出说删除某个特征可以“simplify future migrations”的笔记。"
+    },
+    {
+      "query": "Which note says the authors “subtract the logarithm” of a sampling probability?",
+      "rewrite": "哪条笔记说作者对采样概率做了“subtract the logarithm”？"
+    }
+  ]
+}
