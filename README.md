@@ -1,45 +1,79 @@
 # Zettel Agent
 
-An Obsidian plugin that answers questions about your Zettelkasten, with citations to your notes.
+An Obsidian plugin that helps you think with your notes and build a Zettelkasten.
 
-<img src="docs/screenshot.png" alt="Zettel Agent answering a question in the Obsidian sidebar, with numbered citations to notes" width="480">
-
-## Features
-
-- **Cited answers.** Answers cite the notes they draw on. The Sources list shows which notes the agent read in full and which it saw only as excerpts.
-- **Read-only.** The agent searches, reads and follows links. It never edits your notes and never searches fleeting notes.
-- **Search by keywords and meaning.** It finds notes that use other words or another language, such as a Chinese question about English notes.
-- **Your own model.** Anthropic, OpenAI or DeepSeek, with your API key.
-- **Fits your writing.** Copy or insert an answer with citations as note links, attach notes with `@`, and return to earlier chats.
+![Zettel Agent in Obsidian: a note on the left, the agent explaining how it relates to another note and suggesting a link on the right](docs/screenshot.png)
 
 ## Usage
 
-1. Copy `main.js`, `manifest.json` and `styles.css` from a build into `<vault>/.obsidian/plugins/zettel-agent/`, then enable Zettel Agent in **Settings → Community plugins**.
-2. In **Settings → Zettel Agent**, choose a provider and add your API key. Set your Zettelkasten folder and its stage folders (Fleeting, Literature, Permanent, Writing by default).
-3. Open the chat from the ribbon or with the **Open chat** command, and ask a question.
-
-Questions and the note excerpts the agent reads are sent to your model provider.
-
-### Semantic search with Ollama
-
-Optional. [Ollama](https://ollama.com) computes embeddings on your computer:
+Build the plugin (Node 24) and copy it into your vault:
 
 ```bash
+git clone https://github.com/daniellaah/zettel-agent.git
+cd zettel-agent
+npm ci && npm run build
+
+VAULT=~/path/to/your/vault
+mkdir -p "$VAULT/.obsidian/plugins/zettel-agent"
+cp main.js manifest.json styles.css "$VAULT/.obsidian/plugins/zettel-agent/"
+```
+
+Optional, for search by meaning across languages:
+
+```bash
+brew install ollama
+brew services start ollama
 ollama pull bge-m3
 ```
 
-Semantic search is on by default. **Settings → Zettel Agent → Semantic search** shows indexing progress. About 300 notes take 15 seconds on an Apple M1 Pro. Edited notes are embedded again automatically. Without Ollama, search uses keywords only. `qwen3-embedding:0.6b` also works.
+In Obsidian:
 
-## Development
+1. **Settings → Community plugins**: enable Zettel Agent.
+2. **Settings → Zettel Agent**: choose a provider, add its API key, and set your Zettelkasten folder.
+3. Open the chat from the ribbon and ask a question.
 
-Requires Node 24.
+| Provider  | Models                                               |
+| --------- | ---------------------------------------------------- |
+| DeepSeek  | DeepSeek Flash (default), DeepSeek V4 Pro            |
+| Anthropic | Claude Opus 5.5, Claude Sonnet 5.5, Claude Haiku 4.5 |
+| OpenAI    | GPT-6.1 Sol, GPT-6 Astra, GPT-6 Luna                 |
 
-```bash
-npm ci
-npm run check   # typecheck, lint, format and unit tests
-npm run build   # builds main.js
-npm run eval    # retrieval evaluation on the sample vault, no model calls
-npm run e2e     # end-to-end tests in Obsidian with scripted answers (macOS)
+Any other model ID from these providers can be entered too.
+
+## How it works
+
+### Agent loop
+
+![Agent loop: the model calls read-only tools until it can answer with cited evidence](docs/agent-loop.svg)
+
+Each question runs a tool-use loop. The model calls read-only tools until it can answer; every section a tool returns gets an evidence ID, and the answer cites those IDs. The plugin then checks that each cited ID was really shown to the model. Each question has a request budget, and the last request offers no tools, so the model must answer from what it found.
+
+### Tools
+
+| Tool     | Core                                  |
+| -------- | ------------------------------------- |
+| `search` | BM25F + bge-m3 embeddings (hybrid)    |
+| `match`  | Exact text or regex, line by line     |
+| `read`   | A note's body, outline or one section |
+| `links`  | Backlinks and outgoing links          |
+| `list`   | Filtered survey, e.g. orphan notes    |
+
+### Project structure
+
+```text
+src/
+├── agent/
+│   ├── loop.ts         # tool-use loop and budgets
+│   ├── prompt.ts       # system prompt
+│   ├── tools/          # search, match, read, links, list
+│   └── providers/      # Anthropic, OpenAI, DeepSeek
+├── retrieval/          # BM25F, embeddings, hybrid fusion
+├── session/            # chat history and saved chats
+├── vault/              # keeps the index in sync with the vault
+└── ui/                 # chat view, sources, settings
+eval/                   # offline retrieval evaluation
+e2e/                    # end-to-end tests in Obsidian
+fixtures/vault/         # sample vault for tests
 ```
 
 ## License

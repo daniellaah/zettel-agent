@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="760" height="300" role="img" aria-labelledby="title">
+  <title id="title">Agent loop: the model calls read-only tools until it can answer with cited evidence</title>
+  <style>
+    .box { fill: #f6f8fa; stroke: #d0d7de; stroke-width: 1.5; }
+    .accent { fill: #f3effc; stroke: #8250df; }
+    .main { font: 600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f2328; }
+    .sub { font: 12.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #59636e; }
+    .label { font: 12.5px -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #59636e; }
+    .line { stroke: #8c959f; stroke-width: 1.5; fill: none; }
+    .head { fill: #8c959f; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #151b23; stroke: #3d444d; }
+      .accent { fill: #231a35; stroke: #a371f7; }
+      .main { fill: #f0f6fc; }
+      .sub, .label { fill: #9198a1; }
+      .line { stroke: #656c76; }
+      .head { fill: #656c76; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="head" d="M0 0 L10 5 L0 10 z" />
+    </marker>
+  </defs>
+
+  <!-- Top row: question, model, answer, citation check -->
+  <rect class="box" x="10" y="30" width="150" height="62" rx="8" />
+  <text class="main" x="85" y="57" text-anchor="middle">Question</text>
+  <text class="sub" x="85" y="77" text-anchor="middle">+ vault context</text>
+
+  <rect class="box accent" x="215" y="30" width="160" height="62" rx="8" />
+  <text class="main" x="295" y="57" text-anchor="middle">Model</text>
+  <text class="sub" x="295" y="77" text-anchor="middle">streamed request</text>
+
+  <rect class="box" x="450" y="30" width="140" height="62" rx="8" />
+  <text class="main" x="520" y="57" text-anchor="middle">Answer</text>
+  <text class="sub" x="520" y="77" text-anchor="middle">cites [E1] [E3]</text>
+
+  <rect class="box" x="620" y="30" width="130" height="62" rx="8" />
+  <text class="main" x="685" y="57" text-anchor="middle">Check</text>
+  <text class="sub" x="685" y="77" text-anchor="middle">→ Sources</text>
+
+  <path class="line" d="M160 61 H211" marker-end="url(#arrow)" />
+  <path class="line" d="M375 61 H446" marker-end="url(#arrow)" />
+  <text class="label" x="412" y="52" text-anchor="middle">answers</text>
+  <path class="line" d="M590 61 H616" marker-end="url(#arrow)" />
+
+  <!-- Loop: model calls tools, tools return evidence -->
+  <rect class="box" x="155" y="190" width="280" height="62" rx="8" />
+  <text class="main" x="295" y="217" text-anchor="middle">Read-only tools</text>
+  <text class="sub" x="295" y="237" text-anchor="middle">search · match · read · links · list</text>
+
+  <path class="line" d="M260 92 V186" marker-end="url(#arrow)" />
+  <text class="label" x="250" y="145" text-anchor="end">calls tools</text>
+  <path class="line" d="M330 190 V96" marker-end="url(#arrow)" />
+  <text class="label" x="340" y="138">results with</text>
+  <text class="label" x="340" y="155">evidence IDs E1, E2, …</text>
+
+  <text class="label" x="10" y="288">Capped per question; the last request offers no tools, so the model must answer from what it found.</text>
+</svg>
