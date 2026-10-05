@@ -53,6 +53,16 @@ export function estimateInput(
   );
 }
 
+/** A message the user wrote, as opposed to tool results or a loop control message. */
+function isHumanTurn(message: ChatMessage): boolean {
+  return (
+    message.role === "user" &&
+    message.origin !== "control" &&
+    message.parts.some((p) => p.type === "text") &&
+    !message.parts.some((p) => p.type === "tool_result")
+  );
+}
+
 /** Keep complete historical human turns; never split call/result pairs or alter signed raw content. */
 export function selectContext(options: {
   system: string;
@@ -65,12 +75,7 @@ export function selectContext(options: {
   const allowance = options.maxInputTokens ?? DEFAULT_INPUT_ALLOWANCE;
   const groups: ChatMessage[][] = [];
   for (const message of options.history) {
-    const human =
-      message.role === "user" &&
-      message.origin !== "control" &&
-      message.parts.some((p) => p.type === "text") &&
-      !message.parts.some((p) => p.type === "tool_result");
-    if (human || !groups.length) groups.push([]);
+    if (isHumanTurn(message) || !groups.length) groups.push([]);
     groups.at(-1)!.push(message);
   }
   const stale = (messages: readonly ChatMessage[]) => [
@@ -90,13 +95,7 @@ export function selectContext(options: {
     if (omitted.length || staleEvidence.length) {
       // Extractive navigation index only: no generated factual summary, no hidden source expansion.
       const questions = omitted
-        .filter(
-          (m) =>
-            m.role === "user" &&
-            m.origin !== "control" &&
-            m.parts.some((p) => p.type === "text") &&
-            !m.parts.some((p) => p.type === "tool_result"),
-        )
+        .filter(isHumanTurn)
         .slice(-4)
         .map((m) =>
           m.parts

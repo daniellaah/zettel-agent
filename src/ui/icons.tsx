@@ -21,10 +21,6 @@ export function IconButton(props: {
   controls?: string;
   onBlur?: () => void;
 }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (ref.current) setIcon(ref.current, props.icon);
-  }, [props.icon]);
   return (
     <button
       type="button"
@@ -37,7 +33,7 @@ export function IconButton(props: {
       onBlur={props.onBlur}
       disabled={props.disabled ?? false}
     >
-      <span ref={ref} aria-hidden="true" />
+      <Icon icon={props.icon} />
       {props.text && <span>{props.text}</span>}
     </button>
   );

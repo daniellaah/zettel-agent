@@ -55,9 +55,7 @@ export default class ZettelAgentPlugin extends Plugin {
         this.semantic?.refresh();
       },
     );
-    const pluginDir =
-      this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
-    this.conversations = new FileConversationStore(this.app, `${pluginDir}/conversations`);
+    this.conversations = new FileConversationStore(this.app, `${this.pluginDir()}/conversations`);
     this.session = new ChatSession({
       corpus: async () => {
         await this.vaultCorpus.whenReady();
@@ -109,13 +107,11 @@ export default class ZettelAgentPlugin extends Plugin {
       this.notifyConfiguration();
       return;
     }
-    const pluginDir =
-      this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
     const fileName = `${embeddingModel.replace(/[^a-z0-9.-]+/gi, "-")}.zav`;
     const indexer = new SemanticIndexer({
       connect: () =>
         OllamaEmbedder.connect({ model: embeddingModel, baseUrl: ollamaUrl, fetch: obsidianFetch }),
-      store: new AdapterVectorStore(this.app, `${pluginDir}/vectors/${fileName}`),
+      store: new AdapterVectorStore(this.app, `${this.pluginDir()}/vectors/${fileName}`),
       corpus: () => this.vaultCorpus.current,
       fusion: fusionFor(embeddingModel),
       onStatus: () => this.notifyConfiguration(),
@@ -142,6 +138,10 @@ export default class ZettelAgentPlugin extends Plugin {
       );
     }
     return Promise.resolve(createProvider(provider, apiKey, model));
+  }
+
+  private pluginDir(): string {
+    return this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
   }
 
   private activeNotePath(): string | null {

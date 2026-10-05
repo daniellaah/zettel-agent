@@ -139,9 +139,8 @@ export class ChatSession {
 
   /** The final answer of an assistant message, with citations rewritten as note links. */
   answerMarkdown(item: AssistantItem): string {
-    const lastTool = item.parts.findLastIndex((part) => part.kind === "tool");
     const answer = item.parts
-      .slice(lastTool + 1)
+      .slice(answerStart(item.parts))
       .flatMap((part) => (part.kind === "text" ? [part.text] : []))
       .join("");
     return citationsToLinks(answer.trim(), this.ledger);
@@ -403,6 +402,13 @@ export class ChatSession {
       `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
     );
   }
+}
+
+/** Where the final answer begins: the text parts after the last tool call or thinking. */
+export function answerStart(parts: readonly AssistantPart[]): number {
+  let start = parts.length;
+  while (start > 0 && parts[start - 1]!.kind === "text") start--;
+  return start;
 }
 
 /**

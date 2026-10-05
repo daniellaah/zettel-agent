@@ -1,5 +1,5 @@
-import type { EvidenceLedger } from "../agent/evidence";
-import type { ChatMessage } from "../agent/messages";
+import { citedHeading, type EvidenceLedger } from "../agent/evidence";
+import { deliveries, type ChatMessage } from "../agent/messages";
 import type { DeliveredSpan, EvidenceScope } from "../agent/tool-contract";
 
 /**
@@ -49,22 +49,9 @@ interface Seen {
   attached: boolean;
 }
 
-function deliveries(
-  messages: readonly ChatMessage[],
-): { span: DeliveredSpan; attached: boolean }[] {
-  return messages.flatMap((message) =>
-    message.role === "user"
-      ? [
-          ...(message.deliveries ?? []).flatMap((contract) =>
-            contract.exposures.map((span) => ({ span, attached: true })),
-          ),
-          ...message.parts.flatMap((part) =>
-            part.type === "tool_result" && part.contract
-              ? part.contract.exposures.map((span) => ({ span, attached: false }))
-              : [],
-          ),
-        ]
-      : [],
+function spans(messages: readonly ChatMessage[]): { span: DeliveredSpan; attached: boolean }[] {
+  return deliveries(messages).flatMap(({ contract, attached }) =>
+    contract.exposures.map((span) => ({ span, attached })),
   );
 }
 
@@ -95,7 +82,7 @@ export function answerProvenance(options: {
   ledger: EvidenceLedger;
 }): AnswerProvenance {
   const { ledger } = options;
-  const seen = strongest(deliveries(options.history.slice(0, options.turnEnd)));
+  const seen = strongest(spans(options.history.slice(0, options.turnEnd)));
   const view = (id: string, overall: Seen | undefined): SourceView | null => {
     const evidence = ledger.get(id);
     if (!evidence) return null;
@@ -104,7 +91,7 @@ export function answerProvenance(options: {
       id: evidence.id,
       path: evidence.path,
       title,
-      heading: evidence.headingPath.length > 1 ? evidence.headingPath.at(-1)! : null,
+      heading: citedHeading(evidence),
       seen: overall?.scope ?? null,
       whole: overall?.whole ?? false,
       attached: overall?.attached ?? false,
@@ -116,7 +103,7 @@ export function answerProvenance(options: {
   const citedPaths = new Set(cited.map((source) => source.path));
 
   // Notes delivered in this turn but never cited: one row per note, with its most-seen section.
-  const turn = deliveries(options.history.slice(options.turnStart, options.turnEnd));
+  const turn = spans(options.history.slice(options.turnStart, options.turnEnd));
   const thisTurn = strongest(turn);
   const consulted = new Map<string, SourceView>();
   for (const { span } of turn) {

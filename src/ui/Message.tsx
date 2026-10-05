@@ -46,7 +46,7 @@ function AssistantMessage(props: { item: AssistantItem; session: ChatSession; is
   const host = useHost();
   const running = item.status === "running";
   const presentation = researchPresentation(item.parts);
-  const answer = running ? "" : session.answerMarkdown({ ...item, parts: presentation.answer });
+  const answer = running ? "" : session.answerMarkdown(item);
   const provenance = useMemo(
     () => (running ? null : session.provenance(item)),
     [running, session, item],

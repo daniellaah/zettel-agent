@@ -148,8 +148,7 @@ export const readTool = defineTool({
     } else {
       // Canonical body stream uses a single newline between parsed sections. Each page
       // exposes exact section-relative offsets, including oversized single sections.
-      const total =
-        sections.reduce((sum, s) => sum + s.text.length, 0) + Math.max(0, sections.length - 1);
+      const total = bodySize + Math.max(0, sections.length - 1);
       const end = Math.min(total, offset + allowance);
       let base = 0;
       for (const section of sections) {

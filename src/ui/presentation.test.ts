@@ -57,6 +57,17 @@ describe("research disclosure", () => {
     expect(result.steps).toBe(1);
     expect(parts).toHaveLength(4);
   });
+  it("treats only the text after the last thinking as the answer", () => {
+    const parts: AssistantPart[] = [
+      { kind: "text", text: "Let me check." },
+      { kind: "thinking", text: "Compare sources" },
+      { kind: "text", text: "Answer." },
+    ];
+    expect(researchPresentation(parts)).toMatchObject({
+      research: parts.slice(0, 2),
+      answer: parts.slice(2),
+    });
+  });
   it("keeps text-only responses visible and never fabricates an answer after an interrupted tool", () => {
     expect(researchPresentation([]).answer).toEqual([]);
     expect(researchPresentation([{ kind: "text", text: "Hello" }]).research).toEqual([]);

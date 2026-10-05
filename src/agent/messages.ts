@@ -73,17 +73,25 @@ export function toolCallsOf(message: AssistantMessage): ToolCallPart[] {
 }
 
 /** Every recorded delivery in these messages: attached notes and tool results, in order. */
-export function deliveredContracts(messages: readonly ChatMessage[]): ResultContract[] {
+export function deliveries(
+  messages: readonly ChatMessage[],
+): { contract: ResultContract; attached: boolean }[] {
   return messages.flatMap((message) =>
     message.role === "user"
       ? [
-          ...(message.deliveries ?? []),
+          ...(message.deliveries ?? []).map((contract) => ({ contract, attached: true })),
           ...message.parts.flatMap((part) =>
-            part.type === "tool_result" && part.contract ? [part.contract] : [],
+            part.type === "tool_result" && part.contract
+              ? [{ contract: part.contract, attached: false }]
+              : [],
           ),
         ]
       : [],
   );
+}
+
+export function deliveredContracts(messages: readonly ChatMessage[]): ResultContract[] {
+  return deliveries(messages).map((delivery) => delivery.contract);
 }
 
 /** The raw content, if it was produced by exactly this provider and model. */

@@ -57,6 +57,26 @@ describe("ChatSession", () => {
     expect(notifications()).toBeGreaterThan(3);
   });
 
+  it("copies the same final answer the message shows: the text after the last thinking", () => {
+    const { session } = makeSession([]);
+    const item: AssistantItem = {
+      kind: "assistant",
+      id: "a",
+      parts: [
+        { kind: "text", text: "Let me check." },
+        { kind: "thinking", text: "Compare sources" },
+        { kind: "text", text: "Answer." },
+      ],
+      status: "done",
+      stop: "answered",
+      error: null,
+      citations: null,
+      usage: null,
+      historyStart: 0,
+    };
+    expect(session.answerMarkdown(item)).toBe("Answer.");
+  });
+
   it("puts the vault context and the active note in the user turn", async () => {
     await Promise.resolve();
     const { session, provider } = makeSession([[text("ok")]]);

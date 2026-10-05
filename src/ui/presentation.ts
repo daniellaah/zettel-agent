@@ -1,6 +1,6 @@
 import type { StopReason } from "../agent/loop";
 import type { EvidenceScope } from "../agent/tool-contract";
-import type { AssistantItem, AssistantPart } from "../session/chat-session";
+import { answerStart, type AssistantItem, type AssistantPart } from "../session/chat-session";
 import type { AnswerProvenance, SourceView } from "../session/provenance";
 
 export interface ChatConfiguration {
@@ -25,12 +25,11 @@ export function setupMessage(config: ChatConfiguration): string | null {
 
 /** Keep the chronological research trace intact, with the final text outside its disclosure. */
 export function researchPresentation(parts: readonly AssistantPart[]) {
-  let lastResearch = parts.length - 1;
-  while (lastResearch >= 0 && parts[lastResearch]?.kind === "text") lastResearch--;
+  const start = answerStart(parts);
   const tools = parts.filter((part) => part.kind === "tool");
   return {
-    research: parts.slice(0, lastResearch + 1),
-    answer: parts.slice(lastResearch + 1),
+    research: parts.slice(0, start),
+    answer: parts.slice(start),
     steps: tools.length,
     limited: tools.some((part) => part.isError && part.summary?.includes("output-budget")),
     failed: tools.some((part) => part.isError && !part.summary?.includes("output-budget")),

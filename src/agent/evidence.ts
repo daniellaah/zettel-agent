@@ -87,7 +87,12 @@ export function citationsToLinks(text: string, ledger: EvidenceLedger): string {
 }
 
 export function linkTarget(evidence: Evidence): string {
-  // A lone top heading is usually the note's title; link to the note itself.
-  const heading = evidence.headingPath.length > 1 ? evidence.headingPath.at(-1) : undefined;
+  const heading = citedHeading(evidence);
   return heading ? `${evidence.linkPath}#${heading}` : evidence.linkPath;
+}
+
+/** The heading a citation points at, or null when it stands for the whole note. */
+export function citedHeading(evidence: Evidence): string | null {
+  // A lone top heading is usually the note's title.
+  return evidence.headingPath.length > 1 ? evidence.headingPath.at(-1)! : null;
 }
