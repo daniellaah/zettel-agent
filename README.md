@@ -2,22 +2,31 @@
 
 An Obsidian plugin that answers questions about your Zettelkasten, with citations to your notes.
 
-## Semantic search with Ollama
+## Features
 
-Search combines keywords with meaning, so a question can find notes that use other words or another language, such as a Chinese question about English notes. [Ollama](https://ollama.com) computes the embeddings on your computer; your notes are not uploaded.
+- **Cited answers.** Answers cite the notes they draw on. The Sources list shows which notes the agent read in full and which it saw only as excerpts.
+- **Read-only.** The agent searches, reads and follows links. It never edits your notes and never searches fleeting notes.
+- **Search by keywords and meaning.** It finds notes that use other words or another language, such as a Chinese question about English notes.
+- **Your own model.** Anthropic, OpenAI or DeepSeek, with your API key.
+- **Fits your writing.** Copy or insert an answer with citations as note links, attach notes with `@`, and return to earlier chats.
 
-1. Install Ollama and keep it running.
-2. Download the embedding model once (about 1.2 GB):
+## Usage
 
-   ```bash
-   ollama pull bge-m3
-   ```
+1. Copy `main.js`, `manifest.json` and `styles.css` from a build into `<vault>/.obsidian/plugins/zettel-agent/`, then enable Zettel Agent in **Settings → Community plugins**.
+2. In **Settings → Zettel Agent**, choose a provider and add your API key. Set your Zettelkasten folder and its stage folders (Fleeting, Literature, Permanent, Writing by default).
+3. Open the chat from the ribbon or with the **Open chat** command, and ask a question.
 
-3. Open **Settings → Zettel Agent → Semantic search**. It is on by default. The Index line shows progress and says "Ready" once every note is embedded.
+Questions and the note excerpts the agent reads are sent to your model provider.
 
-The first indexing takes about 15 seconds for 300 notes on an Apple M1 Pro. Vectors are cached in `.obsidian/plugins/zettel-agent/vectors/`, and edited notes are embedded again automatically. While Ollama is not running, or until 95% of notes are embedded, search uses keywords only.
+### Semantic search with Ollama
 
-The default model is `bge-m3`. `qwen3-embedding:0.6b` also works. Other Ollama embedding models work too, but their results are merged with keyword results by rank instead of tuned weights. If you set the Ollama address to another computer, your notes are sent there to be embedded.
+Optional. [Ollama](https://ollama.com) computes embeddings on your computer:
+
+```bash
+ollama pull bge-m3
+```
+
+Semantic search is on by default. **Settings → Zettel Agent → Semantic search** shows indexing progress. About 300 notes take 15 seconds on an Apple M1 Pro. Edited notes are embedded again automatically. Without Ollama, search uses keywords only. `qwen3-embedding:0.6b` also works.
 
 ## Development
 
@@ -25,16 +34,11 @@ Requires Node 24.
 
 ```bash
 npm ci
-npm run check       # typecheck, lint, format and unit tests
-npm run build       # builds main.js
-npm run eval        # retrieval evaluation on the sample vault, no model calls
-npm run eval:embed  # embeds the sample vault and evaluation queries with the local Ollama
-npm run e2e         # end-to-end tests in Obsidian with scripted answers (macOS)
+npm run check   # typecheck, lint, format and unit tests
+npm run build   # builds main.js
+npm run eval    # retrieval evaluation on the sample vault, no model calls
+npm run e2e     # end-to-end tests in Obsidian with scripted answers (macOS)
 ```
-
-More retrieval evaluations: `eval:crosslingual`, `eval:exact`, `eval:exact-terms`, `eval:sweep` and `eval:rewrite`. `AGENT_SMOKE=1 npm run eval:agent-smoke` calls a paid model API.
-
-To try it, copy `main.js`, `manifest.json` and `styles.css` into `<vault>/.obsidian/plugins/zettel-agent/`.
 
 ## License
 
