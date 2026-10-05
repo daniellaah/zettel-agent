@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { expect, it } from "vitest";
 
+import { fixtureNoteCounts } from "./fixture-counts";
 import { connectToFixtureVault } from "./obsidian";
 import { DEBUG_PORT, ObsidianPage } from "./cdp";
 
@@ -59,7 +60,7 @@ it("guides setup, folds research, exposes answer actions and supports keyboard s
       await plugin.activateChatView(); session.reset(); plugin.notifyConfiguration();
       await new Promise(r => setTimeout(r, 100));
       const missingKey = document.querySelector(".za-setup")?.textContent.includes("API key");
-      const scope = document.querySelector(".za-scope")?.textContent.includes("318 notes");
+      const scope = document.querySelector(".za-scope")?.textContent.includes("${fixtureNoteCounts().notes} notes");
       const input = document.querySelector(".za-composer-input");
       const accessibleInput = input.getAttribute("aria-label") === "Ask your Zettelkasten" && !!document.getElementById(input.getAttribute("aria-describedby"));
       document.querySelector(".za-setup button").click();

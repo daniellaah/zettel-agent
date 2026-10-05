@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import type { ObsidianPage } from "./cdp";
 import { connectToFixtureVault } from "./obsidian";
+import { fixtureNoteCounts } from "./fixture-counts";
 import type { AskResult, PluginState, UiState } from "./types";
 
 /** Checks that need no model calls: loading, indexing, settings, empty chat, setup errors. */
@@ -18,9 +19,10 @@ afterAll(() => page?.close());
 
 describe("plugin in Obsidian", () => {
   it("loads and indexes the fixture Zettelkasten by stage", () => {
+    const expected = fixtureNoteCounts();
     expect(state.loaded).toBe(true);
-    expect(state.notes).toBe(318);
-    expect(state.stages).toEqual({ literature: 137, permanent: 181 });
+    expect(state.notes).toBe(expected.notes);
+    expect(state.stages).toEqual(expected.stages);
   });
 
   it("renders the settings tab for the selected provider", async () => {
@@ -38,7 +40,32 @@ describe("plugin in Obsidian", () => {
       "Literature",
       "Permanent",
       "Writing",
+      "Semantic search",
+      "Search by meaning",
+      "Ollama address",
+      "Embedding model",
+      "Index",
     ]);
+  });
+
+  it("indexes notes by meaning with the local Ollama, or says why it cannot", async () => {
+    const semantic = await page.run<{
+      status: { state: string; message?: string; total?: number } | null;
+      statusText: string | null;
+      fusion: unknown;
+      hits: { path: string; semanticRank: number | null }[];
+    }>("semantic");
+    if (semantic.status?.state === "unavailable") {
+      // No Ollama on this machine: search must say it uses keywords only.
+      expect(semantic.statusText).toContain("keywords only");
+      return;
+    }
+    expect(semantic.status?.state).toBe("ready");
+    expect(semantic.status?.total).toBeGreaterThan(0);
+    expect(semantic.statusText).toMatch(/^Ready: \d+ sections embedded/);
+    expect(semantic.fusion).toEqual({ method: "convex", alpha: 0.4 });
+    expect(semantic.hits.length).toBeGreaterThan(0);
+    expect(semantic.hits.some((hit) => hit.semanticRank !== null)).toBe(true);
   });
 
   it("opens an empty chat with starter questions", async () => {
