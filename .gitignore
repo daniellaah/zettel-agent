@@ -1,20 +1,14 @@
 node_modules/
-coverage/
 *.log
 .DS_Store
 
 # Build output (release assets are attached to GitHub releases, not committed)
 main.js
-main.js.map
 
-
-# Generated end-to-end and evaluation output
+# Generated test and evaluation output: e2e screenshots, live e2e and retrieval reports
+artifacts/
 e2e/reports/
-eval/artifacts/
 eval/reports/
 
-# Local evaluation credentials
+# Local API keys
 .env.eval.local
-
-# Uncommitted local release snapshots and verification logs
-artifacts/

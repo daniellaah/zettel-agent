@@ -1,11 +1,4 @@
-node_modules/
-coverage/
-main.js
+# Prettier also skips everything in .gitignore.
 package-lock.json
 fixtures/
 e2e/page/
-e2e/reports/
-eval/artifacts/
-.env.eval.local
-fixtures/recordings/
-artifacts/

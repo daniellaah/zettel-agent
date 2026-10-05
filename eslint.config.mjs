@@ -5,15 +5,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [
-      "node_modules/**",
-      "coverage/**",
-      "artifacts/**",
-      "main.js",
-      "fixtures/**",
-      "e2e/page/**",
-      "e2e/reports/**",
-    ],
+    ignores: ["node_modules/**", "main.js", "fixtures/**", "e2e/page/**"],
   },
   eslint.configs.recommended,
   {

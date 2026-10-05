@@ -7,9 +7,9 @@ import * as esbuild from "esbuild";
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
 
-// Set OBSIDIAN_PLUGIN_DIR to <test vault>/.obsidian/plugins/zettel-agent
-// to copy each build into a vault for manual testing.
-// Production builds never copy merely because an inherited environment variable exists.
+// With --copy-to-vault, each build is also copied to OBSIDIAN_PLUGIN_DIR
+// (<test vault>/.obsidian/plugins/zettel-agent); e2e setup uses this. Without the flag,
+// an inherited environment variable never causes a copy.
 const pluginDir = process.argv.includes("--copy-to-vault")
   ? process.env.OBSIDIAN_PLUGIN_DIR
   : undefined;
