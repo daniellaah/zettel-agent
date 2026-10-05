@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { ChatMessage } from "../messages";
 import type { ModelRequest } from "../provider";
-import { ChatCompletionsProvider, toChatMessages } from "./chat-completions";
+import { DeepSeekProvider, toChatMessages } from "./chat-completions";
 
 const TOOLS = [{ name: "search", description: "Search", inputSchema: { type: "object" } }];
 
@@ -38,13 +38,7 @@ const USAGE = {
 };
 
 function deepseek(fetch: typeof globalThis.fetch) {
-  return new ChatCompletionsProvider("sk-test", "deepseek-flash", {
-    provider: "deepseek",
-    label: "DeepSeek",
-    baseURL: "https://api.deepseek.com",
-    deepseekThinking: true,
-    fetch,
-  });
+  return new DeepSeekProvider("sk-test", "deepseek-flash", { fetch });
 }
 
 const request = (messages: ChatMessage[], allowTools = true): ModelRequest => ({
@@ -54,7 +48,7 @@ const request = (messages: ChatMessage[], allowTools = true): ModelRequest => ({
   allowTools,
 });
 
-describe("ChatCompletionsProvider (DeepSeek)", () => {
+describe("DeepSeekProvider", () => {
   it("streams reasoning, text and split tool-call arguments into one message", async () => {
     const { fetch } = sseFetch([
       chunk({ role: "assistant", reasoning_content: "先想" }),
@@ -182,11 +176,7 @@ describe("toChatMessages", () => {
 
 it("does not silently retry rate-limited HTTP requests", async () => {
   let attempts = 0;
-  const provider = new ChatCompletionsProvider("fixture-key", "deepseek-flash", {
-    provider: "deepseek",
-    label: "DeepSeek",
-    baseURL: "https://api.deepseek.com",
-    deepseekThinking: true,
+  const provider = new DeepSeekProvider("fixture-key", "deepseek-flash", {
     fetch: () => {
       attempts++;
       return Promise.resolve(

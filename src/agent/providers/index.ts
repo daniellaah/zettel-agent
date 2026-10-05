@@ -1,7 +1,7 @@
 import type { FetchLike, ModelProvider } from "../provider";
 import { AnthropicProvider } from "./anthropic";
 import type { ProviderId } from "./catalog";
-import { ChatCompletionsProvider } from "./chat-completions";
+import { DeepSeekProvider } from "./chat-completions";
 import { OpenAIResponsesProvider } from "./openai-responses";
 
 /** `fetch` replaces the network in tests. */
@@ -18,12 +18,6 @@ export function createProvider(
     case "openai":
       return new OpenAIResponsesProvider(apiKey, model, options);
     case "deepseek":
-      return new ChatCompletionsProvider(apiKey, model, {
-        provider: "deepseek",
-        label: "DeepSeek",
-        baseURL: "https://api.deepseek.com",
-        deepseekThinking: true,
-        ...options,
-      });
+      return new DeepSeekProvider(apiKey, model, options);
   }
 }

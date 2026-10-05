@@ -16,23 +16,8 @@ import type {
 } from "../provider";
 import { describeSdkError } from "./errors";
 
-/**
- * OpenAI-compatible Chat Completions, used for DeepSeek (and usable for other compatible
- * endpoints). DeepSeek specifics:
- * - `reasoning_content` must be sent back in every assistant message whenever the
- *   request carries tools, so assistant messages are replayed verbatim.
- * - `tool_choice` is not supported in thinking mode, so the final no-tools request
- *   switches thinking off to be allowed to send `tool_choice: "none"`.
- */
-export interface ChatCompletionsOptions {
-  provider: string;
-  label: string;
-  baseURL: string;
-  /** Send DeepSeek's `thinking` parameter and replay `reasoning_content`. */
-  deepseekThinking: boolean;
-  /** Replaces the network in tests. */
-  fetch?: FetchLike;
-}
+const PROVIDER = "deepseek";
+const LABEL = "DeepSeek";
 
 /** The assistant message as the API returned it, plus DeepSeek's reasoning field. */
 type RawAssistant = ChatCompletionMessageParam & { reasoning_content?: string };
@@ -50,20 +35,26 @@ interface DeepSeekUsage {
   prompt_tokens_details?: { cached_tokens?: number } | null;
 }
 
-export class ChatCompletionsProvider implements ModelProvider {
-  readonly provider: string;
+/**
+ * DeepSeek through its OpenAI-compatible Chat Completions API. DeepSeek specifics:
+ * - `reasoning_content` must be sent back in every assistant message whenever the
+ *   request carries tools, so assistant messages are replayed verbatim.
+ * - `tool_choice` is not supported in thinking mode, so the final no-tools request
+ *   switches thinking off to be allowed to send `tool_choice: "none"`.
+ */
+export class DeepSeekProvider implements ModelProvider {
+  readonly provider = PROVIDER;
   private readonly client: OpenAI;
 
   constructor(
     apiKey: string,
     readonly model: string,
-    private readonly options: ChatCompletionsOptions,
+    options: { fetch?: FetchLike } = {},
   ) {
-    this.provider = options.provider;
     this.client = new OpenAI({
       apiKey,
       maxRetries: 0,
-      baseURL: options.baseURL,
+      baseURL: "https://api.deepseek.com",
       dangerouslyAllowBrowser: true,
       ...(options.fetch && { fetch: options.fetch }),
     });
@@ -74,7 +65,7 @@ export class ChatCompletionsProvider implements ModelProvider {
     handlers: StreamHandlers,
     signal?: AbortSignal,
   ): Promise<ModelResponse> {
-    const body: ChatCompletionCreateParamsStreaming & { thinking?: { type: string } } = {
+    const body: ChatCompletionCreateParamsStreaming & { thinking: { type: string } } = {
       model: this.model,
       messages: toChatMessages(request.system, request.messages, this.provider, this.model),
       tools: request.tools.map((tool) => ({
@@ -84,20 +75,18 @@ export class ChatCompletionsProvider implements ModelProvider {
       stream: true,
       stream_options: { include_usage: true },
       max_tokens: 8192,
+      thinking: { type: request.allowTools ? "enabled" : "disabled" },
     };
     if (!request.allowTools) body.tool_choice = "none";
-    if (this.options.deepseekThinking) {
-      body.thinking = { type: request.allowTools ? "enabled" : "disabled" };
-    }
 
     const stream = await this.client.chat.completions.create(body, signal ? { signal } : {});
     const accumulator = new ChatStreamAccumulator();
     for await (const chunk of stream) accumulator.add(chunk, handlers);
-    return accumulator.finish(this.provider, this.model, this.options.label);
+    return accumulator.finish(this.model);
   }
 
   describeError(error: unknown): string {
-    return describeSdkError(error, this.options.label);
+    return describeSdkError(error, LABEL);
   }
 }
 
@@ -177,9 +166,9 @@ export class ChatStreamAccumulator {
     if (choice.finish_reason) this.finishReason = choice.finish_reason;
   }
 
-  finish(provider: string, model: string, label: string): ModelResponse {
+  finish(model: string): ModelResponse {
     if (this.finishReason === "insufficient_system_resource") {
-      throw new Error(`${label} is out of capacity right now. Try again shortly.`);
+      throw new Error(`${LABEL} is out of capacity right now. Try again shortly.`);
     }
     const calls = [...this.calls.entries()].sort(([a], [b]) => a - b).map(([, call]) => call);
     const parts: AssistantMessage["parts"] = [];
@@ -211,7 +200,7 @@ export class ChatStreamAccumulator {
     const cached =
       this.usage?.prompt_cache_hit_tokens ?? this.usage?.prompt_tokens_details?.cached_tokens ?? 0;
     return {
-      message: { role: "assistant", parts, raw: { provider, model, content: raw } },
+      message: { role: "assistant", parts, raw: { provider: PROVIDER, model, content: raw } },
       finish: finishReason(this.finishReason, calls.length > 0),
       usage: {
         inputTokens: prompt - cached,
