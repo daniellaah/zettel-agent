@@ -2,7 +2,10 @@ import { PluginSettingTab, SecretComponent, Setting, type App } from "obsidian";
 
 import type ZettelAgentPlugin from "../main";
 import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "../agent/providers/catalog";
-import { STAGES, normalizeFolder, type Stage } from "../settings";
+import { DEFAULT_EMBEDDING_MODEL } from "../retrieval/embedding-models";
+import { DEFAULT_OLLAMA_URL } from "../retrieval/ollama";
+import { READY_COVERAGE, type SemanticStatus } from "../retrieval/semantic-indexer";
+import { STAGES, isLocalUrl, normalizeFolder, type Stage } from "../settings";
 
 const CUSTOM_MODEL = "__custom__";
 
@@ -14,6 +17,9 @@ const STAGE_HINTS: Record<Stage, string> = {
 };
 
 export class SettingsTab extends PluginSettingTab {
+  /** Keeps the index status line current while the tab is open. */
+  private statusListener: (() => void) | null = null;
+
   constructor(
     app: App,
     private readonly plugin: ZettelAgentPlugin,
@@ -30,6 +36,7 @@ export class SettingsTab extends PluginSettingTab {
       this.plugin.scheduleRebuild();
     };
     containerEl.empty();
+    this.hide();
 
     new Setting(containerEl).setName("Model").setHeading();
 
@@ -121,5 +128,88 @@ export class SettingsTab extends PluginSettingTab {
           }),
         );
     }
+
+    new Setting(containerEl).setName("Semantic search").setHeading();
+
+    new Setting(containerEl)
+      .setName("Search by meaning")
+      .setDesc(
+        "Also find notes by meaning, across Chinese and English, using embeddings that Ollama computes on this computer. Without Ollama, search uses keywords only.",
+      )
+      .addToggle((toggle) =>
+        toggle.setValue(settings.semanticSearch).onChange((value) => {
+          settings.semanticSearch = value;
+          rebuild();
+          this.plugin.scheduleSemanticRestart();
+          this.display();
+        }),
+      );
+
+    if (!settings.semanticSearch) return;
+
+    new Setting(containerEl)
+      .setName("Ollama address")
+      .setDesc(
+        isLocalUrl(settings.ollamaUrl)
+          ? "Where Ollama runs. Notes are embedded on this computer."
+          : "This address is not on this computer: your notes will be sent there to be embedded.",
+      )
+      .addText((text) =>
+        text
+          .setPlaceholder(DEFAULT_OLLAMA_URL)
+          .setValue(settings.ollamaUrl)
+          .onChange((value) => {
+            settings.ollamaUrl = value.trim() || DEFAULT_OLLAMA_URL;
+            save();
+            this.plugin.scheduleSemanticRestart();
+          }),
+      );
+
+    new Setting(containerEl)
+      .setName("Embedding model")
+      .setDesc(
+        createFragment((fragment) => {
+          fragment.appendText("Download it once with ");
+          fragment.createEl("code", { text: `ollama pull ${settings.embeddingModel}` });
+          fragment.appendText(". Changing the model embeds every note again.");
+        }),
+      )
+      .addText((text) =>
+        text
+          .setPlaceholder(DEFAULT_EMBEDDING_MODEL)
+          .setValue(settings.embeddingModel)
+          .onChange((value) => {
+            settings.embeddingModel = value.trim() || DEFAULT_EMBEDDING_MODEL;
+            save();
+            this.plugin.scheduleSemanticRestart();
+          }),
+      );
+
+    const status = new Setting(containerEl)
+      .setName("Index")
+      .addButton((button) =>
+        button.setButtonText("Retry").onClick(() => void this.plugin.restartSemantic()),
+      );
+    const render = () => {
+      status.setDesc(describeStatus(this.plugin.semanticStatus()));
+    };
+    render();
+    this.statusListener = render;
+    this.plugin.configurationListeners.add(render);
   }
+
+  override hide(): void {
+    if (this.statusListener) this.plugin.configurationListeners.delete(this.statusListener);
+    this.statusListener = null;
+  }
+}
+
+function describeStatus(status: SemanticStatus | null): string {
+  const keywordsOnly = "Search uses keywords only for now.";
+  if (!status || status.state === "connecting") return "Connecting to Ollama…";
+  if (status.state === "unavailable") return `${status.message} ${keywordsOnly}`;
+  if (status.state === "ready")
+    return `Ready: ${status.total} sections embedded. Search uses keywords and meaning.`;
+  const ready = status.total > 0 && status.embedded / status.total >= READY_COVERAGE;
+  return `Embedding notes: ${status.embedded} of ${status.total} sections. ${ready ? "Search already uses keywords and meaning." : keywordsOnly}`;
 }

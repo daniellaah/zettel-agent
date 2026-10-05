@@ -56,6 +56,7 @@ export class VaultCorpus {
   private createCorpus(): Corpus {
     return new Corpus({
       stageForPath: (path) => stageForPath(path, this.settings()),
+      semantic: this.settings().semanticSearch,
       // Obsidian's own resolution, so the agent sees the same links the user does.
       resolver: (target, source) =>
         this.app.metadataCache.getFirstLinkpathDest(target, source)?.path ?? null,

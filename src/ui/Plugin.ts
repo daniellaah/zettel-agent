@@ -10,7 +10,11 @@ import { BRAND_ICON, registerBrandIcon } from "./brand-icon";
 import { registerNoteCommands } from "./CreateNoteModal";
 import { SettingsTab } from "./SettingsTab";
 import { FileConversationStore } from "../vault/conversations";
+import { AdapterVectorStore, obsidianFetch } from "../vault/semantic-store";
 import { VaultCorpus } from "../vault/vault-corpus";
+import { fusionFor } from "../retrieval/embedding-models";
+import { OllamaEmbedder } from "../retrieval/ollama";
+import { SemanticIndexer, type SemanticStatus } from "../retrieval/semantic-indexer";
 
 export default class ZettelAgentPlugin extends Plugin {
   declare settings: PluginSettings;
@@ -18,11 +22,16 @@ export default class ZettelAgentPlugin extends Plugin {
   session!: ChatSession;
   conversations!: FileConversationStore;
   researchIndexed = false;
+  /** Null when semantic search is off; search then uses keywords alone. */
+  semantic: SemanticIndexer | null = null;
   readonly configurationListeners = new Set<() => void>();
 
   notifyConfiguration(): void {
     for (const listener of this.configurationListeners) listener();
   }
+
+  /** Reconnect to Ollama after the semantic search settings stop changing. */
+  readonly scheduleSemanticRestart = debounce(() => void this.restartSemantic(), 800, true);
 
   /** Rebuild the index after the Zettelkasten folder setting stops changing. */
   readonly scheduleRebuild = debounce(
@@ -43,6 +52,7 @@ export default class ZettelAgentPlugin extends Plugin {
       () => {
         this.researchIndexed = true;
         this.notifyConfiguration();
+        this.semantic?.refresh();
       },
     );
     const pluginDir =
@@ -55,6 +65,8 @@ export default class ZettelAgentPlugin extends Plugin {
       },
       provider: () => this.createProvider(),
       activeNotePath: () => this.activeNotePath(),
+      queryVectors: (queries, signal) =>
+        this.semantic?.queryVectors(queries, signal) ?? Promise.resolve(null),
       store: this.conversations,
     });
 
@@ -74,11 +86,43 @@ export default class ZettelAgentPlugin extends Plugin {
     this.app.workspace.onLayoutReady(() => {
       this.vaultCorpus.registerEvents(this);
       void this.vaultCorpus.rebuild();
+      void this.restartSemantic();
     });
   }
 
   override onunload(): void {
     this.session.stop();
+    void this.semantic?.stop();
+  }
+
+  /** What the settings tab shows about semantic search. */
+  semanticStatus(): SemanticStatus | null {
+    return this.semantic?.status ?? null;
+  }
+
+  /** (Re)connects to Ollama with the current settings and resumes embedding. */
+  async restartSemantic(): Promise<void> {
+    await this.semantic?.stop();
+    this.semantic = null;
+    const { semanticSearch, ollamaUrl, embeddingModel } = this.settings;
+    if (!semanticSearch) {
+      this.notifyConfiguration();
+      return;
+    }
+    const pluginDir =
+      this.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.manifest.id}`;
+    const fileName = `${embeddingModel.replace(/[^a-z0-9.-]+/gi, "-")}.zav`;
+    const indexer = new SemanticIndexer({
+      connect: () =>
+        OllamaEmbedder.connect({ model: embeddingModel, baseUrl: ollamaUrl, fetch: obsidianFetch }),
+      store: new AdapterVectorStore(this.app, `${pluginDir}/vectors/${fileName}`),
+      corpus: () => this.vaultCorpus.current,
+      fusion: fusionFor(embeddingModel),
+      onStatus: () => this.notifyConfiguration(),
+    });
+    this.semantic = indexer;
+    this.notifyConfiguration();
+    await indexer.start();
   }
 
   async saveSettings(): Promise<void> {

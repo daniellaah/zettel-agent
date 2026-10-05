@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_SETTINGS, normalizeFolder, resolveSettings, stageForPath } from "./settings";
+import {
+  DEFAULT_SETTINGS,
+  isLocalUrl,
+  normalizeFolder,
+  resolveSettings,
+  stageForPath,
+} from "./settings";
 
 const settings = resolveSettings({ zettelkastenRoot: "02-Zettelkasten" });
 
@@ -58,5 +64,35 @@ describe("resolveSettings", () => {
 describe("normalizeFolder", () => {
   it("strips whitespace and surrounding slashes", () => {
     expect(normalizeFolder("  /a/b/  ")).toBe("a/b");
+  });
+});
+
+describe("semantic search settings", () => {
+  it("defaults to bge-m3 on the local Ollama and ignores invalid values", () => {
+    expect(resolveSettings({})).toMatchObject({
+      semanticSearch: true,
+      ollamaUrl: "http://localhost:11434",
+      embeddingModel: "bge-m3",
+    });
+    expect(
+      resolveSettings({ semanticSearch: "yes", ollamaUrl: "  ", embeddingModel: 3 }),
+    ).toMatchObject({
+      semanticSearch: true,
+      ollamaUrl: "http://localhost:11434",
+      embeddingModel: "bge-m3",
+    });
+    expect(
+      resolveSettings({ semanticSearch: false, embeddingModel: "qwen3-embedding:0.6b" }),
+    ).toMatchObject({
+      semanticSearch: false,
+      embeddingModel: "qwen3-embedding:0.6b",
+    });
+  });
+
+  it("knows when embedding requests leave this computer", () => {
+    expect(isLocalUrl("http://localhost:11434")).toBe(true);
+    expect(isLocalUrl("http://127.0.0.1:11434/")).toBe(true);
+    expect(isLocalUrl("http://192.168.1.20:11434")).toBe(false);
+    expect(isLocalUrl("not a url")).toBe(false);
   });
 });

@@ -15,6 +15,7 @@ import { SYSTEM_PROMPT } from "./prompt";
 import type { ModelProvider, ModelResponse } from "./provider";
 import type { DeliveredSpan, ResultContract } from "./tool-contract";
 import { executeTool, toolDefinitions, type ToolContext, type ToolOutcome } from "./tools";
+import type { QueryVectors } from "../retrieval/semantic-indexer";
 
 /**
  * One user turn: stream model requests, run the tools the model asks for, and repeat until
@@ -90,6 +91,11 @@ export interface TurnOptions {
   budget?: Budget;
   events?: TurnEvents;
   signal?: AbortSignal;
+  /**
+   * Embeds a round's search queries before its tools run, or returns null to search by
+   * keywords alone. Tools stay synchronous; only this step waits on the embedder.
+   */
+  queryVectors?: (queries: string[], signal?: AbortSignal) => Promise<QueryVectors | null>;
 }
 
 const BUDGET_SPENT =
@@ -100,6 +106,15 @@ const NO_NEW_EVIDENCE =
 
 export async function runTurn(options: TurnOptions): Promise<TurnResult> {
   const { provider, context, events = {}, signal } = options;
+  /** One embedding request for all search calls in a response; failures mean keywords only. */
+  const searchVectors = async (calls: { name: string; input: unknown }[]) => {
+    const queries = calls
+      .filter((call) => call.name === "search")
+      .map((call) => (call.input as { query?: unknown } | null)?.query)
+      .filter((query): query is string => typeof query === "string" && query.trim() !== "");
+    if (!options.queryVectors || queries.length === 0) return null;
+    return options.queryVectors([...new Set(queries)], signal).catch(() => null);
+  };
   const budget = options.budget ?? DEFAULT_BUDGET;
   const allowance = budget.maxInputTokens ?? DEFAULT_INPUT_ALLOWANCE;
   const tools = toolDefinitions();
@@ -239,6 +254,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
     const results: (ToolResultPart | TextPart)[] = [];
     let freshEvidence = 0;
     let gathered = false;
+    const semantic = await searchVectors(toolUses.slice(0, MAX_CALLS_PER_RESPONSE));
     for (const [index, call] of toolUses.entries()) {
       usage.toolCalls++;
       events.onToolCall?.({ id: call.id, name: call.name, input: call.input });
@@ -255,6 +271,7 @@ export async function runTurn(options: TurnOptions): Promise<TurnResult> {
         const pending = select([...turn, { role: "user", origin: "control", parts: results }]);
         outcome = executeTool(call.name, call.input, {
           ...context,
+          ...(semantic && { semantic }),
           maxChars: remainingChars(),
           maxOutputBytes: Math.max(
             0,

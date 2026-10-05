@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { Corpus } from "../../retrieval/corpus";
+import type { QueryVectors } from "../../retrieval/semantic-indexer";
 import { hash, type ParsedNote, type Section } from "../../retrieval/markdown";
 import type { EvidenceLedger } from "../evidence";
 import {
@@ -23,6 +24,8 @@ export interface ToolContext {
   maxChars?: number;
   /** Encoded content allowance for the next provider request, after reserving wire overhead. */
   maxOutputBytes?: number;
+  /** Vectors for this round's search queries, when semantic search is ready. */
+  semantic?: QueryVectors;
 }
 
 export interface ToolOutcome {
@@ -108,7 +111,8 @@ export class Delivery {
     content: string,
     summary: string,
     count: number,
-    total: number,
+    /** Null when ranking has no exact candidate set (hybrid search ranks every section). */
+    total: number | null,
     hasMore: boolean,
     truncated: boolean,
     cursor?: string,
@@ -121,7 +125,10 @@ export class Delivery {
       effective: this.effective,
       revision: this.context.corpus.revision,
       returned: { count, unit: this.unit },
-      candidates: { count: total, semantics: "exact" },
+      candidates:
+        total === null
+          ? { count: null, semantics: "unknown" }
+          : { count: total, semantics: "exact" },
       hasMore,
       truncated: truncated || metadataClipped,
       ...(cursor && { cursor }),

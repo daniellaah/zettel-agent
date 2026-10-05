@@ -80,6 +80,57 @@ describe("runTurn", () => {
     expectValidTranscript(result.messages);
   });
 
+  it("embeds a round's search queries once, before the tools run", async () => {
+    const asked: string[][] = [];
+    const provider = new ScriptedProvider([
+      [
+        call("search", { query: "间隔重复" }),
+        call("search", { query: "retrieval" }),
+        call("read", { target: "x" }),
+      ],
+      [text("done")],
+    ]);
+    const results: string[] = [];
+    await runTurn({
+      provider,
+      context: makeContext(),
+      history: [],
+      userContent: "间隔重复有什么用？",
+      queryVectors: (queries) => {
+        asked.push(queries);
+        return Promise.resolve({
+          fusion: { method: "rrf", k: 60 },
+          vectors: new Map(queries.map((q) => [q, new Float32Array([1, 0])])),
+        });
+      },
+      events: { onToolResult: (outcome) => results.push(outcome.content) },
+    });
+    expect(asked).toEqual([["间隔重复", "retrieval"]]);
+    // This corpus keeps no vectors, so search falls back to the keyword ranking it can do.
+    expect(results[0]).toContain("lexical ranking");
+  });
+
+  it("searches by keywords when query embedding fails", async () => {
+    const results: string[] = [];
+    const { result } = await (async () => {
+      const provider = new ScriptedProvider([
+        [call("search", { query: "间隔重复" })],
+        [text("间隔重复让记忆更持久 [E1]。")],
+      ]);
+      const turn = await runTurn({
+        provider,
+        context: makeContext(),
+        history: [],
+        userContent: "间隔重复有什么用？",
+        queryVectors: () => Promise.reject(new Error("Ollama stopped")),
+        events: { onToolResult: (outcome) => results.push(outcome.content) },
+      });
+      return { result: turn };
+    })();
+    expect(result.citations.valid).toEqual(["E1"]);
+    expect(results[0]).toContain("lexical ranking");
+  });
+
   it("sends history before the new turn", async () => {
     const reply: AssistantMessage = { role: "assistant", parts: [text("reply")] };
     const history: ChatMessage[] = [{ role: "user", parts: [text("earlier")] }, reply];

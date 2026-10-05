@@ -68,8 +68,7 @@ export interface CorpusHit extends SearchHit {
 export class Corpus {
   private readonly notes = new Map<string, ParsedNote>();
   private readonly index: LexicalIndex;
-  /** Section vectors; null unless the corpus was created with `semantic`. */
-  readonly dense: DenseIndex | null;
+  private denseIndex: DenseIndex | null;
   /** Each note's main language, so the agent can search in the language the notes use. */
   private readonly languages = new Map<string, "zh" | "en">();
   private cachedGraph: LinkGraph | null = null;
@@ -77,7 +76,19 @@ export class Corpus {
 
   constructor(private readonly options: CorpusOptions) {
     this.index = new LexicalIndex(options.mode ?? "both", options.lexical);
-    this.dense = options.semantic ? new DenseIndex() : null;
+    this.denseIndex = options.semantic ? new DenseIndex() : null;
+  }
+
+  /** Section vectors; null unless the corpus was created with `semantic`. */
+  get dense(): DenseIndex | null {
+    return this.denseIndex;
+  }
+
+  /** Drops every vector, e.g. when a different embedder takes over; sections stay pending. */
+  resetVectors(): void {
+    if (!this.denseIndex) return;
+    this.denseIndex = new DenseIndex();
+    for (const note of this.notes.values()) this.denseIndex.upsert(note);
   }
 
   get size(): number {

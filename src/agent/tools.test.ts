@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { resolveSettings, stageForPath } from "../settings";
 import { Corpus } from "../retrieval/corpus";
 import { parseNote } from "../retrieval/markdown";
+import { FakeEmbedder } from "../testing/fake-embedder";
 import { EvidenceLedger } from "./evidence";
 import {
   excerptWindow,
@@ -284,6 +285,56 @@ describe("precise excerpt offsets", () => {
     expect(span.text).toContain(section.text.slice(span.start, span.end));
     expect(span.wholeSection).toBe(false);
     expect(result.contract!.truncated).toBe(true);
+  });
+});
+
+describe("hybrid search", () => {
+  const embedder = new FakeEmbedder({ standardization: "scaling" });
+  async function hybridContext(query: string): Promise<ToolContext> {
+    const corpus = new Corpus({ stageForPath: () => "permanent", semantic: true });
+    corpus.upsert(
+      "P/Preprocessing respects folds.md",
+      "# Preprocessing respects folds\n\nFit scaling statistics on the training fold only.",
+    );
+    corpus.upsert(
+      "P/Rotating folds.md",
+      "# Rotating folds\n\nCross-validation rotates the held-out fold.",
+    );
+    const pending = corpus.dense!.pending();
+    const vectors = await embedder.embed(
+      pending.map((p) => p.text),
+      "document",
+    );
+    pending.forEach(({ key }, i) => corpus.dense!.set(key, vectors[i]!));
+    const [queryVector] = await embedder.embed([query], "query");
+    return {
+      corpus,
+      ledger: new EvidenceLedger(),
+      semantic: {
+        fusion: { method: "convex", alpha: 0.4 },
+        vectors: new Map([[query, queryVector!]]),
+      },
+    };
+  }
+
+  it("says which hits share no words with the query", async () => {
+    const context = await hybridContext("standardization");
+    const outcome = executeTool("search", { query: "standardization" }, context);
+    expect(outcome.contract?.effective).toMatchObject({ mode: "hybrid" });
+    expect(outcome.contract?.candidates).toEqual({ count: null, semantics: "unknown" });
+    expect(outcome.content).toContain(
+      "matched: no shared terms (found by meaning only; hybrid ranking",
+    );
+    expect(outcome.content.indexOf("Preprocessing respects folds")).toBeLessThan(
+      outcome.content.indexOf("Rotating folds"),
+    );
+  });
+
+  it("uses keywords alone for a query without a vector", async () => {
+    const context = await hybridContext("standardization");
+    const outcome = executeTool("search", { query: "cross-validation" }, context);
+    expect(outcome.contract?.effective).toMatchObject({ mode: "lexical" });
+    expect(outcome.content).toContain("lexical ranking score=");
   });
 });
 

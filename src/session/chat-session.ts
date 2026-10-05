@@ -9,6 +9,7 @@ import type { ModelProvider } from "../agent/provider";
 import { executeTool } from "../agent/tools";
 import { answerProvenance, type AnswerProvenance } from "./provenance";
 import type { Corpus } from "../retrieval/corpus";
+import type { QueryVectors } from "../retrieval/semantic-indexer";
 
 /**
  * A conversation as the UI sees it, plus the API transcript behind it. Framework-free:
@@ -89,6 +90,8 @@ export interface ChatSessionDeps {
   /** Creates a provider for this turn, or explains why it cannot (no model, no API key). */
   provider: () => Promise<ModelProvider | string>;
   activeNotePath: () => string | null;
+  /** Embeds search queries for hybrid search; absent or null means keywords only. */
+  queryVectors?: (queries: string[], signal?: AbortSignal) => Promise<QueryVectors | null>;
   store?: ConversationStore;
   now?: () => Date;
   newConversationId?: () => string;
@@ -217,6 +220,7 @@ export class ChatSession {
         userContent,
         userDeliveries,
         signal: controller.signal,
+        ...(this.deps.queryVectors && { queryVectors: this.deps.queryVectors }),
         events: {
           onText: (delta) => {
             if (current()) this.appendDelta("text", delta);

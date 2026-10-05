@@ -1,4 +1,6 @@
 import { PROVIDER_IDS, PROVIDERS, type ProviderId } from "./agent/providers/catalog";
+import { DEFAULT_EMBEDDING_MODEL } from "./retrieval/embedding-models";
+import { DEFAULT_OLLAMA_URL } from "./retrieval/ollama";
 
 export const STAGES = ["fleeting", "literature", "permanent", "writing"] as const;
 export type Stage = (typeof STAGES)[number];
@@ -13,6 +15,13 @@ export interface PluginSettings {
   zettelkastenRoot: string;
   /** Sub-folder of the root that holds each stage, matched case-insensitively. */
   stageFolders: Record<Stage, string>;
+  /**
+   * Hybrid search: embeddings from Ollama on this computer, fused with keywords. Search
+   * falls back to keywords alone while Ollama is unavailable or the index is incomplete.
+   */
+  semanticSearch: boolean;
+  ollamaUrl: string;
+  embeddingModel: string;
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -30,6 +39,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     permanent: "Permanent",
     writing: "Writing",
   },
+  semanticSearch: true,
+  ollamaUrl: DEFAULT_OLLAMA_URL,
+  embeddingModel: DEFAULT_EMBEDDING_MODEL,
 };
 
 /** Merges stored data over defaults, ignoring fields of the wrong type. */
@@ -62,7 +74,22 @@ export function resolveSettings(stored: unknown): PluginSettings {
       stringOr(data.zettelkastenRoot, DEFAULT_SETTINGS.zettelkastenRoot),
     ),
     stageFolders,
+    semanticSearch:
+      typeof data.semanticSearch === "boolean"
+        ? data.semanticSearch
+        : DEFAULT_SETTINGS.semanticSearch,
+    ollamaUrl: stringOr(data.ollamaUrl, "").trim() || DEFAULT_SETTINGS.ollamaUrl,
+    embeddingModel: stringOr(data.embeddingModel, "").trim() || DEFAULT_SETTINGS.embeddingModel,
   };
+}
+
+/** True when embedding requests stay on this computer. */
+export function isLocalUrl(url: string): boolean {
+  try {
+    return ["localhost", "127.0.0.1", "[::1]"].includes(new URL(url).hostname);
+  } catch {
+    return false;
+  }
 }
 
 /** Trims whitespace and leading/trailing slashes: " /02-Zettelkasten/ " -> "02-Zettelkasten". */
